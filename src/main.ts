@@ -17,10 +17,10 @@ function main() {
   canvas = document.getElementById("game") as HTMLCanvasElement;
   ctx = canvas.getContext("2d");
 
-  draw(canvas.width, canvas.height);
+  draw();
 }
 
-function draw(width: number, height: number) {
+function draw() {
   ctx.fillStyle = COLORS.BG;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
