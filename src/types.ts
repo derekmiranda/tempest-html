@@ -7,6 +7,10 @@ export interface GameObjectInterface extends BaseGameObject {
   render(): void;
   update?(timeDelta: number): void;
   setListeners?(): void;
+
+  // methods to normalize local drawing to canvas dimensions
+  localLineTo?(): void;
+  localMoveTo?(): void;
 }
 
 export class BaseGameObject {
@@ -16,8 +20,11 @@ export class BaseGameObject {
   }
 }
 
-export interface GameObjectPropsInterface {
+export interface GameObjectPropsInterface extends DimsInterface {
   ctx: CanvasRenderingContext2D;
+}
+
+export interface DimsInterface {
   x: number;
   y: number;
   w: number;
