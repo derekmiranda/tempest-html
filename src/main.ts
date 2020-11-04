@@ -1,4 +1,6 @@
+import { Circle } from "./objects/Circle";
 import { Point } from "./types";
+import { CENTER, COLORS } from "./CONSTS";
 
 let canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
@@ -6,22 +8,20 @@ let canvas: HTMLCanvasElement,
   layers = [],
   objId = 0;
 
-// define geometry as relative to unit square
-const CENTER: Point = {
-  x: 0.5,
-  y: 0.6,
-};
-const COLORS = {
-  BG: "black",
-  RED: "tomato",
-  LINE: "blue",
-};
-
 function main() {
   canvas = document.getElementById("game") as HTMLCanvasElement;
   ctx = canvas.getContext("2d");
 
-  addObject(SampleObject(ctx), 0);
+  addObject(
+    new Circle({
+      ctx,
+      x: 0,
+      y: 0,
+      w: 1,
+      h: 1,
+    }),
+    0
+  );
 
   requestAnimationFrame(gameLoop);
 }
@@ -47,10 +47,8 @@ function draw(timeDelta: number) {
 
   layers.forEach((collection) => {
     Object.values(collection).forEach((obj: any) => {
-      const shouldUpdate = obj.update(timeDelta);
-      if (shouldUpdate) {
-        obj.render();
-      }
+      obj.update && obj.update(timeDelta);
+      obj.render();
     });
   });
 }

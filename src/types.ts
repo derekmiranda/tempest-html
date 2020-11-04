@@ -3,13 +3,23 @@ export type Point = {
   y: number;
 };
 
-export interface GameObject {
-  ctx: CanvasRenderingContext2D;
-  setListeners(): void;
-  update(): void;
-  render(): IRenderFunction;
+export interface GameObjectInterface extends BaseGameObject {
+  render(): void;
+  update?(timeDelta: number): void;
+  setListeners?(): void;
 }
 
-export interface IRenderFunction {
-  (x: number, y: number, width: number, height: number): Boolean;
+export class BaseGameObject {
+  props: GameObjectPropsInterface;
+  constructor(props: GameObjectPropsInterface) {
+    this.props = props;
+  }
+}
+
+export interface GameObjectPropsInterface {
+  ctx: CanvasRenderingContext2D;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }
