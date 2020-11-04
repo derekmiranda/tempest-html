@@ -1,6 +1,10 @@
 import { Point } from "./types";
 
-let canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D;
+let canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+  running = true,
+  layers = [],
+  objId = 0;
 
 // define geometry as relative to unit square
 const CENTER: Point = {
@@ -17,45 +21,62 @@ function main() {
   canvas = document.getElementById("game") as HTMLCanvasElement;
   ctx = canvas.getContext("2d");
 
-  draw();
+  addObject(SampleObject(ctx), 0);
+
+  requestAnimationFrame(gameLoop);
 }
 
-function draw() {
+let lastTime;
+function gameLoop(time) {
+  if (running) {
+    // skip first cycle to initialize lastTime
+    if (!lastTime) {
+      lastTime = time;
+    } else {
+      const timeDelta = time - lastTime;
+      lastTime = time;
+      draw(timeDelta);
+    }
+    requestAnimationFrame(gameLoop);
+  }
+}
+
+function draw(timeDelta: number) {
   ctx.fillStyle = COLORS.BG;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // TODO: establish scenes and how to load them
-  drawCircle({ x: 0.5, y: 0.5 }, 0.35, 16);
+  layers.forEach((collection) => {
+    Object.values(collection).forEach((obj: any) => {
+      const shouldUpdate = obj.update(timeDelta);
+      if (shouldUpdate) {
+        obj.render();
+      }
+    });
+  });
 }
 
-function drawCircle(
-  origin: Point,
-  radius: number,
-  segments: number = 16
-): void {
-  const segmentAngle: number = (2 * Math.PI) / segments;
-
-  let firstX: number, firstY: number;
-
-  ctx.strokeStyle = COLORS.LINE;
-  ctx.beginPath();
-  for (let i = 0; i < segments; i++) {
-    const angle = segmentAngle * i;
-
-    const x = origin.x + radius * Math.cos(angle),
-      y = origin.y + radius * Math.sin(angle);
-
-    if (i === 0) {
-      firstX = x;
-      firstY = y;
-      ctx.moveTo(x * canvas.width, y * canvas.height);
-    } else {
-      ctx.lineTo(x * canvas.width, y * canvas.height);
-    }
+function addObject(gameObj, layer) {
+  if (layers[layer]) {
+    layers[layer][objId++] = gameObj;
+  } else {
+    layers[layer] = { [objId++]: gameObj };
   }
-  ctx.lineTo(firstX * canvas.width, firstY * canvas.height);
-  ctx.closePath();
-  ctx.stroke();
+}
+
+function SampleObject(ctx) {
+  let x = 1;
+  const speed = 0.1; // pixel per ms
+
+  return {
+    render() {
+      ctx.fillStyle = COLORS.RED;
+      ctx.fillRect(x, 200, 10, 10);
+    },
+    update(timeDelta: number): Boolean {
+      x += timeDelta * speed;
+      return true;
+    },
+  };
 }
 
 main();
