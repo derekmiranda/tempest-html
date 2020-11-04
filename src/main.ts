@@ -1,6 +1,7 @@
 import { Circle } from "./objects/Circle";
 import { Point } from "./types";
 import { CENTER, COLORS } from "./CONSTS";
+import { centerDims } from "./utils";
 
 let canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
@@ -15,10 +16,7 @@ function main() {
   addObject(
     new Circle({
       ctx,
-      x: 0,
-      y: 0,
-      w: 1,
-      h: 1,
+      ...centerDims({ x: 0.5, y: 0.5, w: 0.8, h: 0.8 }),
     }),
     0
   );
