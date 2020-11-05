@@ -8,6 +8,7 @@ export const CENTER: Point = {
 
 export const COLORS = {
   BG: "black",
+  PLAYER: "yellow",
   RED: "tomato",
   LINE: "blue",
 };
