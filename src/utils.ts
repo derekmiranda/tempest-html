@@ -1,4 +1,4 @@
-import { DimsInterface } from "./types";
+import { DimsInterface, Point } from "./types";
 
 // get x,y,w,h using anchor relative to width and height (in terms of 0-1)
 export function getDimsWithAnchor({
@@ -37,4 +37,20 @@ export function centerDims({
   h: number;
 }): DimsInterface {
   return getDimsWithAnchor({ x, y, w, h, xAnchor: 0.5, yAnchor: 0.5 });
+}
+
+export function rotate(x, y, angle, xAnchor = 0.5, yAnchor = 0.5): Point {
+  x -= xAnchor;
+  y -= yAnchor;
+
+  x = x * Math.cos(angle) - y * Math.sin(angle);
+  y = x * Math.sin(angle) + y * Math.cos(angle);
+
+  x += xAnchor;
+  y += yAnchor;
+
+  return {
+    x,
+    y,
+  };
 }

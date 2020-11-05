@@ -1,3 +1,4 @@
+import { Player } from "./objects/Player";
 import { Circle } from "./objects/Circle";
 import { Point } from "./types";
 import { CENTER, COLORS } from "./CONSTS";
@@ -17,8 +18,14 @@ function main() {
     new Circle({
       ctx,
       ...centerDims({ x: 0.5, y: 0.5, w: 0.8, h: 0.8 }),
-    }),
-    0
+    })
+  );
+
+  addObject(
+    new Player({
+      ctx,
+      ...centerDims({ x: 0.3, y: 0.3, w: 0.2, h: 0.2 }),
+    })
   );
 
   requestAnimationFrame(gameLoop);
@@ -51,7 +58,7 @@ function draw(timeDelta: number) {
   });
 }
 
-function addObject(gameObj, layer) {
+function addObject(gameObj, layer = 0) {
   if (layers[layer]) {
     layers[layer][objId++] = gameObj;
   } else {
