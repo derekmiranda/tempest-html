@@ -1,8 +1,5 @@
-import {
-  BaseGameObject,
-  GameObjectInterface,
-  GameObjectPropsInterface,
-} from "../types";
+import { BaseGameObject } from "./BaseGameObject";
+import { GameObjectInterface, GameObjectPropsInterface } from "../types";
 import { COLORS } from "../CONSTS";
 
 export class Player extends BaseGameObject implements GameObjectInterface {
