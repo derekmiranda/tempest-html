@@ -14,7 +14,6 @@ export class Circle extends BaseGameObject implements GameObjectInterface {
 
   constructor(props: CirclePropsInterface) {
     super(props);
-    this.angle = Math.PI / 3;
   }
 
   update(timeDelta: number) {
