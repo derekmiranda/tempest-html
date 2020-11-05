@@ -39,18 +39,12 @@ export function centerDims({
   return getDimsWithAnchor({ x, y, w, h, xAnchor: 0.5, yAnchor: 0.5 });
 }
 
-export function rotate(x, y, angle, xAnchor = 0.5, yAnchor = 0.5): Point {
-  x -= xAnchor;
-  y -= yAnchor;
-
+export function rotate(x, y, angle): Point {
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
 
   let newX = x * cos - y * sin;
   let newY = x * sin + y * cos;
-
-  newX += xAnchor;
-  newY += yAnchor;
 
   return {
     x: newX,

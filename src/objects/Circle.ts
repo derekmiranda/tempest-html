@@ -14,6 +14,7 @@ export class Circle extends BaseGameObject implements GameObjectInterface {
 
   constructor(props: CirclePropsInterface) {
     super(props);
+    this.angle = Math.PI / 3;
   }
 
   update(timeDelta: number) {
@@ -34,8 +35,8 @@ export class Circle extends BaseGameObject implements GameObjectInterface {
     for (let i = 0; i < this.segments; i++) {
       const angle = segmentAngle * i;
 
-      const x = 0.5 + 0.5 * Math.cos(angle),
-        y = 0.5 + 0.5 * Math.sin(angle);
+      const x = 0.5 * Math.cos(angle),
+        y = 0.5 * Math.sin(angle);
 
       if (i === 0) {
         firstX = x;

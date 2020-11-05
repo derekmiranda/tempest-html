@@ -17,14 +17,20 @@ function main() {
   addObject(
     new Circle({
       ctx,
-      ...centerDims({ x: 0.5, y: 0.5, w: 0.8, h: 0.8 }),
+      x: 0.5,
+      y: 0.5,
+      w: 0.8,
+      h: 0.8,
     })
   );
 
   addObject(
     new Player({
       ctx,
-      ...centerDims({ x: 0.3, y: 0.3, w: 0.2, h: 0.2 }),
+      x: 0.3,
+      y: 0.3,
+      w: 0.2,
+      h: 0.2,
     })
   );
 
