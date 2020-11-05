@@ -21,6 +21,7 @@ export interface GameObjectInterface extends BaseGameObject {
   ): void;
 }
 
+// TODO: move to objects/
 export class BaseGameObject {
   ctx: CanvasRenderingContext2D;
   x: number = 0.5;
@@ -40,12 +41,12 @@ export class BaseGameObject {
     const canvasWidth = this.ctx.canvas.width;
     const canvasHeight = this.ctx.canvas.height;
 
+    const rotated = rotate(localX, localY, this.angle);
+    localX = rotated.x;
+    localY = rotated.y;
+
     let relX = this.x + this.w * localX;
     let relY = this.x + this.w * localY;
-
-    const rotated = rotate(relX, relY, this.angle);
-    relX = rotated.x;
-    relY = rotated.y;
 
     const worldX = canvasWidth * relX;
     const worldY = canvasHeight * relY;
@@ -56,12 +57,12 @@ export class BaseGameObject {
     const canvasWidth = this.ctx.canvas.width;
     const canvasHeight = this.ctx.canvas.height;
 
+    const rotated = rotate(localX, localY, this.angle);
+    localX = rotated.x;
+    localY = rotated.y;
+
     let relX = this.x + this.w * localX;
     let relY = this.x + this.w * localY;
-
-    const rotated = rotate(relX, relY, this.angle);
-    relX = rotated.x;
-    relY = rotated.y;
 
     const worldX = canvasWidth * relX;
     const worldY = canvasHeight * relY;

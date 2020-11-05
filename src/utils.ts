@@ -43,14 +43,17 @@ export function rotate(x, y, angle, xAnchor = 0.5, yAnchor = 0.5): Point {
   x -= xAnchor;
   y -= yAnchor;
 
-  x = x * Math.cos(angle) - y * Math.sin(angle);
-  y = x * Math.sin(angle) + y * Math.cos(angle);
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
 
-  x += xAnchor;
-  y += yAnchor;
+  let newX = x * cos - y * sin;
+  let newY = x * sin + y * cos;
+
+  newX += xAnchor;
+  newY += yAnchor;
 
   return {
-    x,
-    y,
+    x: newX,
+    y: newY,
   };
 }

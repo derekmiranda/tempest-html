@@ -4,6 +4,7 @@ import {
   GameObjectPropsInterface,
 } from "../types";
 import { COLORS } from "../CONSTS";
+import { rotate } from "../utils";
 
 interface CirclePropsInterface extends GameObjectPropsInterface {
   segments?: number;
