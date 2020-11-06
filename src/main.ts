@@ -29,9 +29,19 @@ function main() {
     h: 0.5,
     parent: circ,
   });
+  const player2 = new Player({
+    ctx,
+    color: "pink",
+    x: -0.25,
+    y: -0.25,
+    w: 0.5,
+    h: 0.5,
+    parent: player,
+  });
 
   addObject(circ);
   addObject(player);
+  addObject(player2);
 
   requestAnimationFrame(gameLoop);
 }
