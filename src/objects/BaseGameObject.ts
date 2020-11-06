@@ -29,39 +29,37 @@ export class BaseGameObject {
   // TODO: only calc when needed, pull from cache
   // get final canvas-relative x after positioning object in relation to parent chain
   resolveAncestryPosition(localX: number, localY: number): Point {
-    let newX = localX + 0.5 / this.w,
-      newY = localY + 0.5 / this.h,
-      newW = this.w,
-      newH = this.h;
+    // x, y = obj's center position w.r.t. parent's unit space
+    let childX = this.x + localX * this.w,
+      childY = this.y + localY * this.h,
+      // w, h = obj's dims w.r.t. parent's unit dims
+      childW = this.w,
+      childH = this.h;
+    // parentX = this.parent ? this.parent.x : 0,
+    // parentY = this.parent ? this.parent.y : 0
 
-    const canvasData = {
-      x: 0,
-      y: 0,
-      w: this.ctx.canvas.width,
-      h: this.ctx.canvas.height,
-    };
+    let currObj: BaseGameObject = this;
 
-    let currParent: any = this.parent || canvasData;
-    let hasResolvedCanvas: boolean = currParent === canvasData;
-
-    while (currParent) {
-      newW *= currParent.w;
-      newH *= currParent.h;
-      newX = currParent.x + newW * newX;
-      newY = currParent.y + newH * newY;
-
-      currParent = currParent.parent;
-
-      // check canvas as last parent
-      if (!hasResolvedCanvas && !currParent) {
-        currParent = canvasData;
-        hasResolvedCanvas = true;
-      }
+    // ultimately resolving obj's dimensions w.r.t. highest parent i.e. canvas
+    while (currObj.parent) {
+      currObj = currObj.parent;
+      childX = currObj.x + childX * currObj.w;
+      childY = currObj.y + childY * currObj.h;
+      childW *= currObj.w;
+      childH *= currObj.h;
+      // if (currObj.parent) {
+      //   parentX = currObj.parent.x
+      //   parentY = currObj.parent.y
+      // }
     }
 
+    // resolve canvas points
+    const canvasX = this.ctx.canvas.width * (childX + 0.5);
+    const canvasY = this.ctx.canvas.height * (childY + 0.5);
+
     return {
-      x: newX,
-      y: newY,
+      x: canvasX,
+      y: canvasY,
     };
   }
 
@@ -74,9 +72,6 @@ export class BaseGameObject {
     localY = rotated.y;
 
     const resolvedDims: Point = this.resolveAncestryPosition(localX, localY);
-    console.log("localX", localX);
-    console.log("localY", localY);
-    console.log("resolvedDims", resolvedDims);
 
     // let relX = this.x + this.w * localX;
     // let relY = this.y + this.h * localY;
@@ -95,9 +90,6 @@ export class BaseGameObject {
     localY = rotated.y;
 
     const resolvedDims: Point = this.resolveAncestryPosition(localX, localY);
-    console.log("localX", localX);
-    console.log("localY", localY);
-    console.log("resolvedDims", resolvedDims);
 
     // let relX = this.x + this.w * localX;
     // let relY = this.y + this.h * localY;

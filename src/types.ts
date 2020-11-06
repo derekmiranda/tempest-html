@@ -23,6 +23,7 @@ export interface GameObjectInterface extends BaseGameObject {
 
 export interface GameObjectPropsInterface extends DimsInterface {
   ctx: CanvasRenderingContext2D;
+  parent?: BaseGameObject;
 }
 
 export interface DimsInterface {

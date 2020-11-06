@@ -14,25 +14,24 @@ function main() {
   canvas = document.getElementById("game") as HTMLCanvasElement;
   ctx = canvas.getContext("2d");
 
-  addObject(
-    new Circle({
-      ctx,
-      x: 0.5,
-      y: 0.5,
-      w: 0.8,
-      h: 0.8,
-    })
-  );
+  const circ = new Circle({
+    ctx,
+    x: 0,
+    y: 0,
+    w: 0.8,
+    h: 0.8,
+  });
+  const player = new Player({
+    ctx,
+    x: -0.25,
+    y: -0.25,
+    w: 0.5,
+    h: 0.5,
+    parent: circ,
+  });
 
-  addObject(
-    new Player({
-      ctx,
-      x: 0.3,
-      y: 0.3,
-      w: 0.2,
-      h: 0.2,
-    })
-  );
+  addObject(circ);
+  addObject(player);
 
   requestAnimationFrame(gameLoop);
 }

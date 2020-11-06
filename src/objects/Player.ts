@@ -9,6 +9,12 @@ export class Player extends BaseGameObject implements GameObjectInterface {
 
   render() {
     this.ctx.fillStyle = COLORS.PLAYER;
-    this.localFillRect(-0.5, -0.5, 1, 1);
+    this.ctx.beginPath();
+    this.localMoveTo(-0.5, 0.5);
+    this.localLineTo(0.5, 0.5);
+    this.localLineTo(0.5, -0.5);
+    this.localLineTo(-0.5, -0.5);
+    this.ctx.closePath();
+    this.ctx.fill();
   }
 }
