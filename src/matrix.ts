@@ -108,4 +108,9 @@ export var matrix = {
       y: newY,
     };
   },
+
+  deriveAngle: function (m) {
+    // m[1][0] should be sin(angle)
+    return Math.asin(m[3]);
+  },
 };

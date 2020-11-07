@@ -31,7 +31,6 @@ function main() {
   });
 
   circ.addChildren(player);
-  console.log("player.globalTransformMatrix", player.globalTransformMatrix);
 
   addObject(circ);
   addObject(player);
