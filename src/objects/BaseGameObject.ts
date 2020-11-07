@@ -51,8 +51,10 @@ export class BaseGameObject {
       // TODO: fix parent-relative translation
       // currently, only resolves translation to canvas instead of parent lineage
       // parentX + childX * parentW
-      const newTranslateX = parentGlobalMat[0] * this.transform.matrix[6]; // + parentGlobalMat[6]
-      const newTranslateY = parentGlobalMat[4] * this.transform.matrix[7]; // + parentGlobalMat[7]
+      const newTranslateX =
+        parentGlobalMat[0] * this.transform.matrix[6] + parentGlobalMat[6];
+      const newTranslateY =
+        parentGlobalMat[4] * this.transform.matrix[7] + parentGlobalMat[7];
       this.globalTransformMatrix[6] = newTranslateX;
       this.globalTransformMatrix[7] = newTranslateY;
 
