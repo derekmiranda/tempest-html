@@ -101,8 +101,8 @@ export var matrix = {
   },
 
   transformPoint: function (m, x, y) {
-    const newX = m[0] * x + m[1] * y + m[2];
-    const newY = m[3] * x + m[4] * y + m[5];
+    const newX = m[0] * x + m[3] * y + m[6];
+    const newY = m[1] * x + m[4] * y + m[7];
     return {
       x: newX,
       y: newY,
