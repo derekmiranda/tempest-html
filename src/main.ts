@@ -20,6 +20,7 @@ function main() {
     y: 0,
     w: 0.8,
     h: 0.8,
+    // angle: Math.PI / 3,
   });
   const player = new Player({
     ctx,
@@ -30,6 +31,7 @@ function main() {
   });
 
   circ.addChildren(player);
+  console.log("player.globalTransformMatrix", player.globalTransformMatrix);
 
   addObject(circ);
   addObject(player);

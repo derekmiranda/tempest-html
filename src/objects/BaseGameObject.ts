@@ -22,6 +22,7 @@ export class BaseGameObject {
 
   setParent(parent: BaseGameObject) {
     this.parent = parent;
+    this.updateGlobalTransformation();
   }
 
   addChildren(children: BaseGameObject[] | BaseGameObject) {
@@ -42,12 +43,21 @@ export class BaseGameObject {
   updateGlobalTransformation() {
     // update this object's global transformation matrix
     this.globalTransformMatrix = this.transform.matrix.slice();
-    if (this.parent)
-      matrix.multiply(
-        this.globalTransformMatrix,
-        this.parent.globalTransformMatrix
-      );
 
+    if (this.parent) {
+      const parentGlobalMat = this.parent.globalTransformMatrix;
+      matrix.multiply(this.globalTransformMatrix, parentGlobalMat);
+
+      // TODO: fix parent-relative translation
+      // currently, only resolves translation to canvas instead of parent lineage
+      // parentX + childX * parentW
+      const newTranslateX = parentGlobalMat[0] * this.transform.matrix[6]; // + parentGlobalMat[6]
+      const newTranslateY = parentGlobalMat[4] * this.transform.matrix[7]; // + parentGlobalMat[7]
+      this.globalTransformMatrix[6] = newTranslateX;
+      this.globalTransformMatrix[7] = newTranslateY;
+
+      // TODO: fix parent-relative rotation
+    }
     // and children's matrices
     for (let child of this.children) child.updateGlobalTransformation();
   }
