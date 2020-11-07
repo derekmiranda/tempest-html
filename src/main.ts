@@ -20,12 +20,12 @@ function main() {
     y: 0,
     w: 0.8,
     h: 0.8,
-    // angle: Math.PI / 3,
+    angle: Math.PI / 2,
   });
   const player = new Player({
     ctx,
-    x: -0.25,
-    y: -0.25,
+    x: 0.25,
+    y: 0.25,
     w: 0.5,
     h: 0.5,
   });

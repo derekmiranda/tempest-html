@@ -3,11 +3,15 @@ import { Matrix, TransformPropsInterface } from "../types";
 
 export class Transform {
   matrix: Matrix = matrix.identity();
+
+  // transform props
   x: number;
   y: number;
   w: number;
   h: number;
   angle: number = 0;
+
+  // TODO: globally resolved transform props
 
   constructor({
     x = 0,

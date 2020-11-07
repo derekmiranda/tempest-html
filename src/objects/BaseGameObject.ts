@@ -48,17 +48,15 @@ export class BaseGameObject {
       const parentGlobalMat = this.parent.globalTransformMatrix;
       matrix.multiply(this.globalTransformMatrix, parentGlobalMat);
 
-      // TODO: fix parent-relative translation
-      // currently, only resolves translation to canvas instead of parent lineage
-      // parentX + childX * parentW
-      const newTranslateX =
-        parentGlobalMat[0] * this.transform.matrix[6] + parentGlobalMat[6];
-      const newTranslateY =
-        parentGlobalMat[4] * this.transform.matrix[7] + parentGlobalMat[7];
+      // TODO: fix parent-relative translation + rotation
+      // when parent rotates, child should stay anchored w/ parent
+      // however, child moves along one track when animating parent rotation
+      const x = this.transform.x;
+      const y = this.transform.y;
+      const newTranslateX = parentGlobalMat[0] * x + parentGlobalMat[6];
+      const newTranslateY = parentGlobalMat[4] * y + parentGlobalMat[7];
       this.globalTransformMatrix[6] = newTranslateX;
       this.globalTransformMatrix[7] = newTranslateY;
-
-      // TODO: fix parent-relative rotation
     }
     // and children's matrices
     for (let child of this.children) child.updateGlobalTransformation();
