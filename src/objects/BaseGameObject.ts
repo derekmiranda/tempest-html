@@ -1,117 +1,81 @@
-import { DimsInterface, GameObjectPropsInterface, Point } from "../types";
-import { rotate } from "../utils";
+import { matrix } from "../matrix";
+import {
+  GameObjectPropsInterface,
+  Point,
+  TransformPropsInterface,
+} from "../types";
+import { Transform } from "./Transform";
 
 export class BaseGameObject {
   ctx: CanvasRenderingContext2D;
-  x: number = 0.5;
-  y: number = 0.5;
-  worldX: number;
-  worldY: number;
-  xAnchor: number = 0.5;
-  yAnchor: number = 0.5;
-  w: number = 1;
-  h: number = 1;
-  worldW: number;
-  worldH: number;
-  angle: number = 0;
   parent: BaseGameObject;
+  children: BaseGameObject[] = [];
+  transform: Transform;
+  // cached global transform matrix
+  globalTransformMatrix: number[];
 
   constructor(props: GameObjectPropsInterface) {
     Object.assign(this, props);
+    this.transform = new Transform(props);
+    this.updateGlobalTransformation();
   }
 
   setParent(parent: BaseGameObject) {
     this.parent = parent;
   }
 
-  /* methods to scale local to world geometry */
-
-  // TODO: only calc when needed, pull from cache
-  // get final canvas-relative x after positioning object in relation to parent chain
-  resolveAncestryPosition(localX: number, localY: number): Point {
-    // x, y = obj's center position w.r.t. parent's unit space
-    let childX = this.x + localX * this.w,
-      childY = this.y + localY * this.h,
-      // w, h = obj's dims w.r.t. parent's unit dims
-      childW = this.w,
-      childH = this.h;
-    // parentX = this.parent ? this.parent.x : 0,
-    // parentY = this.parent ? this.parent.y : 0
-
-    let currObj: BaseGameObject = this;
-
-    // ultimately resolving obj's dimensions w.r.t. highest parent i.e. canvas
-    while (currObj.parent) {
-      currObj = currObj.parent;
-      childX = currObj.x + childX * currObj.w;
-      childY = currObj.y + childY * currObj.h;
-      childW *= currObj.w;
-      childH *= currObj.h;
-      // if (currObj.parent) {
-      //   parentX = currObj.parent.x
-      //   parentY = currObj.parent.y
-      // }
+  addChildren(children: BaseGameObject[] | BaseGameObject) {
+    if (!Array.isArray(children)) children = [children];
+    for (let child of children) {
+      child.setParent(this);
+      this.children.push(child);
     }
+  }
 
-    // resolve canvas points
-    const canvasX = this.ctx.canvas.width * (childX + 0.5);
-    const canvasY = this.ctx.canvas.height * (childY + 0.5);
+  updateTransformWithProps(props: TransformPropsInterface) {
+    this.transform.updateWithProps(props);
+    this.updateGlobalTransformation();
+  }
 
+  // updates transformation matrix relative to whole canvas
+  // and children's as well
+  updateGlobalTransformation() {
+    // update this object's global transformation matrix
+    this.globalTransformMatrix = this.transform.matrix.slice();
+    if (this.parent)
+      matrix.multiply(
+        this.globalTransformMatrix,
+        this.parent.globalTransformMatrix
+      );
+
+    // and children's matrices
+    for (let child of this.children) child.updateGlobalTransformation();
+  }
+
+  normalizePoints(relX: number, relY: number): Point {
     return {
-      x: canvasX,
-      y: canvasY,
+      x: this.ctx.canvas.width * (relX + 0.5),
+      y: this.ctx.canvas.height * (relY + 0.5),
     };
   }
 
   localLineTo(localX: number, localY: number) {
-    const canvasWidth = this.ctx.canvas.width;
-    const canvasHeight = this.ctx.canvas.height;
-
-    const rotated = rotate(localX, localY, this.angle);
-    localX = rotated.x;
-    localY = rotated.y;
-
-    const resolvedDims: Point = this.resolveAncestryPosition(localX, localY);
-
-    // let relX = this.x + this.w * localX;
-    // let relY = this.y + this.h * localY;
-
-    // const worldX = canvasWidth * relX;
-    // const worldY = canvasHeight * relY;
-    this.ctx.lineTo(resolvedDims.x, resolvedDims.y);
+    const resolved: Point = matrix.transformPoint(
+      this.globalTransformMatrix,
+      localX,
+      localY
+    );
+    const normalized: Point = this.normalizePoints(resolved.x, resolved.y);
+    this.ctx.lineTo(normalized.x, normalized.y);
   }
 
   localMoveTo(localX: number, localY: number) {
-    const canvasWidth = this.ctx.canvas.width;
-    const canvasHeight = this.ctx.canvas.height;
-
-    const rotated = rotate(localX, localY, this.angle);
-    localX = rotated.x;
-    localY = rotated.y;
-
-    const resolvedDims: Point = this.resolveAncestryPosition(localX, localY);
-
-    // let relX = this.x + this.w * localX;
-    // let relY = this.y + this.h * localY;
-
-    // const worldX = canvasWidth * relX;
-    // const worldY = canvasHeight * relY;
-    this.ctx.lineTo(resolvedDims.x, resolvedDims.y);
-  }
-
-  localFillRect(
-    localX: number,
-    localY: number,
-    localW: number,
-    localH: number
-  ) {
-    const canvasWidth = this.ctx.canvas.width;
-    const canvasHeight = this.ctx.canvas.height;
-
-    const worldX = canvasWidth * (this.x + this.w * localX);
-    const worldY = canvasHeight * (this.y + this.h * localY);
-    const worldW = canvasWidth * this.w * localW;
-    const worldH = canvasWidth * this.h * localH;
-    this.ctx.fillRect(worldX, worldY, worldW, worldH);
+    const resolved: Point = matrix.transformPoint(
+      this.globalTransformMatrix,
+      localX,
+      localY
+    );
+    const normalized: Point = this.normalizePoints(resolved.x, resolved.y);
+    this.ctx.moveTo(normalized.x, normalized.y);
   }
 }

@@ -17,12 +17,7 @@ export class Circle extends BaseGameObject implements GameObjectInterface {
   }
 
   update(timeDelta: number) {
-    const newAngle = this.angle + this.rotationSpeed * timeDelta;
-    if (newAngle > 2 * Math.PI) {
-      this.angle = newAngle - 2 * Math.PI;
-    } else {
-      this.angle = newAngle;
-    }
+    // this.updateTransformWithProps({ angle: this.rotationSpeed * timeDelta });
   }
 
   render() {

@@ -1,4 +1,4 @@
-import { DimsInterface, Point } from "./types";
+import { TransformPropsInterface, Point } from "./types";
 
 // get x,y,w,h using anchor relative to width and height (in terms of 0-1)
 export function getDimsWithAnchor({
@@ -15,7 +15,7 @@ export function getDimsWithAnchor({
   yAnchor: number;
   w: number;
   h: number;
-}): DimsInterface {
+}): TransformPropsInterface {
   return {
     x: x - (1 - xAnchor) * w,
     y: y - (1 - yAnchor) * h,
@@ -35,7 +35,7 @@ export function centerDims({
   y: number;
   w: number;
   h: number;
-}): DimsInterface {
+}): TransformPropsInterface {
   return getDimsWithAnchor({ x, y, w, h, xAnchor: 0.5, yAnchor: 0.5 });
 }
 

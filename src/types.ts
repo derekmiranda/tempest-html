@@ -13,22 +13,26 @@ export interface GameObjectInterface extends BaseGameObject {
   // methods to normalize local drawing to canvas dimensions
   localLineTo(localX: number, localY: number): void;
   localMoveTo(localX: number, localY: number): void;
-  localFillRect(
-    localX: number,
-    localY: number,
-    localW: number,
-    localH: number
-  ): void;
+
+  // localFillRect(
+  //   localX: number,
+  //   localY: number,
+  //   localW: number,
+  //   localH: number
+  // ): void;
 }
 
-export interface GameObjectPropsInterface extends DimsInterface {
+export interface GameObjectPropsInterface extends TransformPropsInterface {
   ctx: CanvasRenderingContext2D;
   parent?: BaseGameObject;
 }
 
-export interface DimsInterface {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
+export interface TransformPropsInterface {
+  x?: number;
+  y?: number;
+  w?: number;
+  h?: number;
+  angle?: number;
 }
+
+export type Matrix = number[];
