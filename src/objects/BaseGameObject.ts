@@ -3,6 +3,7 @@ import {
   GameObjectPropsInterface,
   Point,
   TransformPropsInterface,
+  Matrix,
 } from "../types";
 import { Transform } from "./Transform";
 
@@ -12,6 +13,8 @@ export class BaseGameObject {
   children: BaseGameObject[] = [];
   transform: Transform;
   globalTransform: Transform;
+
+  private _lastParentGlobalMat: Matrix;
 
   constructor(props: GameObjectPropsInterface) {
     Object.assign(this, props);
@@ -49,9 +52,6 @@ export class BaseGameObject {
       const parentGlobalProps = this.parent.globalTransform.getTransformProps();
       this.globalTransform.updateWithProps(parentGlobalProps);
 
-      // TODO: fix parent-relative translation + rotation
-      // when parent rotates, child should stay anchored w/ parent
-      // however, child moves along one track when animating parent rotation
       const x = this.transform.x;
       const y = this.transform.y;
       const newTranslateX =

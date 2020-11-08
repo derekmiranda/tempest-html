@@ -20,7 +20,6 @@ function main() {
     y: 0,
     w: 0.8,
     h: 0.8,
-    angle: Math.PI / 2,
   });
   const player = new Player({
     ctx,
@@ -63,6 +62,12 @@ function draw(timeDelta: number) {
       obj.render();
     });
   });
+
+  console.log("player.transform.angle", layers[0][1].transform.angle);
+  console.log(
+    "player.globalTransform.angle",
+    layers[0][1].globalTransform.angle
+  );
 }
 
 function addObject(gameObj, layer = 0) {
@@ -71,22 +76,6 @@ function addObject(gameObj, layer = 0) {
   } else {
     layers[layer] = { [objId++]: gameObj };
   }
-}
-
-function SampleObject(ctx) {
-  let x = 1;
-  const speed = 0.1; // pixel per ms
-
-  return {
-    render() {
-      ctx.fillStyle = COLORS.RED;
-      ctx.fillRect(x, 200, 10, 10);
-    },
-    update(timeDelta: number): Boolean {
-      x += timeDelta * speed;
-      return true;
-    },
-  };
 }
 
 main();
