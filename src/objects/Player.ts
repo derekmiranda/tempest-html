@@ -8,6 +8,11 @@ interface PlayerPropsInterface extends GameObjectPropsInterface {
 
 export class Player extends BaseGameObject implements GameObjectInterface {
   color: string;
+  rotationSpeed: number = Math.PI / 2000; // per ms
+
+  // update(timeDelta: number) {
+  //   this.updateTransformWithProps({ angle: this.rotationSpeed * timeDelta });
+  // }
 
   constructor(props: PlayerPropsInterface) {
     super(props);

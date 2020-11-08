@@ -54,15 +54,14 @@ export class BaseGameObject {
       // however, child moves along one track when animating parent rotation
       const x = this.transform.x;
       const y = this.transform.y;
-      // const r = Math.sqrt(x * x + y * y);
-      // v1 = (r * cos(a1), r * sin(a1))
-      // v2 = (r * cos(a2), r * sin(a2))
-      // a2 = a1 + da
-      // v2 - v1 = (r * (cos(a2) - cos(a1)), r * )
-      const newTranslateX = parentGlobalMat[0] * x + parentGlobalProps.x;
-      const newTranslateY = parentGlobalMat[4] * y + parentGlobalProps.y;
-      this.globalTransform.matrix[6] = newTranslateX;
-      this.globalTransform.matrix[7] = newTranslateY;
+      const newTranslateX =
+        parentGlobalMat[0] * x + parentGlobalMat[3] * y + parentGlobalProps.x;
+      const newTranslateY =
+        parentGlobalMat[1] * x + parentGlobalMat[4] * y + parentGlobalProps.y;
+      this.globalTransform.setTransformWithProps({
+        x: newTranslateX,
+        y: newTranslateY,
+      });
     }
 
     // and children's matrices
