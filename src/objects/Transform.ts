@@ -11,24 +11,59 @@ export class Transform {
   h: number;
   angle: number = 0;
 
-  // TODO: globally resolved transform props
-
   constructor({
     x = 0,
     y = 0,
     w = 1,
     h = 1,
     angle = 0,
-  }: TransformPropsInterface) {
-    this.updateWithProps({ x, y, w, h, angle });
+  }: TransformPropsInterface = {}) {
+    this.setTransformWithProps({ x, y, w, h, angle });
+  }
+
+  setMatrix(m: Matrix) {
+    this.matrix = m;
+  }
+
+  setTransformWithProps({ x, y, w, h, angle }: TransformPropsInterface): void {
+    const newMat = matrix.identity();
+
+    // apply translation
+    if (x !== undefined) this.x = x;
+    if (y !== undefined) this.y = y;
+    matrix.translate(newMat, this.x, this.y);
+
+    // apply rotation
+    if (angle !== undefined) this.angle = angle;
+    if (this.angle >= Math.PI * 2) {
+      this.angle = (this.angle / (Math.PI * 2)) % 1;
+    }
+    matrix.rotate(newMat, this.angle);
+
+    // apply scale
+    if (w !== undefined) this.w = w;
+    if (h !== undefined) this.h = h;
+    matrix.scale(newMat, this.w, this.h);
+
+    this.matrix = newMat;
+  }
+
+  getTransformProps() {
+    return {
+      x: this.x,
+      y: this.y,
+      w: this.w,
+      h: this.h,
+      angle: this.angle,
+    };
   }
 
   updateWithProps({ x, y, w, h, angle }: TransformPropsInterface): void {
     // apply translation
     if (x || y) {
       // cache xy
-      if (x !== undefined) this.x = x;
-      if (y !== undefined) this.y = y;
+      if (x !== undefined) this.x += x;
+      if (y !== undefined) this.y += y;
 
       matrix.translate(this.matrix, this.x, this.y);
     }
@@ -36,21 +71,28 @@ export class Transform {
     // apply rotation
     if (angle !== undefined) {
       // cache angle
-      this.angle = angle;
-      matrix.rotate(this.matrix, this.angle);
+      this.angle += angle;
+      if (this.angle >= Math.PI * 2) {
+        this.angle = (this.angle / (Math.PI * 2)) % 1;
+      }
+      matrix.rotate(this.matrix, angle);
     }
 
     // apply scale
     if (w || h) {
-      if (w !== undefined) this.w = w;
-      if (h !== undefined) this.h = h;
+      if (w !== undefined) this.w *= w;
+      if (h !== undefined) this.h *= h;
 
-      matrix.scale(this.matrix, this.w, this.h);
+      matrix.scale(this.matrix, w, h);
     }
   }
 
-  updateWithMatrix(m: Matrix) {
+  updateWithMatrix(m: Matrix, shouldUpdateProps: boolean = false) {
     matrix.multiply(this.matrix, m);
+
+    if (shouldUpdateProps) {
+      this.updateTransformProps();
+    }
   }
 
   // calculates transform properties based on current matrix
