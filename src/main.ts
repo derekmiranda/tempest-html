@@ -1,12 +1,14 @@
 import { Player } from "./objects/Player";
 import { Circle } from "./objects/Circle";
 import { Point } from "./types";
-import { CENTER, COLORS } from "./CONSTS";
+import { COLORS } from "./CONSTS";
 import { centerDims } from "./utils";
+import { Level } from "./objects/Level";
 
 let canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   running = true,
+  currLevel: Level,
   layers = [],
   objId = 0;
 
@@ -14,27 +16,30 @@ function main() {
   canvas = document.getElementById("game") as HTMLCanvasElement;
   ctx = canvas.getContext("2d");
 
-  const circ = new Circle({
+  const circ = (currLevel = new Circle({
     ctx,
     x: 0,
     y: 0,
     w: 0.8,
     h: 0.8,
-  });
-  const player = new Player({
-    ctx,
-    x: 0.25,
-    y: 0.25,
-    w: 0.5,
-    h: 0.5,
-  });
+  }));
+  const player = new Player({ ctx });
 
-  circ.addChildren(player);
+  circ.setPlayer(player);
 
   addObject(circ);
   addObject(player);
 
+  setListeners();
+
   requestAnimationFrame(gameLoop);
+}
+
+function setListeners() {
+  window.addEventListener("keydown", (e) => {
+    if (e.code === "ArrowLeft") currLevel.updatePlayerSpot(-1);
+    else if (e.code === "ArrowRight") currLevel.updatePlayerSpot(1);
+  });
 }
 
 let lastTime;
@@ -62,12 +67,6 @@ function draw(timeDelta: number) {
       obj.render();
     });
   });
-
-  console.log("player.transform.angle", layers[0][1].transform.angle);
-  console.log(
-    "player.globalTransform.angle",
-    layers[0][1].globalTransform.angle
-  );
 }
 
 function addObject(gameObj, layer = 0) {
