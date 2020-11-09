@@ -14,8 +14,6 @@ export class BaseGameObject {
   transform: Transform;
   globalTransform: Transform;
 
-  private _lastParentGlobalMat: Matrix;
-
   constructor(props: GameObjectPropsInterface) {
     Object.assign(this, props);
     this.transform = new Transform(props);
@@ -37,6 +35,11 @@ export class BaseGameObject {
 
   updateTransformWithProps(props: TransformPropsInterface) {
     this.transform.updateWithProps(props);
+    this.updateGlobalTransform();
+  }
+
+  setTransformWithProps(props: TransformPropsInterface) {
+    this.transform.setTransformWithProps(props);
     this.updateGlobalTransform();
   }
 
