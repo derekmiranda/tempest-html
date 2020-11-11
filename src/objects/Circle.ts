@@ -50,12 +50,16 @@ export class Circle extends Level implements GameObjectInterface {
       const avg_x = (p_i.x + p_j.x) / 2;
       const avg_y = (p_i.y + p_j.y) / 2;
       const segAngle = (2 * Math.PI) / this.segments;
-      const angle = -segAngle / 2 - i * segAngle;
+      const normalAngle = segAngle * (0.5 + i);
+      const angle = Math.PI / 2 - normalAngle;
 
       // TODO: get some distance
+      const x = avg_x + 0.1 * Math.cos(normalAngle);
+      const y = avg_y + 0.1 * Math.sin(normalAngle);
+
       spots.push({
-        x: avg_x,
-        y: avg_y,
+        x,
+        y,
         w: 0.1,
         h: 0.1,
         angle,
