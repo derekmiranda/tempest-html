@@ -16,18 +16,20 @@ function main() {
   canvas = document.getElementById("game") as HTMLCanvasElement;
   ctx = canvas.getContext("2d");
 
-  const circ = (currLevel = new Circle({
+  const levelClasses = [Circle];
+
+  currLevel = new levelClasses[0]({
     ctx,
     x: 0,
     y: 0,
-    w: 0.8,
-    h: 0.8,
-  }));
+    w: 0.65,
+    h: 0.65,
+  });
   const player = new Player({ ctx });
 
-  circ.setPlayer(player);
+  currLevel.setPlayer(player);
 
-  addObject(circ);
+  addObject(currLevel);
   addObject(player);
 
   setListeners();
