@@ -54,9 +54,9 @@ export function rotate(x, y, angle): Point {
 
 export function throttle(fn: Function, time: number): Function {
   let lastTime: number;
-  return function () {
-    if (!lastTime || Date.now() + time > lastTime) {
-      fn();
+  return function (...args) {
+    if (!lastTime || Date.now() > lastTime + time) {
+      fn(...args);
       lastTime = Date.now();
     }
   };
