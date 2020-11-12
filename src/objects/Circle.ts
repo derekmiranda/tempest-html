@@ -1,6 +1,5 @@
-import { BaseGameObject } from "./BaseGameObject";
-import { GameObjectInterface, GameObjectPropsInterface, Point } from "../types";
-import { COLORS, PLAYER_TO_LEVEL_DIST } from "../CONSTS";
+import { GameObjectInterface, Point } from "../types";
+import { COLORS } from "../CONSTS";
 import { Level, LevelPlayerSpot, LevelPropsInterface } from "./Level";
 
 interface CirclePropsInterface extends LevelPropsInterface {
@@ -53,7 +52,6 @@ export class Circle extends Level implements GameObjectInterface {
       const normalAngle = segAngle * (0.5 + i);
       const angle = Math.PI / 2 - normalAngle;
 
-      // TODO: get some distance
       const x = avg_x + 0.1 * Math.cos(normalAngle);
       const y = avg_y + 0.1 * Math.sin(normalAngle);
 
@@ -70,6 +68,24 @@ export class Circle extends Level implements GameObjectInterface {
 
   update(timeDelta: number) {
     // this.updateTransformWithProps({ angle: this.rotationSpeed * timeDelta });
+  }
+
+  startUpdatingWithCursor(x: number, y: number) {
+    this.updatingSpot = true;
+    const normX = x / this.ctx.canvas.width - 0.5;
+    const normY = y / this.ctx.canvas.height - 0.5;
+    // TODO: fix angle math
+    const angle = Math.atan(normY / normX);
+    const segmentAngle = (2 * Math.PI) / this.segments;
+    let idx = Math.floor(angle / segmentAngle);
+    if (idx < 0) idx += this.segments;
+    this.targetSpotIdx = idx;
+
+    let idxDiff = 0;
+    if (idx > this.playerSpotIdx) idxDiff = 1;
+    else if (idx < this.playerSpotIdx) idxDiff = -1;
+
+    this.throttledUpdateSpot(idxDiff);
   }
 
   render() {
