@@ -3,7 +3,6 @@ import {
   GameObjectPropsInterface,
   Point,
   TransformPropsInterface,
-  Matrix,
 } from "../types";
 import { Transform } from "./Transform";
 
