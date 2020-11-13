@@ -37,7 +37,18 @@ function main() {
   requestAnimationFrame(gameLoop);
 }
 
+function handleMouse(e: MouseEvent) {
+  currLevel.startUpdatingWithCursor(e.clientX, e.clientY);
+}
+
+function handleMouseLeave() {
+  currLevel.stopUpdatingWithCursor();
+}
+
 function setListeners() {
+  canvas.addEventListener("mouseenter", handleMouse);
+  canvas.addEventListener("mousemove", handleMouse);
+  canvas.addEventListener("mouseleave", handleMouseLeave);
   window.addEventListener("keydown", (e) => {
     if (e.code === "ArrowLeft") currLevel.updatePlayerSpot(-1);
     else if (e.code === "ArrowRight") currLevel.updatePlayerSpot(1);
@@ -65,8 +76,8 @@ function draw(timeDelta: number) {
 
   layers.forEach((collection) => {
     Object.values(collection).forEach((obj: any) => {
-      obj.update && obj.update(timeDelta);
-      obj.render();
+      obj._update(timeDelta);
+      obj._render();
     });
   });
 }
