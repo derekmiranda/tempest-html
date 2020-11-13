@@ -19,6 +19,19 @@ export class BaseGameObject {
     this.updateGlobalTransform();
   }
 
+  // render and update
+  // write render and update function on classes extended BaseGameObject
+  // _render and _update are used internally by game loop
+  _render() {
+    this.render();
+  }
+  render() {}
+
+  _update(timeDelta: number) {
+    this.update(timeDelta);
+  }
+  update(timeDelta: number) {}
+
   setParent(parent: BaseGameObject) {
     this.parent = parent;
     this.updateGlobalTransform();
