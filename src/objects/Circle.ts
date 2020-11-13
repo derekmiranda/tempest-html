@@ -75,7 +75,11 @@ export class Circle extends Level implements GameObjectInterface {
     const normX = x / this.ctx.canvas.width - 0.5;
     const normY = y / this.ctx.canvas.height - 0.5;
 
-    const angle = Math.atan(normY / normX);
+    let angle = Math.atan(normY / normX);
+    // adjust angles in Quadrant III and IV
+    if (normX < 0) {
+      angle += Math.PI;
+    }
     const segmentAngle = (2 * Math.PI) / this.segments;
     let idx = Math.floor(angle / segmentAngle);
     if (idx < 0) idx += this.segments;
