@@ -74,18 +74,12 @@ export class Circle extends Level implements GameObjectInterface {
     this.updatingSpot = true;
     const normX = x / this.ctx.canvas.width - 0.5;
     const normY = y / this.ctx.canvas.height - 0.5;
-    // TODO: fix angle math
+
     const angle = Math.atan(normY / normX);
     const segmentAngle = (2 * Math.PI) / this.segments;
     let idx = Math.floor(angle / segmentAngle);
     if (idx < 0) idx += this.segments;
     this.targetSpotIdx = idx;
-
-    let idxDiff = 0;
-    if (idx > this.playerSpotIdx) idxDiff = 1;
-    else if (idx < this.playerSpotIdx) idxDiff = -1;
-
-    this.throttledUpdateSpot(idxDiff);
   }
 
   render() {
