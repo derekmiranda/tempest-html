@@ -1,7 +1,12 @@
-import { GameObjectPropsInterface, TransformPropsInterface } from "../types";
+import {
+  GameObjectPropsInterface,
+  TransformPropsInterface,
+  Point,
+} from "../types";
 import { BaseGameObject } from "./BaseGameObject";
 import { Player } from "./Player";
 import { throttle } from "../utils";
+import { LEVEL_CENTER, FAR_SCALE, COLORS } from "../CONSTS";
 
 export interface LevelPlayerSpot extends TransformPropsInterface {}
 
@@ -33,6 +38,57 @@ export class Level extends BaseGameObject {
     this.player = player;
     player.updateTransformWithProps(this.playerSpots[this.playerSpotIdx]);
     this.addChildren(player);
+  }
+
+  // to be overwritten by Level classes
+  getLevelPoints(): Point[] {
+    return [];
+  }
+
+  _render() {
+    // near points
+    const nearPoints = this.getLevelPoints();
+
+    // build far points from near points
+    const farPoints = nearPoints.map(({ x, y }) => {
+      const { x: bx, y: by } = LEVEL_CENTER;
+      return {
+        x: bx + x * FAR_SCALE,
+        y: by + y * FAR_SCALE,
+      };
+    });
+
+    this.renderLevelPoints(nearPoints);
+    this.renderLevelPoints(farPoints);
+
+    // render lines b/w near and far points
+    for (let i = 0; i < nearPoints.length; i++) {
+      const nearPt = nearPoints[i];
+      const farPt = farPoints[i];
+      const highlight =
+        this.playerSpotIdx === i ||
+        this.playerSpotIdx + 1 === i ||
+        // handle loop
+        (this.loops && this.playerSpotIdx === nearPoints.length - 1 && i === 0);
+      const color = highlight ? COLORS.PLAYER : COLORS.LINE;
+
+      this.ctx.strokeStyle = color;
+      this.ctx.beginPath();
+      this.localMoveTo(nearPt.x, nearPt.y);
+      this.localLineTo(farPt.x, farPt.y);
+      this.ctx.closePath();
+      this.ctx.stroke();
+    }
+  }
+
+  renderLevelPoints(points: Point[]) {
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = COLORS.LINE;
+    points.forEach(({ x, y }, i) => {
+      i === 0 ? this.localMoveTo(x, y) : this.localLineTo(x, y);
+    });
+    this.loops && this.ctx.closePath();
+    this.ctx.stroke();
   }
 
   // overwrite BaseGameObject _update method
