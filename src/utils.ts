@@ -61,3 +61,16 @@ export function throttle(fn: Function, time: number): Function {
     }
   };
 }
+
+export function debounce(fn: Function, wait: number): Function {
+  let timeout = null;
+  return function (...args) {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(function () {
+      fn(...args);
+      timeout = null;
+    }, wait);
+  };
+}
