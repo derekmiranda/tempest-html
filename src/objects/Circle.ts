@@ -1,5 +1,5 @@
 import { GameObjectInterface, Point } from "../types";
-import { COLORS } from "../CONSTS";
+import { PLAYER_TO_LEVEL_DIST } from "../CONSTS";
 import { Level, LevelPlayerSpot, LevelPropsInterface } from "./Level";
 
 interface CirclePropsInterface extends LevelPropsInterface {
@@ -21,24 +21,24 @@ export class Circle extends Level implements GameObjectInterface {
     this.generatePlayerSpots();
   }
 
-  getCirclePoints(segments): Point[] {
-    if (!Circle.pointsMemo[segments]) {
-      const segmentAngle: number = (2 * Math.PI) / segments;
+  getLevelPoints(): Point[] {
+    if (!Circle.pointsMemo[this.segments]) {
+      const segmentAngle: number = (2 * Math.PI) / this.segments;
       const pts = [];
-      for (let i = 0; i < segments; i++) {
+      for (let i = 0; i < this.segments; i++) {
         const angle = segmentAngle * i;
         pts.push({
           x: 0.5 * Math.cos(angle),
           y: 0.5 * Math.sin(angle),
         });
       }
-      Circle.pointsMemo[segments] = pts;
+      Circle.pointsMemo[this.segments] = pts;
     }
-    return Circle.pointsMemo[segments];
+    return Circle.pointsMemo[this.segments];
   }
 
   generatePlayerSpots() {
-    const pts = this.getCirclePoints(this.segments);
+    const pts = this.getLevelPoints();
     const spots: LevelPlayerSpot[] = [];
     for (let i = 0; i < pts.length; i++) {
       const j = i === pts.length - 1 ? 0 : i + 1;
@@ -52,8 +52,8 @@ export class Circle extends Level implements GameObjectInterface {
       const normalAngle = segAngle * (0.5 + i);
       const angle = Math.PI / 2 - normalAngle;
 
-      const x = avg_x + 0.1 * Math.cos(normalAngle);
-      const y = avg_y + 0.1 * Math.sin(normalAngle);
+      const x = avg_x + PLAYER_TO_LEVEL_DIST * Math.cos(normalAngle);
+      const y = avg_y + PLAYER_TO_LEVEL_DIST * Math.sin(normalAngle);
 
       spots.push({
         x,
@@ -64,10 +64,6 @@ export class Circle extends Level implements GameObjectInterface {
       });
     }
     this.setSpots(spots);
-  }
-
-  update(timeDelta: number) {
-    // this.updateTransformWithProps({ angle: this.rotationSpeed * timeDelta });
   }
 
   startUpdatingWithCursor(x: number, y: number) {
@@ -84,17 +80,5 @@ export class Circle extends Level implements GameObjectInterface {
     let idx = Math.floor(angle / segmentAngle);
     if (idx < 0) idx += this.segments;
     this.targetSpotIdx = idx;
-  }
-
-  render() {
-    const pts = this.getCirclePoints(this.segments);
-    this.ctx.strokeStyle = COLORS.LINE;
-    this.ctx.beginPath();
-    pts.forEach(({ x, y }, i) => {
-      i === 0 ? this.localMoveTo(x, y) : this.localLineTo(x, y);
-    });
-    this.localLineTo(pts[0].x, pts[0].y);
-    this.ctx.closePath();
-    this.ctx.stroke();
   }
 }
