@@ -1,11 +1,11 @@
 import { Player } from "./objects/Player";
 import { Circle } from "./objects/Circle";
-import { Point } from "./types";
 import { COLORS } from "./CONSTS";
-import { centerDims } from "./utils";
+import { debounce } from "./utils";
 import { Level } from "./objects/Level";
 
 let canvas: HTMLCanvasElement,
+  canvasRect: DOMRect,
   ctx: CanvasRenderingContext2D,
   running = true,
   currLevel: Level,
@@ -15,6 +15,9 @@ let canvas: HTMLCanvasElement,
 function main() {
   canvas = document.getElementById("game") as HTMLCanvasElement;
   ctx = canvas.getContext("2d");
+
+  // cache canvas rect
+  canvasRect = canvas.getBoundingClientRect();
 
   const levelClasses = [Circle];
 
@@ -38,7 +41,10 @@ function main() {
 }
 
 function handleMouse(e: MouseEvent) {
-  currLevel.startUpdatingWithCursor(e.clientX, e.clientY);
+  currLevel.startUpdatingWithCursor(
+    e.clientX - canvasRect.x,
+    e.clientY - canvasRect.y
+  );
 }
 
 function handleMouseLeave() {
@@ -49,10 +55,12 @@ function setListeners() {
   canvas.addEventListener("mouseenter", handleMouse);
   canvas.addEventListener("mousemove", handleMouse);
   canvas.addEventListener("mouseleave", handleMouseLeave);
-  window.addEventListener("keydown", (e) => {
-    if (e.code === "ArrowLeft") currLevel.updatePlayerSpot(-1);
-    else if (e.code === "ArrowRight") currLevel.updatePlayerSpot(1);
-  });
+
+  const resizeHandler: any = debounce(function () {
+    // recache canvas rect
+    canvasRect = canvas.getBoundingClientRect();
+  }, 200);
+  window.addEventListener("resize", resizeHandler);
 }
 
 let lastTime;
