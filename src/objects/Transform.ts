@@ -2,14 +2,14 @@ import { matrix } from "../matrix";
 import { Matrix, TransformPropsInterface } from "../types";
 
 export class Transform {
-  matrix: Matrix = matrix.identity();
+  private matrix: Matrix = matrix.identity();
 
   // transform props
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  angle: number = 0;
+  private x: number;
+  private y: number;
+  private w: number;
+  private h: number;
+  private angle: number = 0;
 
   constructor({
     x = 0,
@@ -21,8 +21,11 @@ export class Transform {
     this.setTransformWithProps({ x, y, w, h, angle });
   }
 
-  setMatrix(m: Matrix) {
+  setMatrix(m: Matrix, shouldUpdateProps: boolean = false) {
     this.matrix = m;
+    if (shouldUpdateProps) {
+      this.updateTransformProps();
+    }
   }
 
   setTransformWithProps({ x, y, w, h, angle }: TransformPropsInterface): void {
