@@ -1,6 +1,7 @@
 import { GameObjectInterface, Point } from "../types";
 import { PLAYER_TO_LEVEL_DIST } from "../CONSTS";
 import { Level, LevelPlayerSpot, LevelPropsInterface } from "./Level";
+import { circle } from "../lib/shapes";
 
 interface CirclePropsInterface extends LevelPropsInterface {
   segments?: number;
@@ -12,8 +13,8 @@ interface SegmentsMemo {
 
 export class Circle extends Level implements GameObjectInterface {
   props: CirclePropsInterface;
-  segments: number = 16;
   rotationSpeed: number = Math.PI / 2000; // per ms
+  segments: number = 16;
   static pointsMemo: SegmentsMemo = {};
 
   constructor(props: CirclePropsInterface) {
@@ -22,19 +23,7 @@ export class Circle extends Level implements GameObjectInterface {
   }
 
   getLevelPoints(): Point[] {
-    if (!Circle.pointsMemo[this.segments]) {
-      const segmentAngle: number = (2 * Math.PI) / this.segments;
-      const pts = [];
-      for (let i = 0; i < this.segments; i++) {
-        const angle = segmentAngle * i;
-        pts.push({
-          x: 0.5 * Math.cos(angle),
-          y: 0.5 * Math.sin(angle),
-        });
-      }
-      Circle.pointsMemo[this.segments] = pts;
-    }
-    return Circle.pointsMemo[this.segments];
+    return circle(this.segments);
   }
 
   generatePlayerSpots() {
