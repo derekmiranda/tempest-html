@@ -23,6 +23,10 @@ export class Transform {
     this.setTransformWithProps({ x, y, z, w, h, angle });
   }
 
+  getMatrix(): Matrix {
+    return this.matrix;
+  }
+
   setMatrix(m: Matrix, shouldUpdateProps: boolean = false) {
     this.matrix = m;
     if (shouldUpdateProps) {

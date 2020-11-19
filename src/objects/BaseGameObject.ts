@@ -63,12 +63,11 @@ export class BaseGameObject {
 
     if (this.parent) {
       // update global transform w/ parent's global transform
-      const parentGlobalMat = this.parent.globalTransform.matrix;
+      const parentGlobalMat = this.parent.globalTransform.getMatrix();
       const parentGlobalProps = this.parent.globalTransform.getTransformProps();
       this.globalTransform.updateWithProps(parentGlobalProps);
 
-      const x = this.transform.x;
-      const y = this.transform.y;
+      const { x, y } = this.transform.getTransformProps();
       const newTranslateX =
         parentGlobalMat[0] * x + parentGlobalMat[3] * y + parentGlobalProps.x;
       const newTranslateY =
@@ -92,7 +91,7 @@ export class BaseGameObject {
 
   localLineTo(localX: number, localY: number) {
     const resolved: Point = matrix.transformPoint(
-      this.globalTransform.matrix,
+      this.globalTransform.getMatrix(),
       localX,
       localY
     );
@@ -102,7 +101,7 @@ export class BaseGameObject {
 
   localMoveTo(localX: number, localY: number) {
     const resolved: Point = matrix.transformPoint(
-      this.globalTransform.matrix,
+      this.globalTransform.getMatrix(),
       localX,
       localY
     );
