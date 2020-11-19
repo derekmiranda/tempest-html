@@ -2,7 +2,7 @@ import { Player } from "./objects/Player";
 import { Circle } from "./objects/Circle";
 import { Square } from "./objects/Square";
 import { COLORS } from "./CONSTS";
-import { debounce } from "./utils";
+import { debounce } from "./lib/utils";
 import { Level } from "./objects/Level";
 
 let canvas: HTMLCanvasElement,

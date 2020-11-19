@@ -5,7 +5,7 @@ import {
 } from "../types";
 import { BaseGameObject } from "./BaseGameObject";
 import { Player } from "./Player";
-import { throttle } from "../utils";
+import { throttle } from "../lib/utils";
 import { LEVEL_CENTER, FAR_SCALE, COLORS } from "../CONSTS";
 
 export interface LevelPlayerSpot extends TransformPropsInterface {}

@@ -1,4 +1,4 @@
-import { matrix } from "../matrix";
+import { matrix } from "../lib/matrix";
 import { Matrix, TransformPropsInterface } from "../types";
 
 export class Transform {

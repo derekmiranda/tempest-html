@@ -1,4 +1,4 @@
-import { TransformPropsInterface, Point } from "./types";
+import { TransformPropsInterface, Point } from "../types";
 
 // get x,y,w,h using anchor relative to width and height (in terms of 0-1)
 export function getDimsWithAnchor({

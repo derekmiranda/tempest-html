@@ -1,4 +1,4 @@
-import { rotate } from "../src/utils";
+import { rotate } from "../src/lib/utils";
 
 const TOLERANCE = 0.0001;
 
