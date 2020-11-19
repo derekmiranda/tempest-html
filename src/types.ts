@@ -30,6 +30,7 @@ export interface GameObjectPropsInterface extends TransformPropsInterface {
 export interface TransformPropsInterface {
   x?: number;
   y?: number;
+  z?: number;
   w?: number;
   h?: number;
   angle?: number;

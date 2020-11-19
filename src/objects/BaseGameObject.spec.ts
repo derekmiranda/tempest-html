@@ -1,4 +1,4 @@
-import { BaseGameObject } from "../src/objects/BaseGameObject";
+import { BaseGameObject } from "./BaseGameObject";
 
 describe("BaseGameObject", () => {
   const canvas = document.createElement("canvas");
@@ -6,6 +6,7 @@ describe("BaseGameObject", () => {
   const defaultTfProps = {
     x: 0,
     y: 0,
+    z: 0,
     w: 1,
     h: 1,
     angle: 0,
