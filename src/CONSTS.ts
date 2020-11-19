@@ -15,6 +15,7 @@ export const PLAYER_TO_LEVEL_DIST: number = 0.1;
 export const COLORS = {
   BG: "black",
   PLAYER: "yellow",
+  BULLET: "pink",
   RED: "tomato",
   LINE: "blue",
 };

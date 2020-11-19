@@ -1,4 +1,5 @@
 import { Player } from "./objects/Player";
+import { Bullet } from "./objects/Bullet";
 import { Circle } from "./objects/Circle";
 import { Square } from "./objects/Square";
 import { COLORS } from "./CONSTS";
@@ -30,10 +31,12 @@ function main() {
     h: 0.65,
   });
   const player = new Player({ ctx });
+  const bullet = new Bullet({ ctx, w: 0.05, h: 0.05 });
 
   currLevel.setPlayer(player);
 
   addObject(currLevel);
+  addObject(bullet);
   addObject(player);
 
   setListeners();
