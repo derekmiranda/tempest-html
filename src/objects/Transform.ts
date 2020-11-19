@@ -1,3 +1,4 @@
+import { Z_SCALE } from "../CONSTS";
 import { matrix } from "../lib/matrix";
 import { Matrix, TransformPropsInterface } from "../types";
 
@@ -59,9 +60,9 @@ export class Transform {
     }
     matrix.rotate(newMat, this.angle);
 
-    // apply scale
-    if (w !== undefined) this.w = w;
-    if (h !== undefined) this.h = h;
+    // apply scale with z-scaling
+    if (w !== undefined) this.w = w * (1 - (1 - Z_SCALE) * this.z);
+    if (h !== undefined) this.h = h * (1 - (1 - Z_SCALE) * this.z);
     matrix.scale(newMat, this.w, this.h);
 
     this.matrix = newMat;
@@ -88,9 +89,6 @@ export class Transform {
       matrix.translate(this.matrix, this.x, this.y);
     }
 
-    // apply z
-    if (z !== undefined) this.z += z;
-
     // apply rotation
     if (angle !== undefined) {
       // cache angle
@@ -101,12 +99,20 @@ export class Transform {
       matrix.rotate(this.matrix, angle);
     }
 
-    // apply scale
-    if (w || h) {
+    // apply z
+
+    // apply scale and z
+    if (z || w || h) {
+      if (z !== undefined) {
+        const zDiff = z - this.z;
+        this.z += z;
+        this.w *= 1 - (1 - Z_SCALE) * zDiff;
+        this.h *= 1 - (1 - Z_SCALE) * zDiff;
+      }
       if (w !== undefined) this.w *= w;
       if (h !== undefined) this.h *= h;
 
-      matrix.scale(this.matrix, w, h);
+      matrix.scale(this.matrix, this.w, this.h);
     }
   }
 

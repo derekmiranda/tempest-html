@@ -31,7 +31,7 @@ function main() {
     h: 0.65,
   });
   const player = new Player({ ctx });
-  const bullet = new Bullet({ ctx, w: 0.05, h: 0.05 });
+  const bullet = new Bullet({ ctx, w: 0.05, h: 0.05, z: 1 });
 
   currLevel.setPlayer(player);
 
