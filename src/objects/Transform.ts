@@ -7,6 +7,7 @@ export class Transform {
   // transform props
   private x: number;
   private y: number;
+  private z: number;
   private w: number;
   private h: number;
   private angle: number = 0;
@@ -14,11 +15,12 @@ export class Transform {
   constructor({
     x = 0,
     y = 0,
+    z = 0,
     w = 1,
     h = 1,
     angle = 0,
   }: TransformPropsInterface = {}) {
-    this.setTransformWithProps({ x, y, w, h, angle });
+    this.setTransformWithProps({ x, y, z, w, h, angle });
   }
 
   setMatrix(m: Matrix, shouldUpdateProps: boolean = false) {
@@ -28,13 +30,23 @@ export class Transform {
     }
   }
 
-  setTransformWithProps({ x, y, w, h, angle }: TransformPropsInterface): void {
+  setTransformWithProps({
+    x,
+    y,
+    w,
+    z,
+    h,
+    angle,
+  }: TransformPropsInterface): void {
     const newMat = matrix.identity();
 
     // apply translation
     if (x !== undefined) this.x = x;
     if (y !== undefined) this.y = y;
     matrix.translate(newMat, this.x, this.y);
+
+    // update z
+    if (z !== undefined) this.z = z;
 
     // apply rotation
     if (angle !== undefined) this.angle = angle;
@@ -55,13 +67,14 @@ export class Transform {
     return {
       x: this.x,
       y: this.y,
+      z: this.z,
       w: this.w,
       h: this.h,
       angle: this.angle,
     };
   }
 
-  updateWithProps({ x, y, w, h, angle }: TransformPropsInterface): void {
+  updateWithProps({ x, y, w, z, h, angle }: TransformPropsInterface): void {
     // apply translation
     if (x || y) {
       // cache xy
@@ -70,6 +83,9 @@ export class Transform {
 
       matrix.translate(this.matrix, this.x, this.y);
     }
+
+    // apply z
+    if (z !== undefined) this.z += z;
 
     // apply rotation
     if (angle !== undefined) {
