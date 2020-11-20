@@ -61,9 +61,10 @@ export class Transform {
     matrix.rotate(newMat, this.angle);
 
     // apply scale with z-scaling
-    if (w !== undefined) this.w = w * (1 - (1 - Z_SCALE) * this.z);
-    if (h !== undefined) this.h = h * (1 - (1 - Z_SCALE) * this.z);
-    matrix.scale(newMat, this.w, this.h);
+    const zScale = 1 - (1 - Z_SCALE) * this.z;
+    if (w !== undefined) this.w = w;
+    if (h !== undefined) this.h = h;
+    matrix.scale(newMat, this.w * zScale, this.h * zScale);
 
     this.matrix = newMat;
   }
@@ -100,19 +101,15 @@ export class Transform {
     }
 
     // apply z
+    if (z !== undefined) this.z += z;
 
     // apply scale and z
-    if (z || w || h) {
-      if (z !== undefined) {
-        const zDiff = z - this.z;
-        this.z += z;
-        this.w *= 1 - (1 - Z_SCALE) * zDiff;
-        this.h *= 1 - (1 - Z_SCALE) * zDiff;
-      }
+    if (w || h) {
       if (w !== undefined) this.w *= w;
       if (h !== undefined) this.h *= h;
 
-      matrix.scale(this.matrix, this.w, this.h);
+      const zScale = 1 - (1 - Z_SCALE) * this.z;
+      matrix.scale(this.matrix, this.w * zScale, this.h * zScale);
     }
   }
 
