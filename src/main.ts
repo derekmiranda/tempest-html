@@ -12,7 +12,8 @@ let canvas: HTMLCanvasElement,
   running = true,
   currLevel: Level,
   layers = [],
-  objId = 0;
+  objId = 0,
+  lastTime: number;
 
 function main() {
   canvas = document.getElementById("game") as HTMLCanvasElement;
@@ -41,6 +42,7 @@ function main() {
 
   setListeners();
 
+  lastTime = Date.now();
   requestAnimationFrame(gameLoop);
 }
 
@@ -67,7 +69,6 @@ function setListeners() {
   window.addEventListener("resize", resizeHandler);
 }
 
-let lastTime;
 function gameLoop(time) {
   if (running) {
     // skip first cycle to initialize lastTime
@@ -76,19 +77,19 @@ function gameLoop(time) {
     } else {
       const timeDelta = time - lastTime;
       lastTime = time;
-      draw(timeDelta);
+      draw(timeDelta, time);
     }
     requestAnimationFrame(gameLoop);
   }
 }
 
-function draw(timeDelta: number) {
+function draw(timeDelta: number, time: number) {
   ctx.fillStyle = COLORS.BG;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   layers.forEach((collection) => {
     Object.values(collection).forEach((obj: any) => {
-      obj._update(timeDelta);
+      obj._update(timeDelta, time);
       obj._render();
     });
   });

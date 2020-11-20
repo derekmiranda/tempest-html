@@ -5,6 +5,7 @@ import {
   TransformPropsInterface,
 } from "../types";
 import { Transform } from "./Transform";
+import { Z_SCALE } from "../CONSTS";
 
 export class BaseGameObject {
   ctx: CanvasRenderingContext2D;
@@ -27,10 +28,10 @@ export class BaseGameObject {
   }
   render() {}
 
-  _update(timeDelta: number) {
-    this.update(timeDelta);
+  _update(timeDelta: number, time: number) {
+    this.update(timeDelta, time);
   }
-  update(timeDelta: number) {}
+  update(timeDelta: number, time: number) {}
 
   setParent(parent: BaseGameObject) {
     this.parent = parent;
@@ -62,12 +63,14 @@ export class BaseGameObject {
     this.globalTransform.updateWithProps(this.transform.getTransformProps());
 
     if (this.parent) {
+      // TODO: update translation w/ z
       // update global transform w/ parent's global transform
       const parentGlobalMat = this.parent.globalTransform.getMatrix();
       const parentGlobalProps = this.parent.globalTransform.getTransformProps();
       this.globalTransform.updateWithProps(parentGlobalProps);
 
-      const { x, y } = this.transform.getTransformProps();
+      const { x, y, z } = this.transform.getTransformProps();
+      console.log("z", z);
       const newTranslateX =
         parentGlobalMat[0] * x + parentGlobalMat[3] * y + parentGlobalProps.x;
       const newTranslateY =
@@ -75,6 +78,7 @@ export class BaseGameObject {
       this.globalTransform.setTransformWithProps({
         x: newTranslateX,
         y: newTranslateY,
+        z,
       });
     }
 

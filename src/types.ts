@@ -7,7 +7,7 @@ export type Point = {
 
 export interface GameObjectInterface extends BaseGameObject {
   render(): void;
-  update?(timeDelta: number): void;
+  update(timeDelta: number, time: number): void;
   setListeners?(): void;
 
   // methods to normalize local drawing to canvas dimensions
