@@ -92,9 +92,9 @@ export class Level extends BaseGameObject {
   }
 
   // overwrite BaseGameObject _update method
-  _update(timeDelta: number) {
+  _update(timeDelta: number, time: number) {
     this.throttledUpdateSpot();
-    this.update(timeDelta);
+    this.update(timeDelta, time);
   }
 
   // updates player position based on its spot index
