@@ -5,6 +5,7 @@ import { Square } from "./objects/Square";
 import { COLORS } from "./CONSTS";
 import { debounce } from "./lib/utils";
 import { Level } from "./objects/Level";
+import { BaseGameObject } from "./objects/BaseGameObject";
 
 let canvas: HTMLCanvasElement,
   canvasRect: DOMRect,
@@ -15,16 +16,14 @@ let canvas: HTMLCanvasElement,
   objId = 0,
   lastTime: number;
 
-function main() {
+function startNewLevel({ Level = Circle } = {}) {
   canvas = document.getElementById("game") as HTMLCanvasElement;
   ctx = canvas.getContext("2d");
 
   // cache canvas rect
   canvasRect = canvas.getBoundingClientRect();
 
-  const levelClasses = [Circle];
-
-  currLevel = new levelClasses[0]({
+  currLevel = new Level({
     ctx,
     x: 0,
     y: 0,
@@ -34,17 +33,25 @@ function main() {
   const player = new Player({ ctx });
   const bullet = new Bullet({ ctx, w: 0.05, h: 0.05, z: 1 });
 
-  currLevel.setPlayer(player);
-
   addObject(currLevel);
-  addObject(bullet);
   addObject(player);
+  addObject(bullet);
+
+  // initializes each objects point to render
+  layers.forEach((layer) => {
+    Object.values(layer).forEach((obj: BaseGameObject) => {
+      obj.initPoints();
+    });
+  });
+  currLevel.initSpots();
+  currLevel.setPlayer(player);
 
   setListeners();
 
   lastTime = Date.now();
   requestAnimationFrame(gameLoop);
 }
+startNewLevel();
 
 function handleMouse(e: MouseEvent) {
   currLevel.startUpdatingWithCursor(
@@ -101,6 +108,9 @@ function addObject(gameObj, layer = 0) {
   } else {
     layers[layer] = { [objId++]: gameObj };
   }
-}
 
-main();
+  // add any children
+  for (let child of gameObj.children) {
+    addObject(child, layer);
+  }
+}

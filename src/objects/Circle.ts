@@ -19,15 +19,14 @@ export class Circle extends Level implements GameObjectInterface {
 
   constructor(props: CirclePropsInterface) {
     super(props);
-    this.generatePlayerSpots();
   }
 
-  getLevelPoints(): Point[] {
-    return circle(this.segments);
+  initPoints() {
+    this.points = circle(this.segments);
   }
 
-  generatePlayerSpots() {
-    const pts = this.getLevelPoints();
+  initSpots() {
+    const pts = this.points;
     const spots: LevelPlayerSpot[] = [];
     for (let i = 0; i < pts.length; i++) {
       const j = i === pts.length - 1 ? 0 : i + 1;
@@ -52,7 +51,7 @@ export class Circle extends Level implements GameObjectInterface {
         angle,
       });
     }
-    this.setSpots(spots);
+    this.playerSpots = spots;
   }
 
   startUpdatingWithCursor(x: number, y: number) {

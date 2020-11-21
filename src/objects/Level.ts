@@ -22,6 +22,7 @@ export class Level extends BaseGameObject {
   updatingSpot: boolean = false;
   loops: boolean = true;
   throttledUpdateSpot: Function;
+  farPoints: Point[] = [];
 
   constructor(props: LevelPropsInterface) {
     super(props);
@@ -41,13 +42,19 @@ export class Level extends BaseGameObject {
   }
 
   // to be overwritten by Level classes
-  getLevelPoints(): Point[] {
-    return [];
+  // sets points
+  initPoints() {
+    this.points = this.farPoints = [];
+  }
+
+  // sets player spots based on points
+  initSpots() {
+    this.playerSpots = [];
   }
 
   _render() {
     // near points
-    const nearPoints = this.getLevelPoints();
+    const nearPoints = this.points;
 
     // build far points from near points
     const farPoints = nearPoints.map(({ x, y }) => {

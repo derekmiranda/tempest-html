@@ -1,6 +1,7 @@
 import { GameObjectInterface, Point } from "../types";
 import { PLAYER_TO_LEVEL_DIST } from "../CONSTS";
 import { Level, LevelPlayerSpot, LevelPropsInterface } from "./Level";
+import { square } from "../lib/shapes";
 
 interface SquarePropsInterface extends LevelPropsInterface {
   segments?: number;
@@ -17,52 +18,14 @@ export class Square extends Level implements GameObjectInterface {
 
   constructor(props: SquarePropsInterface) {
     super(props);
-    this.generatePlayerSpots();
   }
 
-  getLevelPoints(): Point[] {
-    if (!Square.pointsMemo[this.segments]) {
-      const pts = [];
-      // draw points from top-right to bottom-right to bottom-left to top-left and back
-      const segQtrNum = Math.floor(this.segments / 4);
-      for (let i = 0; i < this.segments; i++) {
-        switch (Math.floor((4 * i) / this.segments)) {
-          // from top-right to bottom-right
-          case 0:
-            pts.push({
-              x: 0.5,
-              y: -0.5 + i / segQtrNum,
-            });
-            break;
-          // from bottom-right to bottom-left
-          case 1:
-            pts.push({
-              x: 0.5 - (i - segQtrNum) / segQtrNum,
-              y: 0.5,
-            });
-            break;
-          // from bottom-left to top-left
-          case 2:
-            pts.push({
-              x: -0.5,
-              y: 0.5 - (i - 2 * segQtrNum) / segQtrNum,
-            });
-            break;
-          // from top-left to top-right
-          case 3:
-            pts.push({
-              x: -0.5 + (i - 3 * segQtrNum) / segQtrNum,
-              y: -0.5,
-            });
-        }
-      }
-      Square.pointsMemo[this.segments] = pts;
-    }
-    return Square.pointsMemo[this.segments];
+  initPoints() {
+    this.points = square(this.segments);
   }
 
-  generatePlayerSpots() {
-    const pts = this.getLevelPoints();
+  initSpots() {
+    const pts = this.points;
     const spots: LevelPlayerSpot[] = [];
     for (let i = 0; i < pts.length; i++) {
       const j = i === pts.length - 1 ? 0 : i + 1;
@@ -105,7 +68,7 @@ export class Square extends Level implements GameObjectInterface {
         angle,
       });
     }
-    this.setSpots(spots);
+    this.playerSpots = spots;
   }
 
   startUpdatingWithCursor(x: number, y: number) {

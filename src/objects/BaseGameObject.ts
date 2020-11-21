@@ -5,7 +5,6 @@ import {
   TransformPropsInterface,
 } from "../types";
 import { Transform } from "./Transform";
-import { Z_SCALE } from "../CONSTS";
 
 export class BaseGameObject {
   ctx: CanvasRenderingContext2D;
@@ -13,11 +12,17 @@ export class BaseGameObject {
   children: BaseGameObject[] = [];
   transform: Transform;
   globalTransform: Transform;
+  points: Point[] = [];
 
   constructor(props: GameObjectPropsInterface) {
     Object.assign(this, props);
     this.transform = new Transform(props);
     this.updateGlobalTransform();
+  }
+
+  // sets this.points
+  initPoints() {
+    this.points = [];
   }
 
   // render and update
