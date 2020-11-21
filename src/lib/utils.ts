@@ -15,6 +15,20 @@ export function findPointBetweenPoints(
   };
 }
 
+export function calcMidpoints(points: Point[], loops: boolean): Point[] {
+  const midpoints = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    midpoints.push(findPointBetweenPoints(points[i], points[i + 1], 0.5));
+  }
+
+  if (loops)
+    midpoints.push(
+      findPointBetweenPoints(points[points.length - 1], points[0], 0.5)
+    );
+
+  return midpoints;
+}
+
 export function rotate(x, y, angle): Point {
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
