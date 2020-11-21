@@ -21,8 +21,8 @@ export class Circle extends Level implements GameObjectInterface {
     super(props);
   }
 
-  initPoints() {
-    this.points = circle(this.segments);
+  getLevelPoints(): Point[] {
+    return circle(this.segments);
   }
 
   initSpots() {

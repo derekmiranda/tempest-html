@@ -20,8 +20,8 @@ export class Square extends Level implements GameObjectInterface {
     super(props);
   }
 
-  initPoints() {
-    this.points = square(this.segments);
+  getLevelPoints(): Point[] {
+    return square(this.segments);
   }
 
   initSpots() {
