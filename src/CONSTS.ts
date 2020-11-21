@@ -20,3 +20,5 @@ export const COLORS = {
   RED: "tomato",
   LINE: "blue",
 };
+
+export const MAX_ID = Number.MAX_SAFE_INTEGER >> 1;

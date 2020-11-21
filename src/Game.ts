@@ -2,7 +2,7 @@ import { BaseGameObject } from "./objects/BaseGameObject";
 import { Level } from "./objects/Level";
 import { Player } from "./objects/Player";
 import { debounce } from "./lib/utils";
-import { COLORS } from "./CONSTS";
+import { COLORS, MAX_ID } from "./CONSTS";
 
 interface State {
   sceneType: SceneType;
@@ -104,7 +104,11 @@ export class Game {
 
   start() {
     // create player
-    this.player = new Player({ ctx: this.ctx, id: this.objId++ });
+    this.player = new Player({
+      game: this,
+      ctx: this.ctx,
+      id: this.getNewObjId(),
+    });
 
     // cache canvas rect
     this.canvasRect = this.canvas.getBoundingClientRect();
@@ -129,8 +133,9 @@ export class Game {
     const { idx } = this.state.levelState;
 
     this.currLevel = new this.levels[idx]({
+      game: this,
       ctx: this.ctx,
-      id: this.objId++,
+      id: this.getNewObjId(),
       // game,
       x: 0,
       y: 0,
@@ -151,6 +156,7 @@ export class Game {
     this.setListeners();
   }
 
+  // listeners
   handleMouse(e: MouseEvent) {
     this.currLevel.startUpdatingWithCursor(
       e.clientX - this.canvasRect.x,
@@ -208,5 +214,14 @@ export class Game {
     if (updateScene) {
       this.startScene();
     }
+  }
+
+  getNewObjId() {
+    if (this.objId < MAX_ID) {
+      this.objId += 1;
+    } else {
+      this.objId = 0;
+    }
+    return this.objId;
   }
 }
