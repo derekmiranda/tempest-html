@@ -1,3 +1,4 @@
+import { Game } from "./Game";
 import { BaseGameObject } from "./objects/BaseGameObject";
 
 export type Point = {
@@ -23,8 +24,9 @@ export interface GameObjectInterface extends BaseGameObject {
 }
 
 export interface GameObjectPropsInterface extends TransformPropsInterface {
+  game: Game;
   ctx: CanvasRenderingContext2D;
-  id: number;
+  id?: number;
   parent?: BaseGameObject;
 }
 
