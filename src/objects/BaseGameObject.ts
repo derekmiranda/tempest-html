@@ -7,6 +7,7 @@ import {
 import { Transform } from "./Transform";
 
 export class BaseGameObject {
+  id: number;
   ctx: CanvasRenderingContext2D;
   parent: BaseGameObject;
   children: BaseGameObject[] = [];
@@ -75,7 +76,6 @@ export class BaseGameObject {
       this.globalTransform.updateWithProps(parentGlobalProps);
 
       const { x, y, z } = this.transform.getTransformProps();
-      console.log("z", z);
       const newTranslateX =
         parentGlobalMat[0] * x + parentGlobalMat[3] * y + parentGlobalProps.x;
       const newTranslateY =

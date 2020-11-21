@@ -24,6 +24,7 @@ export interface GameObjectInterface extends BaseGameObject {
 
 export interface GameObjectPropsInterface extends TransformPropsInterface {
   ctx: CanvasRenderingContext2D;
+  id: number;
   parent?: BaseGameObject;
 }
 
