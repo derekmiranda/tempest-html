@@ -5,7 +5,7 @@ import {
 } from "../types";
 import { BaseGameObject } from "./BaseGameObject";
 import { Player } from "./Player";
-import { throttle } from "../lib/utils";
+import { calcMidpoints, throttle } from "../lib/utils";
 import { LEVEL_CENTER, FAR_SCALE, COLORS } from "../CONSTS";
 
 export interface LevelPlayerSpot extends TransformPropsInterface {}
@@ -22,7 +22,10 @@ export class Level extends BaseGameObject {
   updatingSpot: boolean = false;
   loops: boolean = true;
   throttledUpdateSpot: Function;
+  // Level-specific points
   farPoints: Point[] = [];
+  midpoints: Point[] = [];
+  farMidpoints: Point[] = [];
 
   constructor(props: LevelPropsInterface) {
     super(props);
@@ -42,9 +45,24 @@ export class Level extends BaseGameObject {
   }
 
   // to be overwritten by Level classes
+  getLevelPoints(): Point[] {
+    return [];
+  }
+
   // sets points
   initPoints() {
-    this.points = this.farPoints = [];
+    this.points = this.getLevelPoints();
+    this.farPoints = this.points.map(({ x, y }) => {
+      const { x: bx, y: by } = LEVEL_CENTER;
+      return {
+        x: bx + x * FAR_SCALE,
+        y: by + y * FAR_SCALE,
+      };
+    });
+
+    // also calculate midpoints
+    this.midpoints = calcMidpoints(this.points, this.loops);
+    this.farMidpoints = calcMidpoints(this.points, this.loops);
   }
 
   // sets player spots based on points
@@ -53,30 +71,20 @@ export class Level extends BaseGameObject {
   }
 
   _render() {
-    // near points
-    const nearPoints = this.points;
-
-    // build far points from near points
-    const farPoints = nearPoints.map(({ x, y }) => {
-      const { x: bx, y: by } = LEVEL_CENTER;
-      return {
-        x: bx + x * FAR_SCALE,
-        y: by + y * FAR_SCALE,
-      };
-    });
-
-    this.renderLevelPoints(nearPoints);
-    this.renderLevelPoints(farPoints);
+    this.renderLevelPoints(this.points);
+    this.renderLevelPoints(this.farPoints);
 
     // render lines b/w near and far points
-    for (let i = 0; i < nearPoints.length; i++) {
-      const nearPt = nearPoints[i];
-      const farPt = farPoints[i];
+    for (let i = 0; i < this.points.length; i++) {
+      const nearPt = this.points[i];
+      const farPt = this.farPoints[i];
       const highlight =
         this.playerSpotIdx === i ||
         this.playerSpotIdx + 1 === i ||
         // handle loop
-        (this.loops && this.playerSpotIdx === nearPoints.length - 1 && i === 0);
+        (this.loops &&
+          this.playerSpotIdx === this.points.length - 1 &&
+          i === 0);
       const color = highlight ? COLORS.PLAYER : COLORS.LINE;
 
       this.ctx.strokeStyle = color;
