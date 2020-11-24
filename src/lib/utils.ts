@@ -43,7 +43,7 @@ export function rotate(x, y, angle): Point {
 }
 
 // time utils
-export function throttle(fn: Function, time: number): Function {
+export function throttle(fn: (...args: any[]) => any, time: number): Function {
   let lastTime: number;
   return function (...args) {
     if (!lastTime || Date.now() > lastTime + time) {
@@ -53,7 +53,7 @@ export function throttle(fn: Function, time: number): Function {
   };
 }
 
-export function debounce(fn: Function, wait: number): Function {
+export function debounce(fn: (...args: any[]) => any, wait: number): Function {
   let timeout = null;
   return function (...args) {
     if (timeout) {
