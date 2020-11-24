@@ -24,6 +24,12 @@ interface EnemyStateMap {
   [id: string]: EnemyState;
 }
 
+interface EnemyLaneMap {
+  [laneIdx: string]: {
+    [id: string]: Enemy;
+  };
+}
+
 interface EnemyState {
   enemy: Enemy;
   spotIdx: number;
@@ -34,6 +40,8 @@ export class Level extends BaseGameObject {
   bulletSpots: LevelSpot[] = [];
   player: Player;
   enemyStateMap: EnemyStateMap = {};
+  // maps lane indices to enemies in lane
+  enemyLaneMap: EnemyLaneMap = {};
   playerSpotIdx: number = 0;
   targetSpotIdx: number = 0;
   updatingSpot: boolean = false;
@@ -62,10 +70,17 @@ export class Level extends BaseGameObject {
     if (this.enemyStateMap[enemy.id]) return;
 
     const spotIdx = Math.floor(this.farMidpoints.length * Math.random());
+
+    // store references to enemy
     this.enemyStateMap[enemy.id] = {
       enemy,
       spotIdx,
     };
+    if (this.enemyLaneMap[spotIdx]) {
+      this.enemyLaneMap[spotIdx][enemy.id] = enemy;
+    } else {
+      this.enemyLaneMap[spotIdx] = { [enemy.id]: enemy };
+    }
 
     this.addChildren(enemy);
 
@@ -81,6 +96,20 @@ export class Level extends BaseGameObject {
     enemy.updatePath(fromPoint, this.midpoints[spotIdx]);
     enemy.setLevel(this);
   }
+
+  getEnemiesInLane(laneIdx: number) {
+    return this.enemyLaneMap[laneIdx];
+  }
+
+  // clear enemy references
+  removeEnemy(enemy: Enemy) {
+    const { spotIdx } = this.enemyStateMap[enemy.id];
+    delete this.enemyLaneMap[spotIdx][enemy.id];
+    delete this.enemyStateMap[enemy.id];
+  }
+
+  // TODO:
+  moveEnemy(enemy: Enemy, spotDiff: number) {}
 
   // to be overwritten by Level classes
   getLevelPoints(): Point[] {
@@ -114,6 +143,10 @@ export class Level extends BaseGameObject {
       to: this.midpoints[this.playerSpotIdx],
       from: this.farMidpoints[this.playerSpotIdx],
     };
+  }
+
+  getPlayerSpotIdx() {
+    return this.playerSpotIdx;
   }
 
   _render() {

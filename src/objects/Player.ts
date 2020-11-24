@@ -29,9 +29,12 @@ export class Player extends BaseGameObject implements GameObjectInterface {
 
   _fireBullet() {
     const bulletTf = this.level.getBulletPath();
+    const laneIdx = this.level.getPlayerSpotIdx();
     const bullet = new Bullet({
       game: this.game,
       ctx: this.ctx,
+      level: this.level,
+      laneIdx,
       parent: this.parent,
       ...bulletTf.to,
       ...bulletTf,

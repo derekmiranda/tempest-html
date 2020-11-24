@@ -146,20 +146,23 @@ export class Game {
       h: 0.65,
     });
 
-    const enemy = new Enemy({
-      game: this,
-      ctx: this.ctx,
-      x: 0,
-      y: 0,
-      w: 0.65,
-      h: 0.65,
-    });
-
     this.addObject(this.currLevel, 0);
 
     this.currLevel.initPlayerSpots();
     this.currLevel.setPlayer(this.player);
-    this.currLevel.addEnemy(enemy);
+
+    for (let i = 0; i < 5; i++) {
+      const enemy = new Enemy({
+        game: this,
+        ctx: this.ctx,
+        id: this.getNewObjId(),
+        x: 0,
+        y: 0,
+        w: 0.65,
+        h: 0.65,
+      });
+      this.currLevel.addEnemy(enemy);
+    }
   }
 
   addObject(obj: BaseGameObject, layer: number = 0) {
