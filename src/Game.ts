@@ -3,6 +3,7 @@ import { Level } from "./objects/Level";
 import { Player } from "./objects/Player";
 import { debounce } from "./lib/utils";
 import { COLORS, MAX_ID } from "./CONSTS";
+import { Enemy } from "./objects/Enemy";
 
 interface State {
   sceneType: SceneType;
@@ -10,7 +11,6 @@ interface State {
   levelIdx?: number;
 }
 
-// TODO: make class
 interface Layer {
   [id: string]: BaseGameObject;
 }
@@ -33,7 +33,7 @@ class LayerCollection {
   }
 
   removeObject(obj: BaseGameObject) {
-    if (this.objIdMap[obj.id]) {
+    if (this.objIdMap[obj.id] !== undefined) {
       const layerIdx = this.objIdMap[obj.id];
       delete this.objIdMap[obj.id];
       delete this.layers[layerIdx][obj.id];
@@ -146,16 +146,25 @@ export class Game {
       h: 0.65,
     });
 
+    const enemy = new Enemy({
+      game: this,
+      ctx: this.ctx,
+      x: 0,
+      y: 0,
+      w: 0.65,
+      h: 0.65,
+    });
+
     this.addObject(this.currLevel, 0);
-    this.addObject(this.player, 1);
 
     this.currLevel.initPlayerSpots();
     this.currLevel.setPlayer(this.player);
   }
 
-  addObject(obj, layer = 0) {
+  addObject(obj: BaseGameObject, layer: number = 0) {
     if (obj.id === undefined) obj.id = this.getNewObjId();
 
+    obj.setRenderedState(true);
     this.layerCollection.addObject(obj, layer);
     obj.initPoints();
     obj.setListeners();
