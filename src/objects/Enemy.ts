@@ -1,10 +1,12 @@
 import { BaseGameObject } from "./BaseGameObject";
 import { GameObjectInterface, GameObjectPropsInterface, Point } from "../types";
-import { COLORS, BULLET_SPEED } from "../CONSTS";
+import { COLORS, BULLET_SPEED, RED_ENEMY_SPEED } from "../CONSTS";
 import { Level } from "./Level";
+import { findPointBetweenPoints } from "../lib/utils";
 
 export class Enemy extends BaseGameObject implements GameObjectInterface {
   color: string = COLORS.RED;
+  speed: number = RED_ENEMY_SPEED;
   level: Level;
   points: Point[];
   to: Point;
@@ -34,6 +36,19 @@ export class Enemy extends BaseGameObject implements GameObjectInterface {
       { x: 0.25, y: 0 },
       { x: 0.5, y: 0.25 },
     ];
+  }
+
+  update(timeDelta: number) {
+    const { z } = this.transform.getTransformProps();
+    const newZ = z - timeDelta * this.speed;
+
+    if (newZ < 0) {
+      this.destroy();
+      return;
+    }
+
+    const newPoint = findPointBetweenPoints(this.from, this.to, newZ);
+    this.setTransformWithProps({ z: newZ, ...newPoint });
   }
 
   render() {
