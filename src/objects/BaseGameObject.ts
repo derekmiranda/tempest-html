@@ -1,3 +1,4 @@
+import { Game } from "../Game";
 import { matrix } from "../lib/matrix";
 import {
   GameObjectPropsInterface,
@@ -9,11 +10,13 @@ import { Transform } from "./Transform";
 export class BaseGameObject {
   id: number;
   ctx: CanvasRenderingContext2D;
+  game: Game;
   parent: BaseGameObject;
   children: BaseGameObject[] = [];
   transform: Transform;
   globalTransform: Transform;
   points: Point[] = [];
+  layer: number;
 
   constructor(props: GameObjectPropsInterface) {
     Object.assign(this, props);
@@ -25,6 +28,12 @@ export class BaseGameObject {
   initPoints() {
     this.points = [];
   }
+
+  // sets event listeners
+  setListeners() {}
+
+  // remove event listeners
+  removeListeners() {}
 
   // render and update
   // write render and update function on classes extended BaseGameObject
@@ -49,6 +58,18 @@ export class BaseGameObject {
     for (let child of children) {
       child.setParent(this);
       this.children.push(child);
+    }
+  }
+
+  removeChild(child: BaseGameObject) {
+    const childIdx = this.children.indexOf(child);
+    if (childIdx > 0) this.children.splice(childIdx, 1);
+  }
+
+  destroy() {
+    this.game.removeObject(this);
+    if (this.parent) {
+      this.parent.removeChild(this);
     }
   }
 
@@ -116,5 +137,9 @@ export class BaseGameObject {
     );
     const normalized: Point = this.normalizePoints(resolved.x, resolved.y);
     this.ctx.moveTo(normalized.x, normalized.y);
+  }
+
+  setLayer(layer) {
+    this.layer = layer;
   }
 }
