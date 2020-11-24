@@ -15,7 +15,7 @@ export const PLAYER_TO_LEVEL_SIZE = 0.2;
 export const ENEMY_TO_LEVEL_SIZE = 0.2;
 
 // z-value tolerance for collisions
-export const COLLISION_TOLERANCE = 0.01;
+export const COLLISION_TOLERANCE = 0.05;
 
 export const COLORS = {
   BG: "black",
