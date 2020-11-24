@@ -7,8 +7,8 @@ export const LEVEL_CENTER: Point = {
 };
 
 // scale to apply on far level shape
-export const FAR_SCALE = 0.2;
-export const Z_SCALE = Math.sqrt(0.2);
+export const FAR_SCALE = 0.1;
+export const Z_SCALE = 0.2;
 
 // padding b/w player and line on level w.r.t. level-space
 export const PLAYER_TO_LEVEL_DIST: number = 0;
