@@ -18,6 +18,11 @@ export class Enemy extends BaseGameObject implements GameObjectInterface {
     this.level = level;
   }
 
+  updatePath(to: Point, from: Point) {
+    this.to = to;
+    this.from = from;
+  }
+
   initPoints() {
     this.points = [
       // left edge
