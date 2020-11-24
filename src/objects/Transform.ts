@@ -1,4 +1,4 @@
-import { Z_SCALE } from "../CONSTS";
+import { FAR_SCALE } from "../CONSTS";
 import { matrix } from "../lib/matrix";
 import { Matrix, TransformPropsInterface } from "../types";
 
@@ -61,7 +61,7 @@ export class Transform {
     matrix.rotate(newMat, this.angle);
 
     // apply scale with z-scaling
-    const zScale = 1 - (1 - Z_SCALE) * this.z;
+    const zScale = 1 - (1 - FAR_SCALE) * this.z;
     if (w !== undefined) this.w = w;
     if (h !== undefined) this.h = h;
     matrix.scale(newMat, this.w * zScale, this.h * zScale);
@@ -108,7 +108,7 @@ export class Transform {
       if (w !== undefined) this.w *= w;
       if (h !== undefined) this.h *= h;
 
-      const zScale = 1 - (1 - Z_SCALE) * this.z;
+      const zScale = 1 - (1 - FAR_SCALE) * this.z;
       matrix.scale(this.matrix, this.w * zScale, this.h * zScale);
     }
   }
