@@ -13,6 +13,7 @@ export class Player extends BaseGameObject implements GameObjectInterface {
   level: Level;
   color: string;
   fireBullet: Function;
+  isFiring: boolean;
 
   constructor(props: PlayerPropsInterface) {
     super(props);
@@ -20,6 +21,9 @@ export class Player extends BaseGameObject implements GameObjectInterface {
       this.color = COLORS.PLAYER;
     }
     this.keydown = this.keydown.bind(this);
+    this.keyup = this.keyup.bind(this);
+    this.enableFiring = this.enableFiring.bind(this);
+    this.disableFiring = this.disableFiring.bind(this);
     this.fireBullet = throttle(this._fireBullet.bind(this), 200);
   }
 
@@ -39,16 +43,40 @@ export class Player extends BaseGameObject implements GameObjectInterface {
 
   keydown(e) {
     if (e.code === "Space") {
-      this.fireBullet();
+      this.enableFiring();
     }
+  }
+
+  keyup(e) {
+    if (e.code === "Space") {
+      this.disableFiring();
+    }
+  }
+
+  enableFiring() {
+    this.isFiring = true;
+  }
+
+  disableFiring() {
+    this.isFiring = false;
   }
 
   setListeners() {
     window.addEventListener("keydown", this.keydown, true);
+    window.addEventListener("keyup", this.keyup, true);
+    this.ctx.canvas.addEventListener("mousedown", this.enableFiring, true);
+    this.ctx.canvas.addEventListener("mouseup", this.disableFiring, true);
   }
 
   removeListeners() {
     window.removeEventListener("keydown", this.keydown, true);
+    window.removeEventListener("keyup", this.keyup, true);
+    this.ctx.canvas.removeEventListener("mousedown", this.enableFiring, true);
+    this.ctx.canvas.removeEventListener("mouseup", this.disableFiring, true);
+  }
+
+  update() {
+    if (this.isFiring) this.fireBullet();
   }
 
   render() {
