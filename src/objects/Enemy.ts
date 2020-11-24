@@ -1,13 +1,21 @@
 import { BaseGameObject } from "./BaseGameObject";
 import { GameObjectInterface, GameObjectPropsInterface, Point } from "../types";
 import { COLORS, BULLET_SPEED } from "../CONSTS";
+import { Level } from "./Level";
 
 export class Enemy extends BaseGameObject implements GameObjectInterface {
   color: string = COLORS.RED;
+  level: Level;
   points: Point[];
+  to: Point;
+  from: Point;
 
   constructor(props: GameObjectPropsInterface) {
     super(props);
+  }
+
+  setLevel(level: Level) {
+    this.level = level;
   }
 
   initPoints() {

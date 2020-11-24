@@ -159,6 +159,7 @@ export class Game {
 
     this.currLevel.initPlayerSpots();
     this.currLevel.setPlayer(this.player);
+    this.currLevel.addEnemy(enemy);
   }
 
   addObject(obj: BaseGameObject, layer: number = 0) {

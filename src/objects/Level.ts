@@ -6,7 +6,13 @@ import {
 import { BaseGameObject } from "./BaseGameObject";
 import { Player } from "./Player";
 import { calcMidpoints, throttle } from "../lib/utils";
-import { LEVEL_CENTER, FAR_SCALE, COLORS } from "../CONSTS";
+import {
+  LEVEL_CENTER,
+  FAR_SCALE,
+  COLORS,
+  ENEMY_TO_LEVEL_SIZE,
+} from "../CONSTS";
+import { Enemy } from "./Enemy";
 
 export interface LevelSpot extends TransformPropsInterface {}
 
@@ -14,10 +20,20 @@ export interface LevelPropsInterface extends GameObjectPropsInterface {
   loops?: boolean;
 }
 
+interface EnemyStateMap {
+  [id: string]: EnemyState;
+}
+
+interface EnemyState {
+  enemy: Enemy;
+  spotIdx: number;
+}
+
 export class Level extends BaseGameObject {
   playerSpots: LevelSpot[] = [];
   bulletSpots: LevelSpot[] = [];
   player: Player;
+  enemyStateMap: EnemyStateMap = {};
   playerSpotIdx: number = 0;
   targetSpotIdx: number = 0;
   updatingSpot: boolean = false;
@@ -40,6 +56,28 @@ export class Level extends BaseGameObject {
     player.updateTransformWithProps(this.playerSpots[this.playerSpotIdx]);
     this.player.setLevel(this);
     this.addChildren(player);
+  }
+
+  addEnemy(enemy: Enemy) {
+    if (this.enemyStateMap[enemy.id]) return;
+
+    const spotIdx = Math.floor(this.farMidpoints.length * Math.random());
+    console.log("spotIdx", spotIdx);
+    this.enemyStateMap[enemy.id] = {
+      enemy,
+      spotIdx,
+    };
+
+    this.addChildren(enemy);
+
+    enemy.setTransformWithProps({
+      ...this.farPoints[spotIdx],
+      w: ENEMY_TO_LEVEL_SIZE,
+      h: ENEMY_TO_LEVEL_SIZE,
+      z: 1,
+    });
+
+    enemy.setLevel(this);
   }
 
   // to be overwritten by Level classes
