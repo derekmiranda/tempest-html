@@ -1,13 +1,15 @@
 import { BaseGameObject } from "./BaseGameObject";
-import { GameObjectInterface, GameObjectPropsInterface, Point } from "../types";
+import {
+  GameObjectInterface,
+  GameObjectPropsInterface,
+  Point,
+  Traveler,
+} from "../types";
 import { COLORS, BULLET_SPEED } from "../CONSTS";
 import { circle } from "../lib/shapes";
 import { findPointBetweenPoints } from "../lib/utils";
 
-interface BulletPropsInterface extends GameObjectPropsInterface {
-  to: Point;
-  from: Point;
-}
+interface BulletPropsInterface extends GameObjectPropsInterface, Traveler {}
 
 export class Bullet extends BaseGameObject implements GameObjectInterface {
   color: string = COLORS.PLAYER;

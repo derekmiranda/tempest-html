@@ -6,10 +6,15 @@ export type Point = {
   y: number;
 };
 
+export type Traveler = {
+  to: Point;
+  from: Point;
+};
+
 export interface GameObjectInterface extends BaseGameObject {
   render(): void;
   update(timeDelta: number, time: number): void;
-  setListeners?(): void;
+  setListeners(): void;
 
   // methods to normalize local drawing to canvas dimensions
   localLineTo(localX: number, localY: number): void;
