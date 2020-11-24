@@ -5,7 +5,7 @@ import {
 } from "../types";
 import { BaseGameObject } from "./BaseGameObject";
 import { Player } from "./Player";
-import { calcMidpoints, throttle } from "../lib/utils";
+import { calcAngle, calcMidpoints, throttle } from "../lib/utils";
 import {
   LEVEL_CENTER,
   FAR_SCALE,
@@ -62,7 +62,6 @@ export class Level extends BaseGameObject {
     if (this.enemyStateMap[enemy.id]) return;
 
     const spotIdx = Math.floor(this.farMidpoints.length * Math.random());
-    console.log("spotIdx", spotIdx);
     this.enemyStateMap[enemy.id] = {
       enemy,
       spotIdx,
@@ -70,13 +69,16 @@ export class Level extends BaseGameObject {
 
     this.addChildren(enemy);
 
+    const fromPoint = this.farMidpoints[spotIdx];
+    const toPoint = this.midpoints[spotIdx];
     enemy.setTransformWithProps({
-      ...this.farPoints[spotIdx],
+      ...fromPoint,
       w: ENEMY_TO_LEVEL_SIZE,
       h: ENEMY_TO_LEVEL_SIZE,
       z: 1,
+      angle: Math.PI / 2 - calcAngle(toPoint.x, toPoint.y),
     });
-
+    enemy.updatePath(fromPoint, this.midpoints[spotIdx]);
     enemy.setLevel(this);
   }
 
