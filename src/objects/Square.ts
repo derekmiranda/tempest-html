@@ -78,7 +78,7 @@ export class Square extends Level implements GameObjectInterface {
     const normY = y / this.ctx.canvas.height - 0.5;
 
     // since spots start at top-right, shift angle by 45 deg CCW
-    const angle = calcAngle(normX, normY);
+    const angle = calcAngle(normX, normY) + Math.PI / 4;
     const segmentAngle = (2 * Math.PI) / this.segments;
     let idx = Math.floor(angle / segmentAngle);
     if (idx < 0) idx += this.segments;
