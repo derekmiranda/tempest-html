@@ -6,12 +6,12 @@ export class Transform {
   private matrix: Matrix = matrix.identity();
 
   // transform props
-  private x: number;
-  private y: number;
-  private z: number;
-  private w: number;
-  private h: number;
-  private angle: number = 0;
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+  h: number;
+  angle: number = 0;
 
   constructor({
     x = 0,
