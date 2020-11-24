@@ -8,14 +8,15 @@ import { Player } from "./Player";
 import { calcMidpoints, throttle } from "../lib/utils";
 import { LEVEL_CENTER, FAR_SCALE, COLORS } from "../CONSTS";
 
-export interface LevelPlayerSpot extends TransformPropsInterface {}
+export interface LevelSpot extends TransformPropsInterface {}
 
 export interface LevelPropsInterface extends GameObjectPropsInterface {
   loops?: boolean;
 }
 
 export class Level extends BaseGameObject {
-  playerSpots: LevelPlayerSpot[] = [];
+  playerSpots: LevelSpot[] = [];
+  bulletSpots: LevelSpot[] = [];
   player: Player;
   playerSpotIdx: number = 0;
   targetSpotIdx: number = 0;
@@ -34,13 +35,10 @@ export class Level extends BaseGameObject {
     this.throttledUpdateSpot = throttle(this.updatePlayerSpot.bind(this), 50);
   }
 
-  setSpots(spots: LevelPlayerSpot[]) {
-    this.playerSpots = spots;
-  }
-
   setPlayer(player: Player) {
     this.player = player;
     player.updateTransformWithProps(this.playerSpots[this.playerSpotIdx]);
+    this.player.setLevel(this);
     this.addChildren(player);
   }
 
@@ -62,12 +60,20 @@ export class Level extends BaseGameObject {
 
     // also calculate midpoints
     this.midpoints = calcMidpoints(this.points, this.loops);
-    this.farMidpoints = calcMidpoints(this.points, this.loops);
+    this.farMidpoints = calcMidpoints(this.farPoints, this.loops);
   }
 
   // sets player spots based on points
-  initSpots() {
+  initPlayerSpots() {
     this.playerSpots = [];
+  }
+
+  // get bullet path at player's position
+  getBulletPath(): { to: Point; from: Point } {
+    return {
+      to: this.midpoints[this.playerSpotIdx],
+      from: this.farMidpoints[this.playerSpotIdx],
+    };
   }
 
   _render() {

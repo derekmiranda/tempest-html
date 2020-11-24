@@ -24,7 +24,7 @@ export class Square extends Level implements GameObjectInterface {
     return square(this.segments);
   }
 
-  initSpots() {
+  initPlayerSpots() {
     const pts = this.points;
     const spots: LevelPlayerSpot[] = [];
     for (let i = 0; i < pts.length; i++) {

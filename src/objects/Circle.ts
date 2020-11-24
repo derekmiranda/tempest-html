@@ -25,7 +25,7 @@ export class Circle extends Level implements GameObjectInterface {
     return circle(this.segments);
   }
 
-  initSpots() {
+  initPlayerSpots() {
     const pts = this.points;
     const spots: LevelPlayerSpot[] = [];
     for (let i = 0; i < pts.length; i++) {
