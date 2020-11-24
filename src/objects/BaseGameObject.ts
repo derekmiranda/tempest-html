@@ -71,12 +71,16 @@ export class BaseGameObject {
     if (childIdx > 0) this.children.splice(childIdx, 1);
   }
 
-  destroy() {
+  // base destroy method
+  _destroy() {
     this.rendered = false;
     this.game.removeObject(this);
     if (this.parent) {
       this.parent.removeChild(this);
     }
+  }
+  destroy() {
+    this._destroy();
   }
 
   updateTransformWithProps(props: TransformPropsInterface) {
