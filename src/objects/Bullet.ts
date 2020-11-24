@@ -10,7 +10,7 @@ interface BulletPropsInterface extends GameObjectPropsInterface {
 }
 
 export class Bullet extends BaseGameObject implements GameObjectInterface {
-  color: string = COLORS.BULLET;
+  color: string = COLORS.PLAYER;
   points: Point[];
   to: Point;
   from: Point;
