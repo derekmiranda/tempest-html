@@ -24,7 +24,7 @@ export class Player extends BaseGameObject implements GameObjectInterface {
     this.keyup = this.keyup.bind(this);
     this.enableFiring = this.enableFiring.bind(this);
     this.disableFiring = this.disableFiring.bind(this);
-    this.fireBullet = throttle(this._fireBullet.bind(this), 200);
+    this.fireBullet = throttle(this._fireBullet.bind(this), 150);
   }
 
   _fireBullet() {
