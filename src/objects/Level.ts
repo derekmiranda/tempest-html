@@ -11,8 +11,11 @@ import {
   FAR_SCALE,
   COLORS,
   ENEMY_TO_LEVEL_SIZE,
+  COLLISION_TOLERANCE,
 } from "../CONSTS";
 import { Enemy } from "./Enemy";
+import { Bullet } from "./Bullet";
+import { Queue } from "../lib/Queue";
 
 export interface LevelSpot extends TransformPropsInterface {}
 
@@ -25,9 +28,11 @@ interface EnemyStateMap {
 }
 
 interface EnemyLaneMap {
-  [laneIdx: string]: {
-    [id: string]: Enemy;
-  };
+  [laneIdx: string]: Queue<Enemy>;
+}
+
+interface BulletLaneMap {
+  [laneIdx: string]: Queue<Bullet>;
 }
 
 interface EnemyState {
@@ -42,6 +47,8 @@ export class Level extends BaseGameObject {
   enemyStateMap: EnemyStateMap = {};
   // maps lane indices to enemies in lane
   enemyLaneMap: EnemyLaneMap = {};
+  // maps lane indices to bullets in lane
+  bulletLaneMap: BulletLaneMap = {};
   playerSpotIdx: number = 0;
   targetSpotIdx: number = 0;
   updatingSpot: boolean = false;
@@ -77,9 +84,9 @@ export class Level extends BaseGameObject {
       spotIdx,
     };
     if (this.enemyLaneMap[spotIdx]) {
-      this.enemyLaneMap[spotIdx][enemy.id] = enemy;
+      this.enemyLaneMap[spotIdx].enqueue(enemy);
     } else {
-      this.enemyLaneMap[spotIdx] = { [enemy.id]: enemy };
+      this.enemyLaneMap[spotIdx] = new Queue<Enemy>(enemy);
     }
 
     this.addChildren(enemy);
@@ -97,15 +104,20 @@ export class Level extends BaseGameObject {
     enemy.setLevel(this);
   }
 
-  getEnemiesInLane(laneIdx: number) {
-    return this.enemyLaneMap[laneIdx];
-  }
-
   // clear enemy references
   removeEnemy(enemy: Enemy) {
     const { spotIdx } = this.enemyStateMap[enemy.id];
     delete this.enemyLaneMap[spotIdx][enemy.id];
     delete this.enemyStateMap[enemy.id];
+    enemy.destroy();
+  }
+
+  addBullet(bullet: Bullet, laneIdx: number) {
+    if (this.bulletLaneMap[laneIdx]) {
+      this.bulletLaneMap[laneIdx].enqueue(bullet);
+    } else {
+      this.bulletLaneMap[laneIdx] = new Queue<Bullet>(bullet);
+    }
   }
 
   // TODO:
@@ -185,10 +197,35 @@ export class Level extends BaseGameObject {
     this.ctx.stroke();
   }
 
-  // overwrite BaseGameObject _update method
-  _update(timeDelta: number, time: number) {
+  update() {
     this.throttledUpdateSpot();
-    this.update(timeDelta, time);
+
+    // check for collisions
+    this.checkCollisions();
+  }
+
+  checkCollisions() {
+    Object.keys(this.enemyLaneMap).forEach((laneIdx) => {
+      const enemyLaneQueue = this.enemyLaneMap[laneIdx];
+      const bulletLaneQueue = this.bulletLaneMap[laneIdx];
+
+      if (!bulletLaneQueue) return;
+
+      const firstEnemy = enemyLaneQueue.getFirst();
+      const firstBullet = bulletLaneQueue.getFirst();
+      const collides =
+        firstEnemy &&
+        firstBullet &&
+        Math.abs(firstBullet.transform.z - firstEnemy.transform.z) <
+          COLLISION_TOLERANCE;
+
+      if (collides) {
+        bulletLaneQueue.dequeue();
+        enemyLaneQueue.dequeue();
+        this.removeEnemy(firstEnemy);
+        firstBullet.destroy();
+      }
+    });
   }
 
   // updates player position based on its spot index

@@ -43,13 +43,6 @@ export class Bullet extends BaseGameObject implements GameObjectInterface {
       this.destroy();
       return;
     }
-    // if collided with enemy or enemy bullet
-    let collidedEnemy;
-    if ((collidedEnemy = this.findCollidedEnemy())) {
-      collidedEnemy.destroy();
-      this.destroy();
-      return;
-    }
 
     const newPoint = findPointBetweenPoints(this.to, this.from, newZ);
     this.setTransformWithProps({ z: newZ, ...newPoint });

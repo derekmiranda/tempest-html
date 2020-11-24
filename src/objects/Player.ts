@@ -41,6 +41,7 @@ export class Player extends BaseGameObject implements GameObjectInterface {
       w: 0.05,
       h: 0.05,
     });
+    this.level.addBullet(bullet, laneIdx);
     this.game.addObject(bullet, this.layer);
   }
 

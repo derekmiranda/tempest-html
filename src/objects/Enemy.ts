@@ -60,10 +60,4 @@ export class Enemy extends BaseGameObject implements GameObjectInterface {
     this.ctx.closePath();
     this.ctx.stroke();
   }
-
-  destroy() {
-    this._destroy();
-    this.level.removeChild(this);
-    this.level.removeEnemy(this);
-  }
 }
