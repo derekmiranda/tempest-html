@@ -11,8 +11,12 @@ interface State {
 }
 
 // TODO: make class
+interface Layer {
+  [id: string]: BaseGameObject;
+}
+
 class LayerCollection {
-  private layers: BaseGameObject[][] = [];
+  private layers: Layer[] = [];
   // id mapped to serialized string: "layerIdx, objIdxInLayer"
   private objIdMap = {};
 
@@ -21,18 +25,20 @@ class LayerCollection {
     if (this.objIdMap[obj.id]) return;
 
     if (this.layers[layerIdx]) {
-      this.layers[layerIdx].push(obj);
+      this.layers[layerIdx][obj.id] = obj;
     } else {
-      this.layers[layerIdx] = [obj];
+      this.layers[layerIdx] = { [obj.id]: obj };
     }
-    this.objIdMap[obj.id] = layerIdx + "," + (this.layers[layerIdx].length - 1);
+    this.objIdMap[obj.id] = layerIdx;
   }
 
   removeObject(obj: BaseGameObject) {
+    console.log("this.objIdMap", this.objIdMap);
+    console.log("this.layers", this.layers);
     if (this.objIdMap[obj.id]) {
-      const [layerIdx, objIdx] = this.objIdMap[obj.id].split(",");
+      const layerIdx = this.objIdMap[obj.id];
       delete this.objIdMap[obj.id];
-      this.layers[layerIdx].splice(objIdx, 1);
+      delete this.layers[layerIdx][obj.id];
     }
   }
 
@@ -40,9 +46,9 @@ class LayerCollection {
   applyFn(fn: Function, filterFn?: Function) {
     for (let i = 0; i < this.layers.length; i++) {
       const layer = this.layers[i];
-      for (let j = 0; j < layer.length; j++) {
-        if (!filterFn || filterFn(layer[j])) fn(layer[j]);
-      }
+      Object.values(layer).forEach((obj) => {
+        if (!filterFn || filterFn(obj)) fn(obj);
+      });
     }
   }
 }
