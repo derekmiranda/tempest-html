@@ -11,7 +11,7 @@ function main() {
   game = new Game({
     canvas,
     ctx,
-    levels: [Circle, Square],
+    levels: [Square],
   });
 
   game.start();
