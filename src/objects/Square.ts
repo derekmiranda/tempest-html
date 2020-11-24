@@ -2,6 +2,7 @@ import { GameObjectInterface, Point } from "../types";
 import { PLAYER_TO_LEVEL_DIST, PLAYER_TO_LEVEL_SIZE } from "../CONSTS";
 import { Level, LevelSpot, LevelPropsInterface } from "./Level";
 import { square } from "../lib/shapes";
+import { calcAngle } from "../lib/utils";
 
 interface SquarePropsInterface extends LevelPropsInterface {
   segments?: number;
@@ -77,11 +78,7 @@ export class Square extends Level implements GameObjectInterface {
     const normY = y / this.ctx.canvas.height - 0.5;
 
     // since spots start at top-right, shift angle by 45 deg CCW
-    let angle = Math.atan(normY / normX) + Math.PI / 4;
-    // adjust angles in Quadrant III and IV
-    if (normX < 0) {
-      angle += Math.PI;
-    }
+    const angle = calcAngle(normX, normY);
     const segmentAngle = (2 * Math.PI) / this.segments;
     let idx = Math.floor(angle / segmentAngle);
     if (idx < 0) idx += this.segments;

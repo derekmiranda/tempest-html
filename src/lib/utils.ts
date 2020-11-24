@@ -42,6 +42,15 @@ export function rotate(x, y, angle): Point {
   };
 }
 
+export function calcAngle(x, y): number {
+  let angle = Math.atan(y / x);
+  // adjust angles in Quadrant III and IV
+  if (x < 0) {
+    angle += Math.PI;
+  }
+  return angle;
+}
+
 // time utils
 export function throttle(fn: (...args: any[]) => any, time: number): Function {
   let lastTime: number;
