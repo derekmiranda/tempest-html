@@ -17,12 +17,23 @@ class LayerCollection {
   private objIdMap = {};
 
   addObject(obj: BaseGameObject, layerIdx: number = 0) {
+    // object already added
+    if (this.objIdMap[obj.id]) return;
+
     if (this.layers[layerIdx]) {
       this.layers[layerIdx].push(obj);
     } else {
       this.layers[layerIdx] = [obj];
     }
     this.objIdMap[obj.id] = layerIdx + "," + (this.layers[layerIdx].length - 1);
+  }
+
+  removeObject(obj: BaseGameObject) {
+    if (this.objIdMap[obj.id]) {
+      const [layerIdx, objIdx] = this.objIdMap[obj.id].split(",");
+      delete this.objIdMap[obj.id];
+      this.layers[layerIdx].splice(objIdx, 1);
+    }
   }
 
   // apply function to all objects in layer collection, in order
@@ -33,18 +44,6 @@ class LayerCollection {
         if (!filterFn || filterFn(layer[j])) fn(layer[j]);
       }
     }
-  }
-
-  removeObject(objId: number) {
-    if (this.objIdMap[objId]) {
-      const [layerIdx, objIdx] = this.objIdMap[objId].split(",");
-      delete this.objIdMap[objId];
-      this.layers[layerIdx].splice(objIdx, 1);
-    }
-  }
-
-  getLayers() {
-    return this.layers;
   }
 }
 
@@ -79,7 +78,7 @@ export class Game {
   private canvasRect: DOMRect;
   private running = true;
   private currLevel: Level;
-  private objId = 0;
+  private objId = -1;
   private lastTime: number;
 
   constructor({
@@ -114,6 +113,8 @@ export class Game {
     this.canvasRect = this.canvas.getBoundingClientRect();
     this.startScene();
 
+    this.setListeners();
+
     this.lastTime = Date.now();
     requestAnimationFrame(this.gameLoop.bind(this));
   }
@@ -136,28 +137,44 @@ export class Game {
       game: this,
       ctx: this.ctx,
       id: this.getNewObjId(),
-      // game,
       x: 0,
       y: 0,
       w: 0.65,
       h: 0.65,
     });
 
-    this.layerCollection.addObject(this.currLevel, 0);
-    this.layerCollection.addObject(this.player, 1);
+    this.addObject(this.currLevel, 0);
+    this.addObject(this.player, 1);
 
-    this.layerCollection.applyFn((obj: BaseGameObject) => {
-      obj.initPoints();
-    });
-
-    this.currLevel.initSpots();
+    this.currLevel.initPlayerSpots();
     this.currLevel.setPlayer(this.player);
+  }
 
-    this.setListeners();
+  addObject(obj, layer = 0) {
+    if (obj.id === undefined) obj.id = this.getNewObjId();
+
+    this.layerCollection.addObject(obj, layer);
+    obj.initPoints();
+    obj.setListeners();
+    obj.setLayer(layer);
+
+    for (let child of obj.children) {
+      this.addObject(child, layer);
+    }
+  }
+
+  removeObject(obj) {
+    this.layerCollection.removeObject(obj);
+    obj.removeListeners();
+
+    for (let child of obj.children) {
+      this.removeObject(child);
+    }
   }
 
   // listeners
   handleMouse(e: MouseEvent) {
+    if (!this.currLevel) return;
     this.currLevel.startUpdatingWithCursor(
       e.clientX - this.canvasRect.x,
       e.clientY - this.canvasRect.y
@@ -165,6 +182,7 @@ export class Game {
   }
 
   handleMouseLeave() {
+    if (!this.currLevel) return;
     this.currLevel.stopUpdatingWithCursor();
   }
 
