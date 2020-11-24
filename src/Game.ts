@@ -140,7 +140,6 @@ export class Game {
     this.currLevel = new this.levels[idx]({
       game: this,
       ctx: this.ctx,
-      id: this.getNewObjId(),
       x: 0,
       y: 0,
       w: 0.65,
