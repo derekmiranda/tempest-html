@@ -17,6 +17,7 @@ export class BaseGameObject {
   globalTransform: Transform;
   points: Point[] = [];
   layer: number;
+  rendered: boolean = false;
 
   constructor(props: GameObjectPropsInterface) {
     Object.assign(this, props);
@@ -58,6 +59,9 @@ export class BaseGameObject {
     for (let child of children) {
       child.setParent(this);
       this.children.push(child);
+      if (this.rendered) {
+        this.game.addObject(child);
+      }
     }
   }
 
@@ -67,6 +71,7 @@ export class BaseGameObject {
   }
 
   destroy() {
+    this.rendered = false;
     this.game.removeObject(this);
     if (this.parent) {
       this.parent.removeChild(this);
@@ -141,5 +146,9 @@ export class BaseGameObject {
 
   setLayer(layer) {
     this.layer = layer;
+  }
+
+  setRenderedState(state: boolean) {
+    this.rendered = state;
   }
 }
