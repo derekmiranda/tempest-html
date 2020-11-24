@@ -45,6 +45,7 @@ export class BaseGameObject {
   render() {}
 
   _update(timeDelta: number, time: number) {
+    if (timeDelta < 0) return;
     this.update(timeDelta, time);
   }
   update(timeDelta: number, time: number) {}
