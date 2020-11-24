@@ -1,19 +1,40 @@
 import { BaseGameObject } from "./BaseGameObject";
 import { GameObjectInterface, GameObjectPropsInterface, Point } from "../types";
-import { COLORS } from "../CONSTS";
+import { COLORS, BULLET_SPEED } from "../CONSTS";
 import { circle } from "../lib/shapes";
+import { findPointBetweenPoints } from "../lib/utils";
+
+interface BulletPropsInterface extends GameObjectPropsInterface {
+  to: Point;
+  from: Point;
+}
 
 export class Bullet extends BaseGameObject implements GameObjectInterface {
   color: string = COLORS.BULLET;
   points: Point[];
+  to: Point;
+  from: Point;
 
-  constructor(props: GameObjectPropsInterface) {
+  constructor(props: BulletPropsInterface) {
     super(props);
     this.initPoints();
   }
 
   initPoints() {
     this.points = circle(4);
+  }
+
+  update(timeDelta: number) {
+    const { z } = this.transform.getTransformProps();
+    const newZ = z + timeDelta * BULLET_SPEED;
+
+    if (newZ > 1) {
+      this.destroy();
+      return;
+    }
+
+    const newPoint = findPointBetweenPoints(this.to, this.from, newZ);
+    this.setTransformWithProps({ z: newZ, ...newPoint });
   }
 
   render() {
