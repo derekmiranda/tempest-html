@@ -33,8 +33,6 @@ class LayerCollection {
   }
 
   removeObject(obj: BaseGameObject) {
-    console.log("this.objIdMap", this.objIdMap);
-    console.log("this.layers", this.layers);
     if (this.objIdMap[obj.id]) {
       const layerIdx = this.objIdMap[obj.id];
       delete this.objIdMap[obj.id];
