@@ -21,4 +21,6 @@ export const COLORS = {
   LINE: "blue",
 };
 
-export const MAX_ID = Number.MAX_SAFE_INTEGER >> 1;
+export const BULLET_SPEED = 0.003;
+
+export const MAX_ID = Number.MAX_SAFE_INTEGER;
