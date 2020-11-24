@@ -12,6 +12,7 @@ import { findPointBetweenPoints } from "../lib/utils";
 interface BulletPropsInterface extends GameObjectPropsInterface, Traveler {}
 
 export class Bullet extends BaseGameObject implements GameObjectInterface {
+  speed: number = BULLET_SPEED;
   color: string = COLORS.PLAYER;
   points: Point[];
   to: Point;
