@@ -1,6 +1,6 @@
 import { GameObjectInterface, Point } from "../types";
-import { PLAYER_TO_LEVEL_DIST } from "../CONSTS";
-import { Level, LevelPlayerSpot, LevelPropsInterface } from "./Level";
+import { PLAYER_TO_LEVEL_DIST, PLAYER_TO_LEVEL_SIZE } from "../CONSTS";
+import { Level, LevelSpot, LevelPropsInterface } from "./Level";
 import { square } from "../lib/shapes";
 
 interface SquarePropsInterface extends LevelPropsInterface {
@@ -26,7 +26,7 @@ export class Square extends Level implements GameObjectInterface {
 
   initPlayerSpots() {
     const pts = this.points;
-    const spots: LevelPlayerSpot[] = [];
+    const spots: LevelSpot[] = [];
     for (let i = 0; i < pts.length; i++) {
       const j = i === pts.length - 1 ? 0 : i + 1;
       const p_i = pts[i];
@@ -63,8 +63,8 @@ export class Square extends Level implements GameObjectInterface {
       spots.push({
         x,
         y,
-        w: 0.1,
-        h: 0.1,
+        w: PLAYER_TO_LEVEL_SIZE,
+        h: PLAYER_TO_LEVEL_SIZE,
         angle,
       });
     }

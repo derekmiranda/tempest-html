@@ -11,7 +11,8 @@ export const FAR_SCALE = 0.2;
 export const Z_SCALE = Math.sqrt(0.2);
 
 // padding b/w player and line on level w.r.t. level-space
-export const PLAYER_TO_LEVEL_DIST: number = 0.1;
+export const PLAYER_TO_LEVEL_DIST: number = 0;
+export const PLAYER_TO_LEVEL_SIZE: number = 0.2;
 
 export const COLORS = {
   BG: "black",
