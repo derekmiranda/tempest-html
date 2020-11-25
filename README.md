@@ -4,3 +4,9 @@
 - when defining shape geometry in `render` functions, use "local" canvas methods (like `localMoveTo` or `localLineTo`) to ensure canvas drawing that's relative to its entire object hierarchy
 - when writing classes extending `BaseGameObject`, write `render` and `update` functions. These are called internally with the `BaseGameObject`'s `_render` and `_update` functions
 - **z** - indicates depth from near (z = 0) to far (z = 1) plane
+
+## Possible Polyfills to Fill
+
+- Promises
+- Map
+- `Object.assign`
