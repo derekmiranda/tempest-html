@@ -38,27 +38,8 @@ export class Bullet extends BaseGameObject implements GameObjectInterface {
     const { z } = this.transform.getTransformProps();
     const newZ = z + timeDelta * BULLET_SPEED;
 
-    // if reached far end
-    if (newZ > 1) {
-      this.destroy();
-      return;
-    }
-
     const newPoint = findPointBetweenPoints(this.to, this.from, newZ);
     this.setTransformWithProps({ z: newZ, ...newPoint });
-  }
-
-  findCollidedEnemy(): Enemy | null {
-    const enemies = this.level.getEnemiesInLane(this.laneIdx);
-    const foundEnemy =
-      enemies &&
-      Object.values(enemies).find((enemy: Enemy) => {
-        // enemy close enough to bullet
-        return (
-          Math.abs(enemy.transform.z - this.transform.z) < COLLISION_TOLERANCE
-        );
-      });
-    return foundEnemy || null;
   }
 
   render() {

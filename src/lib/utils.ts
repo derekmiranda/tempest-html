@@ -74,3 +74,10 @@ export function debounce(fn: VoidFunction, wait: number): VoidFunction {
     }, wait);
   };
 }
+
+// time in terms of ms
+export function sleep(time: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+}

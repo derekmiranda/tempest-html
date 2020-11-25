@@ -1,6 +1,8 @@
 import { GameObjectInterface, Point } from "../types";
 import { PLAYER_TO_LEVEL_DIST, PLAYER_TO_LEVEL_SIZE } from "../CONSTS";
 import { Level, LevelSpot, LevelPropsInterface } from "./Level";
+import { Enemy } from "./Enemy";
+import { RedEnemy } from "./RedEnemy";
 import { circle } from "../lib/shapes";
 import { calcAngle } from "../lib/utils";
 
@@ -16,6 +18,7 @@ export class Circle extends Level implements GameObjectInterface {
   props: CirclePropsInterface;
   rotationSpeed: number = Math.PI / 2000; // per ms
   segments: number = 16;
+  enemyClasses: typeof Enemy[] = new Array(10).fill(RedEnemy);
   static pointsMemo: SegmentsMemo = {};
 
   constructor(props: CirclePropsInterface) {

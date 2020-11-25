@@ -1,6 +1,8 @@
 import { GameObjectInterface, Point } from "../types";
 import { PLAYER_TO_LEVEL_DIST, PLAYER_TO_LEVEL_SIZE } from "../CONSTS";
 import { Level, LevelSpot, LevelPropsInterface } from "./Level";
+import { Enemy } from "./Enemy";
+import { RedEnemy } from "./RedEnemy";
 import { square } from "../lib/shapes";
 import { calcAngle } from "../lib/utils";
 
@@ -15,6 +17,7 @@ interface SegmentsMemo {
 export class Square extends Level implements GameObjectInterface {
   props: SquarePropsInterface;
   segments: number = 16;
+  enemyClasses: typeof Enemy[] = new Array(20).fill(RedEnemy);
   static pointsMemo: SegmentsMemo = {};
 
   constructor(props: SquarePropsInterface) {

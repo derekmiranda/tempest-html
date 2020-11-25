@@ -12,10 +12,14 @@ import {
   COLORS,
   ENEMY_TO_LEVEL_SIZE,
   COLLISION_TOLERANCE,
+  AVG_FRAME_TIME,
+  BULLET_SPEED,
+  BULLET_TOLERANCE,
 } from "../CONSTS";
 import { Enemy } from "./Enemy";
 import { Bullet } from "./Bullet";
 import { Queue } from "../lib/Queue";
+import { EnemySpawner } from "./EnemySpawner";
 
 export interface LevelSpot extends TransformPropsInterface {}
 
@@ -44,6 +48,8 @@ export class Level extends BaseGameObject {
   playerSpots: LevelSpot[] = [];
   bulletSpots: LevelSpot[] = [];
   player: Player;
+  enemySpawner: EnemySpawner;
+  enemyClasses: typeof Enemy[] = [];
   enemyStateMap: EnemyStateMap = {};
   // maps lane indices to enemies in lane
   enemyLaneMap: EnemyLaneMap = {};
@@ -64,6 +70,15 @@ export class Level extends BaseGameObject {
     const { loops } = props;
     if (loops !== undefined) this.loops = loops;
     this.throttledUpdateSpot = throttle(this.updatePlayerSpot.bind(this), 50);
+  }
+
+  startSpawning() {
+    this.enemySpawner = new EnemySpawner({
+      ...this.game.getDefaultProps(),
+      level: this,
+      enemyClasses: this.enemyClasses,
+    });
+    this.enemySpawner.spawnEnemies();
   }
 
   setPlayer(player: Player) {
@@ -97,7 +112,6 @@ export class Level extends BaseGameObject {
       ...fromPoint,
       w: ENEMY_TO_LEVEL_SIZE,
       h: ENEMY_TO_LEVEL_SIZE,
-      z: 1,
       angle: Math.PI / 2 - calcAngle(toPoint.x, toPoint.y),
     });
     enemy.updatePath(fromPoint, this.midpoints[spotIdx]);
@@ -202,6 +216,9 @@ export class Level extends BaseGameObject {
 
     // check for collisions
     this.checkCollisions();
+
+    // check for any bullets that need to be destroyed
+    this.cleanBullets();
   }
 
   checkCollisions() {
@@ -216,14 +233,25 @@ export class Level extends BaseGameObject {
       const collides =
         firstEnemy &&
         firstBullet &&
-        Math.abs(firstBullet.transform.z - firstEnemy.transform.z) <
-          COLLISION_TOLERANCE;
+        firstBullet.transform.z < 1 &&
+        firstBullet.transform.z + BULLET_TOLERANCE >= firstEnemy.transform.z;
 
       if (collides) {
         bulletLaneQueue.dequeue();
         enemyLaneQueue.dequeue();
         this.removeEnemy(firstEnemy);
         firstBullet.destroy();
+      }
+    });
+  }
+
+  cleanBullets() {
+    Object.keys(this.bulletLaneMap).forEach((laneIdx) => {
+      const q = this.bulletLaneMap[laneIdx];
+
+      while (q.getFirst() && q.getFirst().transform.z + BULLET_TOLERANCE > 1) {
+        const bullet = q.dequeue();
+        bullet.destroy();
       }
     });
   }

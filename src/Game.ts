@@ -1,10 +1,12 @@
-import { VoidFunction } from "./types";
+import { GameObjectPropsInterface, VoidFunction } from "./types";
 import { BaseGameObject } from "./objects/BaseGameObject";
 import { Level } from "./objects/Level";
 import { Player } from "./objects/Player";
 import { debounce } from "./lib/utils";
 import { COLORS, MAX_ID } from "./CONSTS";
 import { Enemy } from "./objects/Enemy";
+import { RedEnemy } from "./objects/RedEnemy";
+import { EnemySpawner } from "./objects/EnemySpawner";
 
 interface State {
   sceneType: SceneType;
@@ -108,11 +110,7 @@ export class Game {
 
   start() {
     // create player
-    this.player = new Player({
-      game: this,
-      ctx: this.ctx,
-      id: this.getNewObjId(),
-    });
+    this.player = new Player(this.getDefaultProps());
 
     // cache canvas rect
     this.canvasRect = this.canvas.getBoundingClientRect();
@@ -139,8 +137,7 @@ export class Game {
     const { idx } = this.state.levelState;
 
     this.currLevel = new this.levels[idx]({
-      game: this,
-      ctx: this.ctx,
+      ...this.getDefaultProps(),
       x: 0,
       y: 0,
       w: 0.65,
@@ -151,19 +148,7 @@ export class Game {
 
     this.currLevel.initPlayerSpots();
     this.currLevel.setPlayer(this.player);
-
-    for (let i = 0; i < 5; i++) {
-      const enemy = new Enemy({
-        game: this,
-        ctx: this.ctx,
-        id: this.getNewObjId(),
-        x: 0,
-        y: 0,
-        w: 0.65,
-        h: 0.65,
-      });
-      this.currLevel.addEnemy(enemy);
-    }
+    this.currLevel.startSpawning();
   }
 
   addObject(obj: BaseGameObject, layer: number = 0) {
@@ -249,6 +234,15 @@ export class Game {
     if (updateScene) {
       this.startScene();
     }
+  }
+
+  // util for getting default Game Object props
+  getDefaultProps(): GameObjectPropsInterface {
+    return {
+      game: this,
+      ctx: this.ctx,
+      id: this.getNewObjId(),
+    };
   }
 
   getNewObjId() {

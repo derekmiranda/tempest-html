@@ -1,3 +1,5 @@
+import { Point } from "../types";
+
 const _circleMemo = {};
 export function circle(segments) {
   if (!_circleMemo[segments]) {
@@ -55,4 +57,15 @@ export function square(segments) {
     _squareMemo[segments] = pts;
   }
   return _squareMemo[segments];
+}
+
+const DOT_SIZE = 0.005;
+export function farDot(center: Point): Point[] {
+  const diamondPts = circle(4);
+  return diamondPts.map((pt) => {
+    return {
+      x: DOT_SIZE * pt.x + center.x,
+      y: DOT_SIZE * pt.y + center.y,
+    };
+  });
 }
