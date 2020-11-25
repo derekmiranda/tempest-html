@@ -1,23 +1,19 @@
 import { BaseGameObject } from "./BaseGameObject";
 import { GameObjectInterface, GameObjectPropsInterface, Point } from "../types";
-import { COLORS, BULLET_SPEED, RED_ENEMY_SPEED } from "../CONSTS";
+import { LEVEL_CENTER } from "../CONSTS";
 import { Level } from "./Level";
 import { findPointBetweenPoints } from "../lib/utils";
+import { farDot } from "../lib/shapes";
 
 export class Enemy extends BaseGameObject implements GameObjectInterface {
-  color: string = COLORS.RED;
-  speed: number = RED_ENEMY_SPEED;
   level: Level;
   points: Point[];
   to: Point;
   from: Point;
+  color: string;
 
   constructor(props: GameObjectPropsInterface) {
     super(props);
-  }
-
-  setLevel(level: Level) {
-    this.level = level;
   }
 
   updatePath(to: Point, from: Point) {
@@ -25,38 +21,33 @@ export class Enemy extends BaseGameObject implements GameObjectInterface {
     this.from = from;
   }
 
-  initPoints() {
-    this.points = [
-      // left edge
-      { x: -0.5, y: -0.25 },
-      { x: -0.25, y: 0 },
-      { x: -0.5, y: 0.25 },
-      // right edge
-      { x: 0.5, y: -0.25 },
-      { x: 0.25, y: 0 },
-      { x: 0.5, y: 0.25 },
-    ];
+  setLevel(level: Level) {
+    this.level = level;
   }
 
-  update(timeDelta: number) {
-    const { z } = this.transform.getTransformProps();
-    const newZ = z - timeDelta * this.speed;
-
-    if (newZ < 0) {
-      this.destroy();
-      return;
-    }
-
-    const newPoint = findPointBetweenPoints(this.from, this.to, newZ);
-    this.setTransformWithProps({ z: newZ, ...newPoint });
+  calcFarPoint(): Point {
+    // range from 0.2 to 0.8
+    const distAwayFromLine = 0.8 - 0.6 * Math.min(1, this.transform.z - 1);
+    return {
+      x: LEVEL_CENTER.x + (this.to.x - LEVEL_CENTER.x) * distAwayFromLine,
+      y: LEVEL_CENTER.y + (this.to.y - LEVEL_CENTER.y) * distAwayFromLine,
+    };
   }
 
   render() {
     this.ctx.strokeStyle = this.color;
     this.ctx.beginPath();
-    this.points.forEach(({ x, y }, i) => {
-      i === 0 ? this.localMoveTo(x, y) : this.localLineTo(x, y);
-    });
+    // render far shape
+    if (this.transform.z > 1) {
+      const farPoints = farDot(this.calcFarPoint());
+      farPoints.forEach(({ x, y }, i) => {
+        i === 0 ? this.level.localMoveTo(x, y) : this.level.localLineTo(x, y);
+      });
+    } else {
+      this.points.forEach(({ x, y }, i) => {
+        i === 0 ? this.localMoveTo(x, y) : this.localLineTo(x, y);
+      });
+    }
     this.ctx.closePath();
     this.ctx.stroke();
   }
