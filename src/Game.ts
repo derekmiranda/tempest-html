@@ -1,3 +1,4 @@
+import { VoidFunction } from "./types";
 import { BaseGameObject } from "./objects/BaseGameObject";
 import { Level } from "./objects/Level";
 import { Player } from "./objects/Player";
@@ -210,7 +211,7 @@ export class Game {
       this.handleMouseLeave.bind(this)
     );
 
-    const resizeHandler: any = debounce(function () {
+    const resizeHandler: VoidFunction = debounce(function () {
       // recache canvas rect
       this.canvasRect = this.canvas.getBoundingClientRect();
     }, 200);

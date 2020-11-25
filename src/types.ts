@@ -11,6 +11,10 @@ export type Traveler = {
   from: Point;
 };
 
+export interface VoidFunction {
+  (...args: unknown[]): void;
+}
+
 export interface GameObjectInterface extends BaseGameObject {
   render(): void;
   update(timeDelta: number, time: number): void;

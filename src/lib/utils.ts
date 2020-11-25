@@ -1,4 +1,4 @@
-import { TransformPropsInterface, Point } from "../types";
+import { TransformPropsInterface, Point, VoidFunction } from "../types";
 
 // math utils
 export function findPointBetweenPoints(
@@ -52,7 +52,7 @@ export function calcAngle(x, y): number {
 }
 
 // time utils
-export function throttle(fn: (...args: any[]) => any, time: number): Function {
+export function throttle(fn: VoidFunction, time: number): VoidFunction {
   let lastTime: number;
   return function (...args) {
     if (!lastTime || Date.now() > lastTime + time) {
@@ -62,7 +62,7 @@ export function throttle(fn: (...args: any[]) => any, time: number): Function {
   };
 }
 
-export function debounce(fn: (...args: any[]) => any, wait: number): Function {
+export function debounce(fn: VoidFunction, wait: number): VoidFunction {
   let timeout = null;
   return function (...args) {
     if (timeout) {
