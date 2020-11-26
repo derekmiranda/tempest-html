@@ -1,3 +1,5 @@
+[WIP](https://derekmiranda.github.io/tempest-html/)
+
 # Dev Notes
 
 - coordinates are relative to a unit square centerd at 0 since wanted to render in a scalable square canvas. So x and y range from [-0.5, 0.5]
