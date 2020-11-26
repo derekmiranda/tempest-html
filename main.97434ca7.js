@@ -33,4 +33,4 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{"../CONSTS":"ehtn","./Level":"zIeL","./RedEnemy":"dnHR","../lib/shapes":"yxrz","../lib/utils":"N6d1"}],"ZCfc":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e,t,r,a=require("./Game"),c=require("./objects/Circle"),u=require("./objects/Square");function s(){t=document.getElementById("game"),r=t.getContext("2d"),(e=new a.Game({canvas:t,ctx:r,levels:[c.Circle,u.Square]})).start()}s();
 },{"./Game":"jKSw","./objects/Circle":"PLMh","./objects/Square":"xtb6"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.97434ca7.js.map
+//# sourceMappingURL=main.97434ca7.js.map
