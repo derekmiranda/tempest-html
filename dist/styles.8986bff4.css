@@ -1,0 +1,13 @@
+html,
+body {
+  text-align: center;
+  margin: 0;
+  background-color: #333;
+}
+
+canvas#game {
+  cursor: crosshair;
+}
+
+
+/*# sourceMappingURL=/styles.8986bff4.css.map */

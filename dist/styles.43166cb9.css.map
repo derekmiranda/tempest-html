@@ -1,0 +1,1 @@
+{"version":3,"sources":["styles.css"],"names":[],"mappings":"AAAA,UAEE,iBAAkB,CAClB,QAAS,CACT,qBACF,CAEA,YACE,gBACF","file":"styles.43166cb9.css","sourceRoot":"../src","sourcesContent":["html,\nbody {\n  text-align: center;\n  margin: 0;\n  background-color: #333;\n}\n\ncanvas#game {\n  cursor: crosshair;\n}\n"]}
