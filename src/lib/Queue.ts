@@ -1,8 +1,8 @@
 export class Queue<T> {
-  first: QueueNode<T> = null;
-  last: QueueNode<T> = null;
+  first: QueueNode<T>;
+  last: QueueNode<T>;
 
-  constructor(initItems: T | T[]) {
+  constructor(initItems?: T | T[]) {
     if (initItems) {
       this.enqueue(initItems);
     }
@@ -25,15 +25,81 @@ export class Queue<T> {
   dequeue(): T {
     const dequeued = this.first;
     if (this.first === this.last) {
-      this.first = this.last = null;
+      this.first = this.last = undefined;
     } else {
       this.first = this.first.next;
     }
     return dequeued.item;
   }
 
+  // insert item in correct place
+  add(item: T, comparator: (first: T, second: T) => number) {
+    const node = new QueueNode<T>(item);
+    if (!this.first) {
+      this.first = this.last = node;
+      return;
+    }
+    // if item to add goes before first
+    if (comparator(item, this.first.item) < 0) {
+      const oldFirst = this.first;
+      this.first = node;
+      this.first.next = oldFirst;
+      return;
+    }
+
+    let curr = this.first;
+    let next = this.first.next;
+
+    while (next && comparator(item, next.item) >= 0) {
+      // update pointers
+      curr = next;
+      next = next.next;
+    }
+
+    // add item after curr
+    curr.next = node;
+    node.next = next;
+
+    if (curr === this.last) {
+      this.last = node;
+    }
+  }
+
+  remove(item: T) {
+    if (!this.first) return;
+
+    // check if first has item
+    if (this.first.item === item) {
+      if (this.last === this.first) {
+        this.last = undefined;
+      }
+      this.first = this.first.next;
+      return;
+    }
+
+    // check if subsequent nodes have item
+    let curr = this.first;
+    let next = this.first.next;
+
+    while (next) {
+      // check subsequent
+      if (next.item === item) {
+        // join nodes around node with item
+        curr.next = next.next;
+        if (this.last === next) {
+          this.last = undefined;
+        }
+        return;
+      }
+
+      // update pointers
+      curr = curr.next;
+      next = curr?.next;
+    }
+  }
+
   getFirst(): T {
-    return this.first && this.first.item;
+    return this.first?.item;
   }
 }
 
