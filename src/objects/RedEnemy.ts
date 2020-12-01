@@ -3,7 +3,7 @@ import { GameObjectInterface, GameObjectPropsInterface, Point } from "../types";
 import { COLORS, BULLET_SPEED, RED_ENEMY_SPEED } from "../CONSTS";
 import { Level } from "./Level";
 import { Enemy } from "./Enemy";
-import { findPointBetweenPoints } from "../lib/utils";
+import { findPointBetweenPoints, sleep } from "../lib/utils";
 
 export class RedEnemy extends Enemy {
   color: string = COLORS.RED;
@@ -12,9 +12,11 @@ export class RedEnemy extends Enemy {
   points: Point[];
   to: Point;
   from: Point;
+  moving: boolean;
 
   constructor(props: GameObjectPropsInterface) {
     super(props);
+    this.startMoveCoroutine();
   }
 
   initPoints() {
@@ -32,16 +34,36 @@ export class RedEnemy extends Enemy {
 
   update(timeDelta: number) {
     const { z } = this.transform.getTransformProps();
-    // console.log("tf z", this.transform.z);
-    // console.log("z", z);
     const newZ = z - timeDelta * this.speed;
 
     if (newZ < 0) {
-      this.destroy();
+      this.level.removeEnemy(this);
+      this.rendered = false;
       return;
     }
 
     const newPoint = findPointBetweenPoints(this.from, this.to, newZ);
     this.setTransformWithProps({ z: newZ, ...newPoint });
+  }
+
+  randomWaitTime(): number {
+    return 1000 - 500 * Math.random();
+  }
+
+  async startMoveCoroutine() {
+    this.moving = true;
+    while (this.rendered) {
+      await sleep(this.randomWaitTime());
+      this.level.moveEnemy(this, 1);
+    }
+    this.moving = false;
+  }
+
+  setRenderedState(state: boolean) {
+    this.rendered = state;
+
+    if (state && !this.moving) {
+      this.startMoveCoroutine();
+    }
   }
 }

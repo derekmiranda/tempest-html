@@ -11,9 +11,6 @@ import {
   FAR_SCALE,
   COLORS,
   ENEMY_TO_LEVEL_SIZE,
-  COLLISION_TOLERANCE,
-  AVG_FRAME_TIME,
-  BULLET_SPEED,
   BULLET_TOLERANCE,
 } from "../CONSTS";
 import { Enemy } from "./Enemy";
@@ -91,6 +88,8 @@ export class Level extends BaseGameObject {
   addEnemy(enemy: Enemy) {
     if (this.enemyStateMap[enemy.id]) return;
 
+    enemy.setRenderedState(true);
+
     const spotIdx = Math.floor(this.farMidpoints.length * Math.random());
 
     // store references to enemy
@@ -104,8 +103,13 @@ export class Level extends BaseGameObject {
       this.enemyLaneMap[spotIdx] = new Queue<Enemy>(enemy);
     }
 
+    this.updateEnemyPath(enemy, spotIdx);
     this.addChildren(enemy);
 
+    enemy.setLevel(this);
+  }
+
+  updateEnemyPath(enemy: Enemy, spotIdx: number) {
     const fromPoint = this.farMidpoints[spotIdx];
     const toPoint = this.midpoints[spotIdx];
     enemy.setTransformWithProps({
@@ -115,13 +119,12 @@ export class Level extends BaseGameObject {
       angle: Math.PI / 2 - calcAngle(toPoint.x, toPoint.y),
     });
     enemy.updatePath(fromPoint, this.midpoints[spotIdx]);
-    enemy.setLevel(this);
   }
 
   // clear enemy references
   removeEnemy(enemy: Enemy) {
     const { spotIdx } = this.enemyStateMap[enemy.id];
-    delete this.enemyLaneMap[spotIdx][enemy.id];
+    this.enemyLaneMap[spotIdx].remove(enemy);
     delete this.enemyStateMap[enemy.id];
     enemy.destroy();
   }
@@ -134,8 +137,27 @@ export class Level extends BaseGameObject {
     }
   }
 
-  // TODO:
-  moveEnemy(enemy: Enemy, spotDiff: number) {}
+  moveEnemy(enemy: Enemy, spotDiff: number) {
+    const { spotIdx } = this.enemyStateMap[enemy.id];
+
+    let newSpotIdx: number = (spotIdx + spotDiff) % this.playerSpots.length;
+    if (newSpotIdx < 0) newSpotIdx += this.playerSpots.length;
+
+    // update enemy spot
+    this.enemyStateMap[enemy.id].spotIdx = newSpotIdx;
+    this.updateEnemyPath(enemy, newSpotIdx);
+
+    // update lane queues
+    this.enemyLaneMap[spotIdx].remove(enemy);
+    if (this.enemyLaneMap[newSpotIdx]) {
+      this.enemyLaneMap[newSpotIdx].add(
+        enemy,
+        (a, b) => b.transform.z - a.transform.z
+      );
+    } else {
+      this.enemyLaneMap[newSpotIdx] = new Queue<Enemy>(enemy);
+    }
+  }
 
   // to be overwritten by Level classes
   getLevelPoints(): Point[] {
@@ -249,7 +271,7 @@ export class Level extends BaseGameObject {
     Object.keys(this.bulletLaneMap).forEach((laneIdx) => {
       const q = this.bulletLaneMap[laneIdx];
 
-      while (q.getFirst() && q.getFirst().transform.z + BULLET_TOLERANCE > 1) {
+      while (q.getFirst()?.transform.z + BULLET_TOLERANCE > 1) {
         const bullet = q.dequeue();
         bullet.destroy();
       }
