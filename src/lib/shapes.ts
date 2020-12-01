@@ -1,5 +1,18 @@
 import { Point } from "../types";
 
+export function player(): Point[] {
+  return [
+    { x: -0.25, y: -0.25 },
+    { x: -0.5, y: 0 },
+    { x: 0, y: 0.3 },
+    { x: 0.5, y: 0 },
+    { x: 0.25, y: -0.25 },
+    { x: 0.4, y: 0 },
+    { x: 0, y: 0.1 },
+    { x: -0.4, y: 0 },
+  ];
+}
+
 const _circleMemo = {};
 export function circle(segments) {
   if (!_circleMemo[segments]) {

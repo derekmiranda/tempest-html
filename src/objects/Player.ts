@@ -4,6 +4,7 @@ import { COLORS } from "../CONSTS";
 import { Bullet } from "./Bullet";
 import { Level } from "./Level";
 import { throttle } from "../lib/utils";
+import { player } from "../lib/shapes";
 
 interface PlayerPropsInterface extends GameObjectPropsInterface {
   color?: string;
@@ -25,6 +26,10 @@ export class Player extends BaseGameObject implements GameObjectInterface {
     this.enableFiring = this.enableFiring.bind(this);
     this.disableFiring = this.disableFiring.bind(this);
     this.fireBullet = throttle(this._fireBullet.bind(this), 150);
+  }
+
+  initPoints() {
+    this.points = player();
   }
 
   _fireBullet() {
@@ -86,14 +91,9 @@ export class Player extends BaseGameObject implements GameObjectInterface {
   render() {
     this.ctx.strokeStyle = this.color;
     this.ctx.beginPath();
-    this.localMoveTo(-0.25, -0.25);
-    this.localLineTo(-0.5, 0);
-    this.localLineTo(0, 0.3);
-    this.localLineTo(0.5, 0);
-    this.localLineTo(0.25, -0.25);
-    this.localLineTo(0.4, 0);
-    this.localLineTo(0, 0.1);
-    this.localLineTo(-0.4, 0);
+    this.points.forEach((p, i) => {
+      i === 0 ? this.localMoveTo(p.x, p.y) : this.localLineTo(p.x, p.y);
+    });
     this.ctx.closePath();
     this.ctx.stroke();
   }
