@@ -4,9 +4,7 @@ import { Level } from "./objects/Level";
 import { Player } from "./objects/Player";
 import { debounce } from "./lib/utils";
 import { COLORS, MAX_ID } from "./CONSTS";
-import { Enemy } from "./objects/Enemy";
-import { RedEnemy } from "./objects/RedEnemy";
-import { EnemySpawner } from "./objects/EnemySpawner";
+import { LivesDisplay } from "./objects/LivesDisplay";
 
 interface State {
   sceneType: SceneType;
@@ -144,7 +142,16 @@ export class Game {
       h: 0.65,
     });
 
+    const livesDisplay = new LivesDisplay({
+      ...this.getDefaultProps(),
+      x: -0.4,
+      y: -0.4,
+      w: 0.1,
+      h: 0.1,
+    });
+
     this.addObject(this.currLevel, 0);
+    this.addObject(livesDisplay, 0);
 
     this.currLevel.initPlayerSpots();
     this.currLevel.setPlayer(this.player);
