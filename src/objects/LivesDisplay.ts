@@ -17,6 +17,10 @@ export class LivesDisplay extends BaseGameObject {
   }
 
   render() {
-    renderPoints(this);
+    for (let i = 0; i < this.lives; i++) {
+      renderPoints(this, {
+        xOffset: i * 1.2,
+      });
+    }
   }
 }

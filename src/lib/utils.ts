@@ -84,7 +84,16 @@ export function sleep(time: number): Promise<void> {
 }
 
 // rendering util
-export function renderPoints(obj: BaseGameObject) {
+export function renderPoints(
+  obj: BaseGameObject,
+  {
+    xOffset = 0,
+    yOffset = 0,
+  }: {
+    xOffset?: number;
+    yOffset?: number;
+  } = {}
+) {
   if (obj.useStrokes) {
     obj.ctx.strokeStyle = obj.color;
   } else {
@@ -93,7 +102,9 @@ export function renderPoints(obj: BaseGameObject) {
   obj.ctx.strokeStyle = obj.color;
   obj.ctx.beginPath();
   obj.points.forEach((p, i) => {
-    i === 0 ? obj.localMoveTo(p.x, p.y) : obj.localLineTo(p.x, p.y);
+    i === 0
+      ? obj.localMoveTo(p.x + xOffset, p.y + yOffset)
+      : obj.localLineTo(p.x + xOffset, p.y + yOffset);
   });
   obj.ctx.closePath();
   obj.ctx.stroke();
