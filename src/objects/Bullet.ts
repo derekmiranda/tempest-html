@@ -7,7 +7,7 @@ import {
 } from "../types";
 import { COLORS, BULLET_SPEED, COLLISION_TOLERANCE } from "../CONSTS";
 import { circle } from "../lib/shapes";
-import { findPointBetweenPoints } from "../lib/utils";
+import { findPointBetweenPoints, renderPoints } from "../lib/utils";
 import { Level } from "./Level";
 import { Enemy } from "./Enemy";
 
@@ -43,12 +43,6 @@ export class Bullet extends BaseGameObject implements GameObjectInterface {
   }
 
   render() {
-    this.ctx.fillStyle = this.color;
-    this.ctx.beginPath();
-    this.points.forEach(({ x, y }, i) => {
-      i === 0 ? this.localMoveTo(x, y) : this.localLineTo(x, y);
-    });
-    this.ctx.closePath();
-    this.ctx.fill();
+    renderPoints(this);
   }
 }

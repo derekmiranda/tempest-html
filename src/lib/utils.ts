@@ -1,3 +1,4 @@
+import { BaseGameObject } from "../objects/BaseGameObject";
 import { TransformPropsInterface, Point, VoidFunction } from "../types";
 
 // math utils
@@ -80,4 +81,25 @@ export function sleep(time: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
+}
+
+// rendering util
+export function renderPoints(obj: BaseGameObject) {
+  if (obj.useStrokes) {
+    obj.ctx.strokeStyle = obj.color;
+  } else {
+    obj.ctx.fillStyle = obj.color;
+  }
+  obj.ctx.strokeStyle = obj.color;
+  obj.ctx.beginPath();
+  obj.points.forEach((p, i) => {
+    i === 0 ? obj.localMoveTo(p.x, p.y) : obj.localLineTo(p.x, p.y);
+  });
+  obj.ctx.closePath();
+  obj.ctx.stroke();
+  if (obj.useStrokes) {
+    obj.ctx.strokeStyle = obj.color;
+  } else {
+    obj.ctx.fillStyle = obj.color;
+  }
 }

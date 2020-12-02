@@ -15,9 +15,13 @@ export class BaseGameObject {
   children: BaseGameObject[] = [];
   transform: Transform;
   globalTransform: Transform;
-  points: Point[] = [];
   layer: number;
   rendered: boolean = false;
+
+  // rendering props
+  points: Point[] = [];
+  useStrokes: boolean = true;
+  color: string = "#000";
 
   constructor(props: GameObjectPropsInterface) {
     Object.assign(this, props);
