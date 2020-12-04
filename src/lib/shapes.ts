@@ -1,4 +1,5 @@
 import { Point } from "../types";
+import { rotate } from "./utils";
 
 export function player(): Point[] {
   return [
@@ -28,6 +29,25 @@ export function circle(segments) {
     _circleMemo[segments] = pts;
   }
   return _circleMemo[segments]; //.slice()
+}
+
+export function explosion(): Point[] {
+  const outerPoints = circle(7);
+  const innerPoints = outerPoints.map(({ x, y }) => {
+    const rotated: Point = rotate(x, y, Math.PI / 4);
+    return {
+      x: 0.5 * rotated.x,
+      y: 0.5 * rotated.y,
+    };
+  });
+
+  const explosionPts = [];
+  for (let i = 0; i < outerPoints.length; i++) {
+    explosionPts.push(outerPoints[i]);
+    explosionPts.push(innerPoints[i]);
+  }
+
+  return explosionPts;
 }
 
 const _squareMemo = {};
