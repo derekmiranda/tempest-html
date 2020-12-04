@@ -1,10 +1,30 @@
 html,
 body {
-  text-align: center;
+  width: 100%;
   margin: 0;
-  background-color: #333;
+  text-align: right;
+  background-color: black;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  padding: 50px;
+}
+
+.description {
+  align-self: baseline;
+  margin: 20px;
 }
 
 canvas#game {
   cursor: crosshair;
+  border: 1px solid white;
 }
