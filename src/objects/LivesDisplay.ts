@@ -4,11 +4,15 @@ import { COLORS } from "../CONSTS";
 import { renderPoints } from "../lib/utils";
 import { player } from "../lib/shapes";
 
+interface LivesDisplayPropsInterface extends GameObjectPropsInterface {
+  lives: number;
+}
+
 export class LivesDisplay extends BaseGameObject {
-  lives: number = 3;
+  lives: number;
   color: string = COLORS.PLAYER;
 
-  constructor(props: GameObjectPropsInterface) {
+  constructor(props: LivesDisplayPropsInterface) {
     super(props);
   }
 

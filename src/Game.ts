@@ -54,7 +54,7 @@ class LayerCollection {
 
 interface LevelState {
   idx: number;
-  // TODO: enemy state
+  lives: number;
 }
 
 interface GamePropsInterface {
@@ -97,6 +97,7 @@ export class Game {
       sceneType: SceneType.LEVEL,
       levelState: {
         idx: 0,
+        lives: 2,
       },
     },
   }: GamePropsInterface) {
@@ -132,7 +133,7 @@ export class Game {
   }
 
   startLevel() {
-    const { idx } = this.state.levelState;
+    const { idx, lives } = this.state.levelState;
 
     this.currLevel = new this.levels[idx]({
       ...this.getDefaultProps(),
@@ -144,6 +145,7 @@ export class Game {
 
     const livesDisplay = new LivesDisplay({
       ...this.getDefaultProps(),
+      lives,
       x: -0.4,
       y: -0.4,
       w: 0.1,
