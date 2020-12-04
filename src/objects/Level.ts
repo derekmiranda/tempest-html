@@ -29,11 +29,15 @@ interface EnemyStateMap {
 }
 
 interface EnemyLaneMap {
-  [laneIdx: string]: Queue<Enemy>;
+  [laneIdx: string]: {
+    [id: string]: Enemy;
+  };
 }
 
 interface BulletLaneMap {
-  [laneIdx: string]: Queue<Bullet>;
+  [laneIdx: string]: {
+    [id: string]: Bullet;
+  };
 }
 
 interface EnemyState {
@@ -98,9 +102,11 @@ export class Level extends BaseGameObject {
       spotIdx,
     };
     if (this.enemyLaneMap[spotIdx]) {
-      this.enemyLaneMap[spotIdx].enqueue(enemy);
+      this.enemyLaneMap[spotIdx][enemy.id] = enemy;
     } else {
-      this.enemyLaneMap[spotIdx] = new Queue<Enemy>(enemy);
+      this.enemyLaneMap[spotIdx] = {
+        [enemy.id]: enemy,
+      };
     }
 
     this.updateEnemyPath(enemy, spotIdx);
@@ -124,16 +130,16 @@ export class Level extends BaseGameObject {
   // clear enemy references
   removeEnemy(enemy: Enemy) {
     const { spotIdx } = this.enemyStateMap[enemy.id];
-    this.enemyLaneMap[spotIdx].remove(enemy);
+    delete this.enemyLaneMap[spotIdx][enemy.id];
     delete this.enemyStateMap[enemy.id];
     enemy.destroy();
   }
 
   addBullet(bullet: Bullet, laneIdx: number) {
     if (this.bulletLaneMap[laneIdx]) {
-      this.bulletLaneMap[laneIdx].enqueue(bullet);
+      this.bulletLaneMap[laneIdx][bullet.id] = bullet;
     } else {
-      this.bulletLaneMap[laneIdx] = new Queue<Bullet>(bullet);
+      this.bulletLaneMap[laneIdx] = { [bullet.id]: bullet };
     }
   }
 
@@ -148,14 +154,11 @@ export class Level extends BaseGameObject {
     this.updateEnemyPath(enemy, newSpotIdx);
 
     // update lane queues
-    this.enemyLaneMap[spotIdx].remove(enemy);
+    delete this.enemyLaneMap[spotIdx][enemy.id];
     if (this.enemyLaneMap[newSpotIdx]) {
-      this.enemyLaneMap[newSpotIdx].add(
-        enemy,
-        (a, b) => b.transform.z - a.transform.z
-      );
+      this.enemyLaneMap[newSpotIdx][enemy.id] = enemy;
     } else {
-      this.enemyLaneMap[newSpotIdx] = new Queue<Enemy>(enemy);
+      this.enemyLaneMap[newSpotIdx] = { [enemy.id]: enemy };
     }
   }
 
@@ -245,36 +248,38 @@ export class Level extends BaseGameObject {
 
   checkCollisions() {
     Object.keys(this.enemyLaneMap).forEach((laneIdx) => {
-      const enemyLaneQueue = this.enemyLaneMap[laneIdx];
-      const bulletLaneQueue = this.bulletLaneMap[laneIdx];
+      const enemyMap = this.enemyLaneMap[laneIdx];
+      const bulletMap = this.bulletLaneMap[laneIdx];
 
-      if (!bulletLaneQueue) return;
+      if (!bulletMap || !enemyMap) return;
 
-      const firstEnemy = enemyLaneQueue.getFirst();
-      const firstBullet = bulletLaneQueue.getFirst();
-      const collides =
-        firstEnemy &&
-        firstBullet &&
-        firstBullet.transform.z < 1 &&
-        firstBullet.transform.z + BULLET_TOLERANCE >= firstEnemy.transform.z;
+      // check collisions between each bullet and enemy
+      Object.keys(bulletMap).forEach((bulletId) => {
+        const bullet = bulletMap[bulletId];
+        Object.keys(enemyMap).forEach((enemyId) => {
+          const enemy = enemyMap[enemyId];
 
-      if (collides) {
-        bulletLaneQueue.dequeue();
-        enemyLaneQueue.dequeue();
-        this.removeEnemy(firstEnemy);
-        firstBullet.destroy();
-      }
+          if (
+            Math.abs(bullet.transform.z - enemy.transform.z) < BULLET_TOLERANCE
+          ) {
+            delete bulletMap[bulletId];
+            delete enemyMap[enemyId];
+            this.removeEnemy(enemy);
+            bullet.destroy();
+          }
+        });
+      });
     });
   }
 
   cleanBullets() {
-    Object.keys(this.bulletLaneMap).forEach((laneIdx) => {
-      const q = this.bulletLaneMap[laneIdx];
-
-      while (q.getFirst()?.transform.z + BULLET_TOLERANCE > 1) {
-        const bullet = q.dequeue();
-        bullet.destroy();
-      }
+    Object.values(this.bulletLaneMap).forEach((bulletMap) => {
+      Object.values(bulletMap)
+        .filter((b) => b.transform.z > 1)
+        .forEach((bullet) => {
+          delete bulletMap[bullet.id];
+          bullet.destroy();
+        });
     });
   }
 
