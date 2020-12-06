@@ -10,6 +10,7 @@ import merge from "lodash/fp/merge";
 
 interface State {
   sceneType: SceneType;
+  score: number;
   levelState?: LevelState;
   levelIdx?: number;
 }
@@ -56,6 +57,7 @@ export class Game {
 
   static defaultState = {
     sceneType: SceneType.TITLE,
+    score: 0,
     levelState: {
       idx: 0,
       lives: 2,

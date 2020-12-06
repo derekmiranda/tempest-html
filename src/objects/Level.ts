@@ -293,6 +293,9 @@ export class Level extends BaseGameObject {
             delete bulletMap[bulletId];
             delete enemyMap[enemyId];
             this.removeEnemy(enemy);
+            this.game.updateState({
+              score: this.game.state.score + 1000,
+            });
             bullet.destroy();
           }
         });
