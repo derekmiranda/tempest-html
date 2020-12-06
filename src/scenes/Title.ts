@@ -18,6 +18,7 @@ export const Title: Scene = (game: Game) => {
       text: "PRESS ANY KEY TO CONTINUE",
       y: 0.2,
       h: 0.04,
+      blinking: true,
     })
   );
 };
