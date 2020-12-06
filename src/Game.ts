@@ -43,6 +43,7 @@ export class Game {
   levels: typeof Level[];
   state: State;
   player: Player;
+  lastTime: number;
   title: Scene;
   gameOver: Scene;
   win: Scene;
@@ -52,7 +53,6 @@ export class Game {
   private running = true;
   private currLevel: Level;
   private objId = -1;
-  private lastTime: number;
 
   static defaultState = {
     sceneType: SceneType.TITLE,
