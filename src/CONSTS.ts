@@ -26,6 +26,7 @@ export const COLORS = {
   BULLET: "pink",
   RED: "tomato",
   LINE: "blue",
+  TEXT: "white",
 };
 
 export const RED_ENEMY_SPEED = 0.00015;
