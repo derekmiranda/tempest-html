@@ -16,6 +16,10 @@ export class TextObject extends BaseGameObject implements GameObjectInterface {
     super(props);
   }
 
+  updateText(text) {
+    this.text = text;
+  }
+
   render() {
     this.ctx.strokeStyle = this.color;
 
