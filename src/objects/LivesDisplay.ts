@@ -1,7 +1,7 @@
 import { BaseGameObject } from "./BaseGameObject";
 import { GameObjectPropsInterface } from "../types";
 import { COLORS } from "../CONSTS";
-import { renderPoints } from "../lib/utils";
+import { renderPoints, rotate } from "../lib/utils";
 import { player } from "../lib/shapes";
 
 interface LivesDisplayPropsInterface extends GameObjectPropsInterface {
@@ -17,7 +17,7 @@ export class LivesDisplay extends BaseGameObject {
   }
 
   initPoints() {
-    this.points = player();
+    this.points = player().map((p) => rotate(p.x, p.y, Math.PI));
   }
 
   render() {
