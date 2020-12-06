@@ -23,13 +23,6 @@ export interface GameObjectInterface extends BaseGameObject {
   // methods to normalize local drawing to canvas dimensions
   localLineTo(localX: number, localY: number): void;
   localMoveTo(localX: number, localY: number): void;
-
-  // localFillRect(
-  //   localX: number,
-  //   localY: number,
-  //   localW: number,
-  //   localH: number
-  // ): void;
 }
 
 export interface GameObjectPropsInterface extends TransformPropsInterface {
@@ -50,7 +43,6 @@ export interface TransformPropsInterface {
 
 export type Matrix = number[];
 
-type SceneCleanupFunction = () => void;
 export interface Scene {
-  (game: Game): SceneCleanupFunction;
+  (game: Game): void;
 }
