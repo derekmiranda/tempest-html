@@ -7,7 +7,7 @@ export const Title: Scene = (game: Game) => {
   game.addObject(
     new TextObject({
       ...game.getDefaultProps(),
-      text: "STORMPEST",
+      text: "WILLIWAW",
       y: -0.1,
       h: 0.12,
     })
