@@ -89,28 +89,30 @@ export function renderPoints(
   {
     xOffset = 0,
     yOffset = 0,
+    scale = 1,
+    color,
   }: {
     xOffset?: number;
     yOffset?: number;
+    scale?: number;
+    color?: string;
   } = {}
 ) {
   if (obj.useStrokes) {
-    obj.ctx.strokeStyle = obj.color;
+    obj.ctx.strokeStyle = color || obj.color;
   } else {
-    obj.ctx.fillStyle = obj.color;
+    obj.ctx.fillStyle = color || obj.color;
   }
-  obj.ctx.strokeStyle = obj.color;
   obj.ctx.beginPath();
   obj.points.forEach((p, i) => {
     i === 0
-      ? obj.localMoveTo(p.x + xOffset, p.y + yOffset)
-      : obj.localLineTo(p.x + xOffset, p.y + yOffset);
+      ? obj.localMoveTo(scale * p.x + xOffset, scale * p.y + yOffset)
+      : obj.localLineTo(scale * p.x + xOffset, scale * p.y + yOffset);
   });
   obj.ctx.closePath();
-  obj.ctx.stroke();
   if (obj.useStrokes) {
-    obj.ctx.strokeStyle = obj.color;
+    obj.ctx.stroke();
   } else {
-    obj.ctx.fillStyle = obj.color;
+    obj.ctx.fill();
   }
 }
