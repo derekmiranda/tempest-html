@@ -69,6 +69,8 @@ export class Level extends BaseGameObject {
   farPoints: Point[] = [];
   midpoints: Point[] = [];
   farMidpoints: Point[] = [];
+  // level won props
+  levelWon: boolean = true;
   // game over props
   isGameOver: boolean = false;
   endGameOverAnimCb: Function;
@@ -254,10 +256,22 @@ export class Level extends BaseGameObject {
     // check for any bullets that need to be destroyed
     this.cleanBullets();
 
+    // check if all enemies gone e.g. win this level
+    if (this.checkWin()) {
+      this.levelWon = true;
+      return;
+    }
+
     // render game over animation
     if (this.isGameOver) {
       this.playGameOverAnim(timeUpdate);
     }
+  }
+
+  checkWin(): boolean {
+    return Object.values(this.enemyLaneMap).every(
+      (lane) => !lane || Object.keys(lane).length === 0
+    );
   }
 
   checkBulletEnemyCollisions() {
