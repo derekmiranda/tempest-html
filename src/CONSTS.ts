@@ -23,7 +23,9 @@ export const COLLISION_TOLERANCE = 0.03;
 export const COLORS = {
   BG: "black",
   PLAYER: "yellow",
-  BULLET: "pink",
+  EXPLOSION1: "white",
+  EXPLOSION2: "yellow",
+  EXPLOSION3: "tomato",
   RED: "tomato",
   LINE: "blue",
   TEXT: "white",
