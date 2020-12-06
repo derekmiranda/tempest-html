@@ -5,6 +5,7 @@ import { Bullet } from "./Bullet";
 import { Level } from "./Level";
 import { renderPoints, sleep, throttle } from "../lib/utils";
 import { player } from "../lib/shapes";
+import { Explosion } from "./Explosion";
 
 interface PlayerPropsInterface extends GameObjectPropsInterface {
   color?: string;
@@ -71,17 +72,26 @@ export class Player extends BaseGameObject implements GameObjectInterface {
     this.setAliveState(false);
     this.destroy();
 
+    // explode
+    const explosion = new Explosion({
+      ...this.game.getDefaultProps(),
+      x: this.transform.x * 0.7,
+      y: this.transform.y * 0.7,
+      w: 0.05,
+      h: 0.05,
+    });
+    this.game.addObject(explosion, 1);
+    await explosion.play();
+
     // game over
     if (this.game.state.levelState.lives === 0) {
-      await sleep(500);
+      await sleep(1000);
       await this.level.onGameOver();
-      await sleep(300);
+      await sleep(500);
       this.game.restart();
     }
     // lost life
     else {
-      // wait for death anim to finish
-      await sleep(500);
       this.game.updateState({
         levelState: {
           lives: this.game.state.levelState.lives - 1,
