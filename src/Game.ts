@@ -83,6 +83,9 @@ export class Game {
     // create player
     this.player = new Player(this.getDefaultProps());
 
+    // set text rendering props
+    this.ctx.textAlign = "center";
+
     // cache canvas rect
     this.canvasRect = this.canvas.getBoundingClientRect();
     this.startScene();
@@ -98,18 +101,25 @@ export class Game {
     this.layerCollection = new LayerCollection();
 
     switch (this.state.sceneType) {
-      case SceneType.TITLE:
-        console.log("this.title", this.title);
-        this.playScene(this.title);
+      case SceneType.TITLE: {
+        this.title(this);
+        const clickListener = () => {
+          this.updateState({
+            sceneType: SceneType.LEVEL,
+            levelState: {
+              ...this.state.levelState,
+              idx: 0,
+            },
+          });
+          this.ctx.canvas.removeEventListener("click", clickListener, true);
+        };
+        this.ctx.canvas.addEventListener("click", clickListener, true);
         break;
+      }
       case SceneType.LEVEL:
         this.startLevel();
         break;
     }
-  }
-
-  playScene(scene: Scene) {
-    this.cleanUpScene = scene(this);
   }
 
   startLevel() {

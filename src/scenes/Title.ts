@@ -1,9 +1,23 @@
+import { COLORS } from "../CONSTS";
 import { Game } from "../Game";
-import { Explosion } from "../objects/Explosion";
+import { TextObject } from "../objects/TextObject";
 import { Scene } from "../types";
 
 export const Title: Scene = (game: Game) => {
-  const explosion = new Explosion(game.getDefaultProps());
-  game.addObject(explosion);
-  return () => {};
+  game.addObject(
+    new TextObject({
+      ...game.getDefaultProps(),
+      text: "STORMPEST",
+      y: -0.1,
+      h: 0.12,
+    })
+  );
+  game.addObject(
+    new TextObject({
+      ...game.getDefaultProps(),
+      text: "CLICK TO START",
+      y: 0.2,
+      h: 0.05,
+    })
+  );
 };
