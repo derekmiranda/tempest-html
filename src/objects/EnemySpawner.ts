@@ -8,6 +8,7 @@ import { RedEnemy } from "./RedEnemy";
 interface EnemySpawnerPropsInterface extends GameObjectPropsInterface {
   level: Level;
   enemyClasses: typeof Enemy[];
+  enemySpeed?: number;
   startingZ?: number;
   zIncrement?: number;
 }
@@ -17,6 +18,7 @@ export class EnemySpawner extends BaseGameObject {
     typeof Enemy,
     number
   >([[RedEnemy, 0.65]]);
+  enemySpeed: number;
   // z that nearest enemy will start with
   startingZ: number = 1.1;
   // z distance subsequent enemies start at
@@ -28,9 +30,10 @@ export class EnemySpawner extends BaseGameObject {
   constructor(props: EnemySpawnerPropsInterface) {
     super(props);
 
-    const { startingZ, zIncrement } = props;
+    const { startingZ, zIncrement, enemySpeed } = props;
     if (startingZ) this.startingZ = startingZ;
     if (zIncrement) this.zIncrement = zIncrement;
+    if (enemySpeed) this.enemySpeed = enemySpeed;
   }
 
   spawnEnemies() {
@@ -41,6 +44,7 @@ export class EnemySpawner extends BaseGameObject {
         w: size,
         h: size,
         z: this.startingZ + this.zIncrement * i,
+        speed: this.enemySpeed,
       });
       this.level.addEnemy(newEnemy);
     });

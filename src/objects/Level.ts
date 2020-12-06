@@ -14,16 +14,17 @@ import {
   BULLET_TOLERANCE,
   COLLISION_TOLERANCE,
   GAME_OVER_ANIM_SPEED,
+  RED_ENEMY_SPEED,
 } from "../CONSTS";
 import { Enemy } from "./Enemy";
 import { Bullet } from "./Bullet";
-import { Queue } from "../lib/Queue";
 import { EnemySpawner } from "./EnemySpawner";
 
 export interface LevelSpot extends TransformPropsInterface {}
 
 export interface LevelPropsInterface extends GameObjectPropsInterface {
   loops?: boolean;
+  enemySpeed?: number;
 }
 
 interface EnemyStateMap {
@@ -54,6 +55,7 @@ export class Level extends BaseGameObject {
   enemySpawner: EnemySpawner;
   enemyClasses: typeof Enemy[] = [];
   enemyStateMap: EnemyStateMap = {};
+  enemySpeed: number = RED_ENEMY_SPEED;
   // maps lane indices to enemies in lane
   enemyLaneMap: EnemyLaneMap = {};
   // maps lane indices to bullets in lane
@@ -83,6 +85,7 @@ export class Level extends BaseGameObject {
       ...this.game.getDefaultProps(),
       level: this,
       enemyClasses: this.enemyClasses,
+      enemySpeed: this.enemySpeed,
     });
     this.enemySpawner.spawnEnemies();
   }

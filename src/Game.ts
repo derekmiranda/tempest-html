@@ -56,7 +56,6 @@ export class Game {
 
   static defaultState = {
     sceneType: SceneType.TITLE,
-    // sceneType: SceneType.LEVEL,
     levelState: {
       idx: 0,
       lives: 2,

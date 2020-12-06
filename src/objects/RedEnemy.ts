@@ -1,20 +1,19 @@
-import { BaseGameObject } from "./BaseGameObject";
-import { GameObjectInterface, GameObjectPropsInterface, Point } from "../types";
-import { COLORS, BULLET_SPEED, RED_ENEMY_SPEED } from "../CONSTS";
+import { Point } from "../types";
+import { COLORS, RED_ENEMY_SPEED } from "../CONSTS";
 import { Level } from "./Level";
-import { Enemy } from "./Enemy";
+import { Enemy, EnemyPropsInterface } from "./Enemy";
 import { findPointBetweenPoints, sleep } from "../lib/utils";
 
 export class RedEnemy extends Enemy {
   color: string = COLORS.RED;
-  speed: number = RED_ENEMY_SPEED;
+  speed: number;
   level: Level;
   points: Point[];
   to: Point;
   from: Point;
   moving: boolean;
 
-  constructor(props: GameObjectPropsInterface) {
+  constructor(props: EnemyPropsInterface) {
     super(props);
     this.startMoveCoroutine();
   }

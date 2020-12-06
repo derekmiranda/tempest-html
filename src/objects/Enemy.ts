@@ -5,15 +5,21 @@ import { Level } from "./Level";
 import { findPointBetweenPoints } from "../lib/utils";
 import { farDot } from "../lib/shapes";
 
+export interface EnemyPropsInterface extends GameObjectPropsInterface {
+  speed?: number;
+}
+
 export class Enemy extends BaseGameObject implements GameObjectInterface {
   level: Level;
   points: Point[];
   to: Point;
   from: Point;
   color: string;
+  speed: number;
 
-  constructor(props: GameObjectPropsInterface) {
+  constructor(props: EnemyPropsInterface) {
     super(props);
+    if (props.speed) this.speed = props.speed;
   }
 
   updatePath(to: Point, from: Point) {
