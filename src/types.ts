@@ -49,3 +49,8 @@ export interface TransformPropsInterface {
 }
 
 export type Matrix = number[];
+
+type SceneCleanupFunction = () => void;
+export interface Scene {
+  (game: Game): SceneCleanupFunction;
+}

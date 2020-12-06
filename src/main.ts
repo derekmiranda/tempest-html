@@ -1,6 +1,7 @@
 import { Game } from "./Game";
 import { Circle } from "./objects/Circle";
 import { Square } from "./objects/Square";
+import { Title } from "./scenes/Title";
 
 let game: Game, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D;
 
@@ -12,6 +13,9 @@ function main() {
     canvas,
     ctx,
     levels: [Circle, Square],
+    title: Title,
+    gameOver: Title,
+    win: Title,
   });
 
   game.start();

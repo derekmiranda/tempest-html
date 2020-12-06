@@ -1,4 +1,4 @@
-import { GameObjectPropsInterface, VoidFunction } from "./types";
+import { GameObjectPropsInterface, Scene, VoidFunction } from "./types";
 import { BaseGameObject } from "./objects/BaseGameObject";
 import { Level } from "./objects/Level";
 import { Player } from "./objects/Player";
@@ -22,6 +22,9 @@ interface GamePropsInterface {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   levels: typeof Level[];
+  title: Scene;
+  gameOver: Scene;
+  win: Scene;
   state?: State;
 }
 
@@ -39,6 +42,9 @@ export class Game {
   levels: typeof Level[];
   state: State;
   player: Player;
+  title: Scene;
+  gameOver: Scene;
+  win: Scene;
 
   private layerCollection: LayerCollection;
   private canvasRect: DOMRect;
@@ -46,16 +52,18 @@ export class Game {
   private currLevel: Level;
   private objId = -1;
   private lastTime: number;
+  private cleanUpScene: () => void;
 
   constructor({
     canvas,
     ctx,
     levels,
+    title,
+    gameOver,
+    win,
     state = {
-      /* 
-    sceneType: SceneType.TITLE
-    */
-      sceneType: SceneType.LEVEL,
+      sceneType: SceneType.TITLE,
+      // sceneType: SceneType.LEVEL,
       levelState: {
         idx: 0,
         lives: 2,
@@ -66,6 +74,9 @@ export class Game {
     this.ctx = ctx;
     this.state = state;
     this.levels = levels;
+    this.title = title;
+    this.gameOver = gameOver;
+    this.win = win;
   }
 
   start() {
@@ -87,13 +98,18 @@ export class Game {
     this.layerCollection = new LayerCollection();
 
     switch (this.state.sceneType) {
-      case SceneType.LEVEL:
-        this.startLevel();
+      case SceneType.TITLE:
+        console.log("this.title", this.title);
+        this.playScene(this.title);
         break;
       case SceneType.LEVEL:
         this.startLevel();
         break;
     }
+  }
+
+  playScene(scene: Scene) {
+    this.cleanUpScene = scene(this);
   }
 
   startLevel() {
