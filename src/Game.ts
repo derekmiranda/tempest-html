@@ -6,6 +6,7 @@ import { debounce } from "./lib/utils";
 import { LivesDisplay } from "./objects/LivesDisplay";
 import { LayerCollection } from "./lib/LayerCollection";
 import { COLORS, MAX_ID } from "./CONSTS";
+import merge from "lodash/fp/merge";
 
 interface State {
   sceneType: SceneType;
@@ -52,7 +53,15 @@ export class Game {
   private currLevel: Level;
   private objId = -1;
   private lastTime: number;
-  private cleanUpScene: () => void;
+
+  static defaultState = {
+    sceneType: SceneType.TITLE,
+    // sceneType: SceneType.LEVEL,
+    levelState: {
+      idx: 0,
+      lives: 2,
+    },
+  };
 
   constructor({
     canvas,
@@ -61,14 +70,7 @@ export class Game {
     title,
     gameOver,
     win,
-    state = {
-      sceneType: SceneType.TITLE,
-      // sceneType: SceneType.LEVEL,
-      levelState: {
-        idx: 0,
-        lives: 2,
-      },
-    },
+    state = Game.defaultState,
   }: GamePropsInterface) {
     this.canvas = canvas;
     this.ctx = ctx;
@@ -96,10 +98,13 @@ export class Game {
     requestAnimationFrame(this.gameLoop.bind(this));
   }
 
-  startScene() {
-    // clear layers
+  clearLayers() {
+    this.layerCollection?.applyFn((obj) => obj.destroy());
     this.layerCollection = new LayerCollection();
+  }
 
+  startScene() {
+    this.clearLayers();
     switch (this.state.sceneType) {
       case SceneType.TITLE: {
         this.title(this);
@@ -111,6 +116,7 @@ export class Game {
               idx: 0,
             },
           });
+          this.startScene();
           this.ctx.canvas.removeEventListener("click", clickListener, true);
         };
         this.ctx.canvas.addEventListener("click", clickListener, true);
@@ -124,6 +130,9 @@ export class Game {
 
   startLevel() {
     const { idx, lives } = this.state.levelState;
+
+    // reset player alive state
+    this.player.setAliveState(true);
 
     this.currLevel = new this.levels[idx]({
       ...this.getDefaultProps(),
@@ -226,13 +235,13 @@ export class Game {
     });
   }
 
-  updateState(newState: State) {
-    let updateScene = newState.sceneType !== this.state.sceneType;
-    this.state = newState;
+  updateState(newState: unknown) {
+    this.state = merge(this.state, newState);
+  }
 
-    if (updateScene) {
-      this.startScene();
-    }
+  restart() {
+    this.state = { ...Game.defaultState };
+    this.startScene();
   }
 
   // util for getting default Game Object props

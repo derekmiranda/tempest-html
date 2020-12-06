@@ -15,9 +15,9 @@ export const Title: Scene = (game: Game) => {
   game.addObject(
     new TextObject({
       ...game.getDefaultProps(),
-      text: "CLICK TO START",
+      text: "PRESS ANY KEY TO CONTINUE",
       y: 0.2,
-      h: 0.05,
+      h: 0.04,
     })
   );
 };

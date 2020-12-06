@@ -12,6 +12,8 @@ import {
   COLORS,
   ENEMY_TO_LEVEL_SIZE,
   BULLET_TOLERANCE,
+  COLLISION_TOLERANCE,
+  GAME_OVER_ANIM_SPEED,
 } from "../CONSTS";
 import { Enemy } from "./Enemy";
 import { Bullet } from "./Bullet";
@@ -65,6 +67,9 @@ export class Level extends BaseGameObject {
   farPoints: Point[] = [];
   midpoints: Point[] = [];
   farMidpoints: Point[] = [];
+  // game over props
+  isGameOver: boolean = false;
+  endGameOverAnimCb: Function;
 
   constructor(props: LevelPropsInterface) {
     super(props);
@@ -236,17 +241,23 @@ export class Level extends BaseGameObject {
     this.ctx.stroke();
   }
 
-  update() {
+  update(timeUpdate: number) {
     this.throttledUpdateSpot();
 
     // check for collisions
-    this.checkCollisions();
+    this.checkBulletEnemyCollisions();
+    this.checkPlayerEnemyCollisions();
 
     // check for any bullets that need to be destroyed
     this.cleanBullets();
+
+    // render game over animation
+    if (this.isGameOver) {
+      this.playGameOverAnim(timeUpdate);
+    }
   }
 
-  checkCollisions() {
+  checkBulletEnemyCollisions() {
     Object.keys(this.enemyLaneMap).forEach((laneIdx) => {
       const enemyMap = this.enemyLaneMap[laneIdx];
       const bulletMap = this.bulletLaneMap[laneIdx];
@@ -269,6 +280,41 @@ export class Level extends BaseGameObject {
           }
         });
       });
+
+      // check collisions between player and enemy
+      if (parseInt(laneIdx) === this.playerSpotIdx) {
+        for (let enemy of Object.values(enemyMap)) {
+          if (
+            Math.abs(enemy.transform.z - this.player.transform.z) <
+            COLLISION_TOLERANCE
+          ) {
+            this.player.onDeath();
+            break;
+          }
+        }
+      }
+    });
+  }
+
+  checkPlayerEnemyCollisions() {
+    if (!this.player.isAlive) return;
+    Object.keys(this.enemyLaneMap).forEach((laneIdx) => {
+      const enemyMap = this.enemyLaneMap[laneIdx];
+
+      // check collisions between player and enemy
+      if (parseInt(laneIdx) === this.playerSpotIdx) {
+        for (let enemy of Object.values(enemyMap)) {
+          if (
+            Math.abs(enemy.transform.z - this.player.transform.z) <
+            COLLISION_TOLERANCE
+          ) {
+            delete enemyMap[enemy.id];
+            this.removeEnemy(enemy);
+            this.player.onDeath();
+            break;
+          }
+        }
+      }
     });
   }
 
@@ -320,6 +366,25 @@ export class Level extends BaseGameObject {
     }
 
     this.player.setTransformWithProps(this.playerSpots[this.playerSpotIdx]);
+  }
+
+  onGameOver(): Promise<void> {
+    return new Promise((resolve) => {
+      this.isGameOver = true;
+      this.endGameOverAnimCb = resolve;
+    });
+  }
+
+  playGameOverAnim(timeUpdate: number) {
+    if (this.transform.w > 0.01) {
+      this.setTransformWithProps({
+        w: this.transform.w - GAME_OVER_ANIM_SPEED * timeUpdate,
+        h: this.transform.h - GAME_OVER_ANIM_SPEED * timeUpdate,
+      });
+    } else {
+      this.isGameOver = false;
+      this.endGameOverAnimCb();
+    }
   }
 
   startUpdatingWithCursor(x: number, y: number) {

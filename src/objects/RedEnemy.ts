@@ -53,7 +53,7 @@ export class RedEnemy extends Enemy {
   async startMoveCoroutine() {
     this.moving = true;
     await sleep(this.randomWaitTime());
-    if (this.rendered) {
+    if (this.rendered && this.transform.z > 0.3) {
       this.level.moveEnemy(this, 1);
       this.startMoveCoroutine();
     } else {

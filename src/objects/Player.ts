@@ -3,7 +3,7 @@ import { GameObjectInterface, GameObjectPropsInterface } from "../types";
 import { COLORS } from "../CONSTS";
 import { Bullet } from "./Bullet";
 import { Level } from "./Level";
-import { renderPoints, throttle } from "../lib/utils";
+import { renderPoints, sleep, throttle } from "../lib/utils";
 import { player } from "../lib/shapes";
 
 interface PlayerPropsInterface extends GameObjectPropsInterface {
@@ -15,6 +15,7 @@ export class Player extends BaseGameObject implements GameObjectInterface {
   color: string = COLORS.PLAYER;
   fireBullet: Function;
   isFiring: boolean;
+  isAlive: boolean = true;
 
   constructor(props: PlayerPropsInterface) {
     super(props);
@@ -66,6 +67,30 @@ export class Player extends BaseGameObject implements GameObjectInterface {
     this.isFiring = false;
   }
 
+  async onDeath() {
+    this.setAliveState(false);
+    this.destroy();
+
+    // game over
+    if (this.game.state.levelState.lives === 0) {
+      await sleep(500);
+      await this.level.onGameOver();
+      await sleep(300);
+      this.game.restart();
+    }
+    // lost life
+    else {
+      // wait for death anim to finish
+      await sleep(500);
+      this.game.updateState({
+        levelState: {
+          lives: this.game.state.levelState.lives - 1,
+        },
+      });
+    }
+    this.game.startScene();
+  }
+
   setListeners() {
     window.addEventListener("keydown", this.keydown, true);
     window.addEventListener("keyup", this.keyup, true);
@@ -90,5 +115,9 @@ export class Player extends BaseGameObject implements GameObjectInterface {
 
   setLevel(level) {
     this.level = level;
+  }
+
+  setAliveState(state: boolean) {
+    this.isAlive = state;
   }
 }
