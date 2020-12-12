@@ -7,11 +7,15 @@ import { COLORS } from "../CONSTS";
 interface TextObjectPropsInterface extends GameObjectPropsInterface {
   text: string;
   blinking?: boolean;
+  textAlign?: CanvasTextAlign;
+  textBaseline?: CanvasTextBaseline;
 }
 
 export class TextObject extends BaseGameObject implements GameObjectInterface {
   color = COLORS.TEXT;
   text: string;
+  textAlign: CanvasTextAlign;
+  textBaseline: CanvasTextBaseline;
   blinking: boolean = false;
   visible: boolean = true;
 
@@ -19,6 +23,12 @@ export class TextObject extends BaseGameObject implements GameObjectInterface {
     super(props);
     if (props.blinking) {
       this.startBlink();
+    }
+    if (!props.textAlign) {
+      this.textAlign = "center";
+    }
+    if (!props.textBaseline) {
+      this.textBaseline = "alphabetic";
     }
   }
 
@@ -37,6 +47,10 @@ export class TextObject extends BaseGameObject implements GameObjectInterface {
   render() {
     if (!this.visible) return;
     this.ctx.strokeStyle = this.color;
+    this.ctx.save();
+
+    // apply specific text props
+    this.ctx.textAlign = this.textAlign;
 
     // relative font size based on object height
     const fontSize = this.transform.h * this.ctx.canvas.height;
