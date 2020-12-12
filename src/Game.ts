@@ -7,17 +7,18 @@ import { LivesDisplay } from "./objects/LivesDisplay";
 import { LayerCollection } from "./lib/LayerCollection";
 import { COLORS, MAX_ID } from "./CONSTS";
 import merge from "lodash/fp/merge";
+import { TextObject } from "./objects/TextObject";
 
 interface State {
-  sceneType: SceneType;
-  score: number;
+  sceneType?: SceneType;
+  score?: number;
   levelState?: LevelState;
   levelIdx?: number;
 }
 
 interface LevelState {
-  idx: number;
-  lives: number;
+  idx?: number;
+  lives?: number;
 }
 
 interface GamePropsInterface {
@@ -44,6 +45,9 @@ export class Game {
   levels: typeof Level[];
   state: State;
   player: Player;
+  scoreText: TextObject;
+  scoreValueText: TextObject;
+  livesDisplay: LivesDisplay;
   lastTime: number;
   title: Scene;
   gameOver: Scene;
@@ -83,8 +87,32 @@ export class Game {
   }
 
   start() {
-    // create player
+    // create constant game objects
     this.player = new Player(this.getDefaultProps());
+    this.scoreText = new TextObject({
+      ...this.getDefaultProps(),
+      text: "SCORE",
+      x: 0.45,
+      y: -0.38,
+      h: 0.05,
+      textAlign: "end",
+    });
+    this.scoreValueText = new TextObject({
+      ...this.getDefaultProps(),
+      text: "" + this.state.score,
+      x: 0.45,
+      y: -0.3,
+      h: 0.05,
+      textAlign: "end",
+    });
+    this.livesDisplay = new LivesDisplay({
+      ...this.getDefaultProps(),
+      lives: this.state.levelState.lives,
+      x: -0.4,
+      y: -0.4,
+      w: 0.1,
+      h: 0.1,
+    });
 
     // set text rendering props
     this.ctx.textAlign = "center";
@@ -130,7 +158,7 @@ export class Game {
   }
 
   startLevel() {
-    const { idx, lives } = this.state.levelState;
+    const { idx } = this.state.levelState;
 
     // reset player alive state
     this.player.setAliveState(true);
@@ -143,17 +171,10 @@ export class Game {
       h: 0.65,
     });
 
-    const livesDisplay = new LivesDisplay({
-      ...this.getDefaultProps(),
-      lives,
-      x: -0.4,
-      y: -0.4,
-      w: 0.1,
-      h: 0.1,
-    });
-
     this.addObject(this.currLevel, 0);
-    this.addObject(livesDisplay, 0);
+    this.addObject(this.livesDisplay, 1);
+    this.addObject(this.scoreText, 1);
+    this.addObject(this.scoreValueText, 1);
 
     this.currLevel.initPlayerSpots();
     this.currLevel.setPlayer(this.player);
@@ -236,8 +257,11 @@ export class Game {
     });
   }
 
-  updateState(newState: unknown) {
+  updateState(newState: State) {
     this.state = merge(this.state, newState);
+
+    if (newState.score !== this.state.score) {
+    }
   }
 
   restart() {
