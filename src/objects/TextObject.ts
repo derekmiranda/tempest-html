@@ -51,6 +51,7 @@ export class TextObject extends BaseGameObject implements GameObjectInterface {
 
     // apply specific text props
     this.ctx.textAlign = this.textAlign;
+    this.ctx.textBaseline = this.textBaseline;
 
     // relative font size based on object height
     const fontSize = this.transform.h * this.ctx.canvas.height;
