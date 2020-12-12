@@ -10,7 +10,6 @@ import {
   LEVEL_CENTER,
   FAR_SCALE,
   COLORS,
-  ENEMY_TO_LEVEL_SIZE,
   BULLET_TOLERANCE,
   COLLISION_TOLERANCE,
   GAME_OVER_ANIM_SPEED,
@@ -99,12 +98,14 @@ export class Level extends BaseGameObject {
     this.addChildren(player);
   }
 
-  addEnemy(enemy: Enemy) {
+  addEnemy(enemy: Enemy, spotIdx?: number) {
     if (this.enemyStateMap[enemy.id]) return;
 
     enemy.setRenderedState(true);
 
-    const spotIdx = Math.floor(this.farMidpoints.length * Math.random());
+    if (spotIdx === undefined) {
+      spotIdx = Math.floor(this.farMidpoints.length * Math.random());
+    }
 
     // store references to enemy
     this.enemyStateMap[enemy.id] = {
@@ -126,15 +127,13 @@ export class Level extends BaseGameObject {
   }
 
   updateEnemyPath(enemy: Enemy, spotIdx: number) {
-    const fromPoint = this.farMidpoints[spotIdx];
-    const toPoint = this.midpoints[spotIdx];
+    const fromPoint = this.midpoints[spotIdx];
+    const toPoint = this.farMidpoints[spotIdx];
     enemy.setTransformWithProps({
       ...fromPoint,
-      w: ENEMY_TO_LEVEL_SIZE,
-      h: ENEMY_TO_LEVEL_SIZE,
-      angle: Math.PI / 2 - calcAngle(toPoint.x, toPoint.y),
+      angle: Math.PI / 2 - calcAngle(fromPoint.x, fromPoint.y),
     });
-    enemy.updatePath(fromPoint, this.midpoints[spotIdx]);
+    enemy.updatePath(fromPoint, toPoint);
   }
 
   // clear enemy references

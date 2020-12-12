@@ -15,7 +15,9 @@ export const FAR_SCALE = 0.1;
 // padding b/w player and line on level w.r.t. level-space
 export const PLAYER_TO_LEVEL_DIST = 0;
 export const PLAYER_TO_LEVEL_SIZE = 0.2;
-export const ENEMY_TO_LEVEL_SIZE = 0.2;
+export const RED_ENEMY_SIZE = 0.2;
+export const ENEMY_BULLET_SIZE = 0.05;
+export const BULLET_SIZE = 0.05;
 
 // z-value tolerance for collisions
 export const COLLISION_TOLERANCE = 0.03;
@@ -33,6 +35,7 @@ export const COLORS = {
 
 export const RED_ENEMY_SPEED = 0.00015;
 export const BULLET_SPEED = 0.003;
+export const ENEMY_BULLET_SPEED = 0.0005;
 export const BULLET_TOLERANCE = 1500 * BULLET_SPEED * AVG_FRAME_TIME;
 export const GAME_OVER_ANIM_SPEED = 0.0015;
 

@@ -1,9 +1,10 @@
 import { Point } from "../types";
-import { COLORS, LEVEL_CENTER } from "../CONSTS";
+import { ENEMY_BULLET_SIZE, COLORS, LEVEL_CENTER } from "../CONSTS";
 import { Level } from "./Level";
 import { Enemy, EnemyPropsInterface } from "./Enemy";
 import { findPointBetweenPoints, sleep } from "../lib/utils";
 import { farDot } from "../lib/shapes";
+import { EnemyBullet } from "./EnemyBullet";
 
 export class RedEnemy extends Enemy {
   color: string = COLORS.RED;
@@ -16,7 +17,37 @@ export class RedEnemy extends Enemy {
 
   constructor(props: EnemyPropsInterface) {
     super(props);
-    this.startMoveCoroutine();
+  }
+
+  async startMoveCoroutine() {
+    this.moving = true;
+    await sleep(this.randomMoveWaitTime());
+    if (this.rendered && this.transform.z > 0.3) {
+      this.level.moveEnemy(this, 1);
+      this.startMoveCoroutine();
+    } else {
+      this.moving = false;
+    }
+  }
+
+  async startFireCoroutine() {
+    await sleep(this.randomFireWaitTime());
+    if (this.rendered) {
+      if (this.transform.z > 0.5 && this.transform.z < 1) this.spawnBullet();
+      this.startFireCoroutine();
+    }
+  }
+
+  spawnBullet() {
+    const bullet = new EnemyBullet({
+      ...this.game.getDefaultProps(),
+      x: this.transform.x,
+      y: this.transform.y,
+      z: this.transform.z + ENEMY_BULLET_SIZE,
+      w: ENEMY_BULLET_SIZE,
+      h: ENEMY_BULLET_SIZE,
+    });
+    this.level.addEnemy(bullet, this.spotIdx);
   }
 
   initPoints() {
@@ -55,19 +86,13 @@ export class RedEnemy extends Enemy {
     this.setTransformWithProps({ z: newZ, ...newPoint });
   }
 
-  randomWaitTime(): number {
+  randomMoveWaitTime(): number {
     return 1000 - 500 * Math.random();
   }
 
-  async startMoveCoroutine() {
-    this.moving = true;
-    await sleep(this.randomWaitTime());
-    if (this.rendered && this.transform.z > 0.3) {
-      this.level.moveEnemy(this, 1);
-      this.startMoveCoroutine();
-    } else {
-      this.moving = false;
-    }
+  // more variance
+  randomFireWaitTime(): number {
+    return 2000 * Math.random();
   }
 
   render() {
@@ -93,6 +118,7 @@ export class RedEnemy extends Enemy {
 
     if (state && !this.moving) {
       this.startMoveCoroutine();
+      this.startFireCoroutine();
     }
   }
 }

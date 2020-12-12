@@ -1,6 +1,6 @@
 import { BaseGameObject } from "./BaseGameObject";
 import { GameObjectInterface, GameObjectPropsInterface } from "../types";
-import { COLORS } from "../CONSTS";
+import { BULLET_SIZE, COLORS } from "../CONSTS";
 import { Bullet } from "./Bullet";
 import { Level } from "./Level";
 import { renderPoints, sleep, throttle } from "../lib/utils";
@@ -41,8 +41,8 @@ export class Player extends BaseGameObject implements GameObjectInterface {
       parent: this.parent,
       ...bulletTf.to,
       ...bulletTf,
-      w: 0.05,
-      h: 0.05,
+      w: BULLET_SIZE,
+      h: BULLET_SIZE,
     });
     this.level.addBullet(bullet, laneIdx);
     this.game.addObject(bullet, this.layer);

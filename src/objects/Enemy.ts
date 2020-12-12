@@ -4,11 +4,13 @@ import { Level } from "./Level";
 
 export interface EnemyPropsInterface extends GameObjectPropsInterface {
   speed?: number;
+  level?: Level;
 }
 
 export class Enemy extends BaseGameObject implements GameObjectInterface {
   level: Level;
   points: Point[];
+  spotIdx: number;
   to: Point;
   from: Point;
   color: string;
@@ -19,9 +21,13 @@ export class Enemy extends BaseGameObject implements GameObjectInterface {
     if (props.speed) this.speed = props.speed;
   }
 
-  updatePath(to: Point, from: Point) {
+  updatePath(from: Point, to: Point) {
     this.to = to;
     this.from = from;
+  }
+
+  updateSpotIdx(spotIdx: number) {
+    this.spotIdx = spotIdx;
   }
 
   setLevel(level: Level) {
