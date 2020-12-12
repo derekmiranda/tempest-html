@@ -99,7 +99,7 @@ export class Game {
     });
     this.scoreValueText = new TextObject({
       ...this.getDefaultProps(),
-      text: "" + this.state.score,
+      text: ("" + this.state.score).padStart(6, "0"),
       x: 0.45,
       y: -0.3,
       h: 0.05,
@@ -195,6 +195,10 @@ export class Game {
     }
   }
 
+  updateScoreText() {
+    this.scoreValueText.updateText(("" + this.state.score).padStart(6, "0"));
+  }
+
   removeObject(obj) {
     this.layerCollection.removeObject(obj);
     obj.removeListeners();
@@ -258,10 +262,10 @@ export class Game {
   }
 
   updateState(newState: State) {
-    this.state = merge(this.state, newState);
-
     if (newState.score !== this.state.score) {
+      this.updateScoreText();
     }
+    this.state = merge(this.state, newState);
   }
 
   restart() {
