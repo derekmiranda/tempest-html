@@ -30,6 +30,7 @@ body {
 .description {
   align-self: baseline;
   margin: 20px;
+  width: 20%;
 }
 
 canvas#game {
