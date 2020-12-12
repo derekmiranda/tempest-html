@@ -19,6 +19,7 @@ export class EnemyBullet extends Enemy {
   points: Point[];
   to: Point;
   from: Point;
+  score: number = 100;
 
   constructor(props: EnemyPropsInterface) {
     super(props);

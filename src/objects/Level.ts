@@ -289,11 +289,12 @@ export class Level extends BaseGameObject {
           if (
             Math.abs(bullet.transform.z - enemy.transform.z) < BULLET_TOLERANCE
           ) {
+            const score = enemy;
             delete bulletMap[bulletId];
             delete enemyMap[enemyId];
             this.removeEnemy(enemy);
             this.game.updateState({
-              score: this.game.state.score + 1000,
+              score: this.game.state.score + enemy.score,
             });
             bullet.destroy();
           }

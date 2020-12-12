@@ -15,6 +15,7 @@ export class Enemy extends BaseGameObject implements GameObjectInterface {
   from: Point;
   color: string;
   speed: number;
+  score: number = 0;
 
   constructor(props: EnemyPropsInterface) {
     super(props);

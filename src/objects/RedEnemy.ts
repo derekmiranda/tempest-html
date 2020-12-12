@@ -14,6 +14,7 @@ export class RedEnemy extends Enemy {
   to: Point;
   from: Point;
   moving: boolean;
+  score: number = 1000;
 
   constructor(props: EnemyPropsInterface) {
     super(props);
