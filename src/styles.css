@@ -9,6 +9,7 @@ body {
   width: 100%;
   margin: 0;
   text-align: right;
+  letter-spacing: 0.1rem;
   background-color: black;
   color: white;
   font-family: VectorBattle, Arial, Helvetica, sans-serif;
