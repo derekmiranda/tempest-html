@@ -26,7 +26,6 @@ interface GamePropsInterface {
   ctx: CanvasRenderingContext2D;
   levels: typeof Level[];
   title: Scene;
-  gameOver: Scene;
   win: Scene;
   state?: State;
 }
@@ -73,7 +72,6 @@ export class Game {
     ctx,
     levels,
     title,
-    gameOver,
     win,
     state = Game.defaultState,
   }: GamePropsInterface) {
@@ -82,7 +80,6 @@ export class Game {
     this.state = state;
     this.levels = levels;
     this.title = title;
-    this.gameOver = gameOver;
     this.win = win;
   }
 
@@ -146,6 +143,15 @@ export class Game {
             },
           });
           this.startScene();
+          this.ctx.canvas.removeEventListener("click", clickListener, true);
+        };
+        this.ctx.canvas.addEventListener("click", clickListener, true);
+        break;
+      }
+      case SceneType.WIN: {
+        this.win(this);
+        const clickListener = () => {
+          this.restart();
           this.ctx.canvas.removeEventListener("click", clickListener, true);
         };
         this.ctx.canvas.addEventListener("click", clickListener, true);
@@ -272,6 +278,10 @@ export class Game {
       this.livesDisplay.updateLives(newState.levelState.lives);
     }
     this.state = merge(this.state, newState);
+  }
+
+  hasWonGame(): boolean {
+    return this.state.levelState.idx + 1 >= this.levels.length;
   }
 
   restart() {
