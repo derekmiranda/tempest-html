@@ -15,9 +15,9 @@ export const Title: Scene = (game: Game) => {
   game.addObject(
     new TextObject({
       ...game.getDefaultProps(),
-      text: "PRESS ANY KEY TO CONTINUE",
+      text: "CLICK TO CONTINUE",
       y: 0.2,
-      h: 0.04,
+      h: 0.06,
       blinking: true,
     })
   );
