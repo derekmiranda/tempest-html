@@ -27,4 +27,8 @@ export class LivesDisplay extends BaseGameObject {
       });
     }
   }
+
+  updateLives(lives: number) {
+    this.lives = lives;
+  }
 }

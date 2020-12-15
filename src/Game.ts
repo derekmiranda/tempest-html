@@ -265,6 +265,12 @@ export class Game {
     if (newState.score !== this.state.score) {
       this.updateScoreText();
     }
+    if (
+      newState.levelState &&
+      newState.levelState.lives !== this.state.levelState.lives
+    ) {
+      this.livesDisplay.updateLives(newState.levelState.lives);
+    }
     this.state = merge(this.state, newState);
   }
 
