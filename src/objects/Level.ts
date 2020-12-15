@@ -275,7 +275,7 @@ export class Level extends BaseGameObject {
     if (!this.levelWonAnim.active) {
       this.levelWonAnim.start();
       if (this.game.hasWonGame()) {
-        sleep(1000).then(() => {
+        sleep(1500).then(() => {
           this.game.updateState({
             sceneType: SceneType.WIN,
           });
