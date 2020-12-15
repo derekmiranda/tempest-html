@@ -72,7 +72,7 @@ export class Level extends BaseGameObject {
   // level won props
   levelWon: boolean = true;
   // game over props
-  gameOverAction: AsyncAction = new AsyncAction();
+  gameOverAnim: AsyncAction = new AsyncAction();
 
   constructor(props: LevelPropsInterface) {
     super(props);
@@ -262,7 +262,7 @@ export class Level extends BaseGameObject {
     }
 
     // render game over animation
-    if (this.gameOverAction.active) {
+    if (this.gameOverAnim.active) {
       this.playGameOverAnim(timeUpdate);
     }
   }
@@ -388,8 +388,8 @@ export class Level extends BaseGameObject {
     this.player.setTransformWithProps(this.playerSpots[this.playerSpotIdx]);
   }
 
-  onGameOver() {
-    this.gameOverAction.start();
+  onGameOver(): Promise<void> {
+    return this.gameOverAnim.start();
   }
 
   playGameOverAnim(timeUpdate: number) {
@@ -399,7 +399,7 @@ export class Level extends BaseGameObject {
         h: this.transform.h - GAME_OVER_ANIM_SPEED * timeUpdate,
       });
     } else {
-      this.gameOverAction.complete();
+      this.gameOverAnim.complete();
     }
   }
 
