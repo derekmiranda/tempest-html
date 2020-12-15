@@ -17,11 +17,10 @@ export class TextObject extends BaseGameObject implements GameObjectInterface {
   textAlign: CanvasTextAlign;
   textBaseline: CanvasTextBaseline;
   blinking: boolean = false;
-  visible: boolean = true;
 
   constructor(props: TextObjectPropsInterface) {
     super(props);
-    if (props.blinking) {
+    if (props.blinking && this.visible) {
       this.startBlink();
     }
     if (!props.textAlign) {
@@ -45,7 +44,6 @@ export class TextObject extends BaseGameObject implements GameObjectInterface {
   }
 
   render() {
-    if (!this.visible) return;
     this.ctx.strokeStyle = this.color;
     this.ctx.save();
 

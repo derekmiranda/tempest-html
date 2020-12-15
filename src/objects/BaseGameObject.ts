@@ -17,6 +17,7 @@ export class BaseGameObject {
   globalTransform: Transform;
   layer: number;
   rendered: boolean = false;
+  visible: boolean = true;
 
   // rendering props
   points: Point[] = [];

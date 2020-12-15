@@ -263,7 +263,7 @@ export class Game {
 
     this.layerCollection.applyFn((obj: BaseGameObject) => {
       obj._update(timeDelta, time);
-      obj._render();
+      obj.visible && obj._render();
     });
   }
 
