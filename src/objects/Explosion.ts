@@ -3,6 +3,7 @@ import { GameObjectInterface, GameObjectPropsInterface } from "../types";
 import { explosion } from "../lib/shapes";
 import { renderPoints } from "../lib/utils";
 import { COLORS } from "../CONSTS";
+import { AsyncAction } from "../lib/AsyncAction";
 
 export class Explosion extends BaseGameObject implements GameObjectInterface {
   colors: string[] = [COLORS.EXPLOSION1, COLORS.EXPLOSION2, COLORS.EXPLOSION3];
@@ -12,8 +13,7 @@ export class Explosion extends BaseGameObject implements GameObjectInterface {
   // number of explosion layers per frame
   explosionsPerFrame: number[] = [1, 2, 3, 2, 1, 0];
   startTime: number;
-  isExploding: boolean = false;
-  endExplosionCb: Function;
+  explosionAnim: AsyncAction = new AsyncAction();
 
   constructor(props: GameObjectPropsInterface) {
     super(props);
@@ -24,11 +24,10 @@ export class Explosion extends BaseGameObject implements GameObjectInterface {
   }
 
   update(_, time: number) {
-    if (this.isExploding) {
+    if (this.explosionAnim.active) {
       // end of animation
       if (time - this.startTime > this.timeCutoff * this.numFrames) {
-        this.isExploding = false;
-        this.endExplosionCb();
+        this.explosionAnim.complete();
         this.destroy();
         return;
       }
@@ -37,11 +36,8 @@ export class Explosion extends BaseGameObject implements GameObjectInterface {
   }
 
   play(): Promise<void> {
-    return new Promise((resolve) => {
-      this.startTime = this.game.lastTime;
-      this.isExploding = true;
-      this.endExplosionCb = resolve;
-    });
+    this.startTime = this.game.lastTime;
+    return this.explosionAnim.start();
   }
 
   renderExplosion(time: number) {
