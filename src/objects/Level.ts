@@ -18,6 +18,7 @@ import {
 import { Enemy } from "./Enemy";
 import { Bullet } from "./Bullet";
 import { EnemySpawner } from "./EnemySpawner";
+import { AsyncAction } from "../lib/AsyncAction";
 
 export interface LevelSpot extends TransformPropsInterface {}
 
@@ -71,8 +72,7 @@ export class Level extends BaseGameObject {
   // level won props
   levelWon: boolean = true;
   // game over props
-  isGameOver: boolean = false;
-  endGameOverAnimCb: Function;
+  gameOverAction: AsyncAction = new AsyncAction();
 
   constructor(props: LevelPropsInterface) {
     super(props);
@@ -262,7 +262,7 @@ export class Level extends BaseGameObject {
     }
 
     // render game over animation
-    if (this.isGameOver) {
+    if (this.gameOverAction.active) {
       this.playGameOverAnim(timeUpdate);
     }
   }
@@ -388,11 +388,8 @@ export class Level extends BaseGameObject {
     this.player.setTransformWithProps(this.playerSpots[this.playerSpotIdx]);
   }
 
-  onGameOver(): Promise<void> {
-    return new Promise((resolve) => {
-      this.isGameOver = true;
-      this.endGameOverAnimCb = resolve;
-    });
+  onGameOver() {
+    this.gameOverAction.start();
   }
 
   playGameOverAnim(timeUpdate: number) {
@@ -402,8 +399,7 @@ export class Level extends BaseGameObject {
         h: this.transform.h - GAME_OVER_ANIM_SPEED * timeUpdate,
       });
     } else {
-      this.isGameOver = false;
-      this.endGameOverAnimCb();
+      this.gameOverAction.complete();
     }
   }
 
