@@ -12,7 +12,7 @@ function main() {
   game = new Game({
     canvas,
     ctx,
-    levels: [Circle, Square],
+    levels: [Circle],
     title: Title,
     gameOver: Title,
     win: Title,
