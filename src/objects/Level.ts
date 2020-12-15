@@ -5,7 +5,7 @@ import {
 } from "../types";
 import { BaseGameObject } from "./BaseGameObject";
 import { Player } from "./Player";
-import { calcAngle, calcMidpoints, throttle } from "../lib/utils";
+import { calcAngle, calcMidpoints, sleep, throttle } from "../lib/utils";
 import {
   LEVEL_CENTER,
   FAR_SCALE,
@@ -19,6 +19,7 @@ import { Enemy } from "./Enemy";
 import { Bullet } from "./Bullet";
 import { EnemySpawner } from "./EnemySpawner";
 import { AsyncAction } from "../lib/AsyncAction";
+import { SceneType } from "../Game";
 
 export interface LevelSpot extends TransformPropsInterface {}
 
@@ -69,9 +70,7 @@ export class Level extends BaseGameObject {
   farPoints: Point[] = [];
   midpoints: Point[] = [];
   farMidpoints: Point[] = [];
-  // level won props
-  levelWon: boolean = true;
-  // game over props
+  levelWonAnim: AsyncAction = new AsyncAction();
   gameOverAnim: AsyncAction = new AsyncAction();
 
   constructor(props: LevelPropsInterface) {
@@ -257,8 +256,7 @@ export class Level extends BaseGameObject {
 
     // check if all enemies gone e.g. win this level
     if (this.checkWin()) {
-      this.levelWon = true;
-      return;
+      this.processWin();
     }
 
     // render game over animation
@@ -271,6 +269,23 @@ export class Level extends BaseGameObject {
     return Object.values(this.enemyLaneMap).every(
       (lane) => !lane || Object.keys(lane).length === 0
     );
+  }
+
+  processWin() {
+    if (!this.levelWonAnim.active) {
+      this.levelWonAnim.start();
+      if (this.game.hasWonGame()) {
+        sleep(1000).then(() => {
+          this.game.updateState({
+            sceneType: SceneType.WIN,
+          });
+          this.game.startScene();
+        });
+      } else {
+        // TODO: play level win anim
+        console.log("Level won but you still have more to beat!");
+      }
+    }
   }
 
   checkBulletEnemyCollisions() {
