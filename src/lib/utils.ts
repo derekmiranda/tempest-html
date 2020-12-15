@@ -11,9 +11,13 @@ export function findPointBetweenPoints(
   const dy = end.y - start.y;
 
   return {
-    x: start.x + dx * k,
-    y: start.y + dy * k,
+    x: findValueBetweenValues(start.x, end.x, k),
+    y: findValueBetweenValues(start.y, end.y, k),
   };
+}
+
+export function findValueBetweenValues(start: number, end: number, k: number) {
+  return start + k * (end - start);
 }
 
 export function calcMidpoints(points: Point[], loops: boolean): Point[] {
