@@ -5,7 +5,7 @@ export class AsyncAction {
   private resolve: (value?: unknown) => void;
   private reject: (error: Error) => void;
 
-  start() {
+  start(): Promise<void> {
     this.promise = new Promise((resolve, reject) => {
       this.active = true;
       this.resolve = resolve;
@@ -13,6 +13,8 @@ export class AsyncAction {
     }).then(() => {
       this.active = false;
     });
+
+    return this.promise;
   }
 
   complete() {
