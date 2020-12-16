@@ -9,7 +9,7 @@ export const Title: Scene = (game: Game) => {
     text: "WILLIWAW",
     farTransformProps: {
       x: 0,
-      y: 0,
+      y: 0.1,
       h: 0.01,
     },
     nearTransformProps: {
