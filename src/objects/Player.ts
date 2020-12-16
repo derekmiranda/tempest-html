@@ -12,11 +12,13 @@ interface PlayerPropsInterface extends GameObjectPropsInterface {
 }
 
 export class Player extends BaseGameObject implements GameObjectInterface {
+  static bulletsPerBurst: number = 5;
   level: Level;
   color: string = COLORS.PLAYER;
   fireBullet: Function;
   isFiring: boolean;
   isAlive: boolean = true;
+  isExploding: boolean = false;
 
   constructor(props: PlayerPropsInterface) {
     super(props);
@@ -24,14 +26,21 @@ export class Player extends BaseGameObject implements GameObjectInterface {
     this.keyup = this.keyup.bind(this);
     this.enableFiring = this.enableFiring.bind(this);
     this.disableFiring = this.disableFiring.bind(this);
-    this.fireBullet = throttle(this._fireBullet.bind(this), 150);
+    this.fireBullet = throttle(this._fireBullet.bind(this), 500);
   }
 
   initPoints() {
     this.points = player();
   }
 
-  _fireBullet() {
+  async _fireBullet() {
+    for (let i = 0; i < Player.bulletsPerBurst && this.isFiring; i++) {
+      this._spawnBullet();
+      if (i < Player.bulletsPerBurst - 1) await sleep(50);
+    }
+  }
+
+  _spawnBullet() {
     const bulletTf = this.level.getBulletPath();
     const laneIdx = this.level.getPlayerSpotIdx();
     const bullet = new Bullet({
@@ -69,19 +78,24 @@ export class Player extends BaseGameObject implements GameObjectInterface {
   }
 
   async onDeath() {
+    if (!this.isAlive) return;
+
+    this.isExploding = true;
     this.setAliveState(false);
     this.destroy();
 
     // explode
     const explosion = new Explosion({
       ...this.game.getDefaultProps(),
-      x: this.transform.x * 0.7,
-      y: this.transform.y * 0.7,
-      w: 0.05,
-      h: 0.05,
+      x: this.transform.x,
+      y: this.transform.y,
+      w: 0.08,
+      h: 0.08,
     });
     this.game.addObject(explosion, 1);
+    this.level.addChildren(explosion);
     await explosion.play();
+    this.isExploding = false;
 
     // game over
     if (this.game.state.levelState.lives === 0) {
