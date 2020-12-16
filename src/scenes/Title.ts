@@ -4,22 +4,21 @@ import { TitleAnimation } from "../objects/TitleAnimation";
 import { Scene } from "../types";
 
 export const Title: Scene = (game: Game) => {
-  game.addObject(
-    new TitleAnimation({
-      ...game.getDefaultProps(),
-      text: "WILLIWAW",
-      farTransformProps: {
-        x: 0,
-        y: 0,
-        h: 0.01,
-      },
-      nearTransformProps: {
-        x: 0,
-        y: -0.15,
-        h: 0.15,
-      },
-    })
-  );
+  const titleAnim = new TitleAnimation({
+    ...game.getDefaultProps(),
+    text: "WILLIWAW",
+    farTransformProps: {
+      x: 0,
+      y: 0,
+      h: 0.01,
+    },
+    nearTransformProps: {
+      x: 0,
+      y: -0.15,
+      h: 0.15,
+    },
+  });
+  game.addObject(titleAnim);
   game.addObject(
     new TextObject({
       ...game.getDefaultProps(),
