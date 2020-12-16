@@ -17,6 +17,7 @@ import {
   FAR_SCALE,
   COLORS,
   BULLET_TOLERANCE,
+  NEAR_BULLET_TOLERANCE,
   COLLISION_TOLERANCE,
   GAME_OVER_ANIM_SPEED,
   RED_ENEMY_SPEED,
@@ -309,8 +310,10 @@ export class Level extends BaseGameObject {
         Object.keys(enemyMap).forEach((enemyId) => {
           const enemy = enemyMap[enemyId];
 
+          const zDist = Math.abs(bullet.transform.z - enemy.transform.z);
           if (
-            Math.abs(bullet.transform.z - enemy.transform.z) < BULLET_TOLERANCE
+            zDist <
+            (enemy.onNearPlane ? NEAR_BULLET_TOLERANCE : BULLET_TOLERANCE)
           ) {
             delete bulletMap[bulletId];
             delete enemyMap[enemyId];

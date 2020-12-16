@@ -20,7 +20,6 @@ export class RedEnemy extends Enemy {
   from: Point;
   moving: boolean;
   score: number = 1000;
-  onNearPlane: boolean = false;
   numFollows: number = 0;
 
   constructor(props: EnemyPropsInterface) {
@@ -111,7 +110,7 @@ export class RedEnemy extends Enemy {
     const newZ = z - timeDelta * this.speed;
 
     if (newZ < 0) {
-      this.onNearPlane = true;
+      this.updateOnNearPlane(true);
       this.startPlayerFollowCoroutine();
       return;
     }

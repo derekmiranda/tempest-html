@@ -46,6 +46,7 @@ export const RED_ENEMY_SPEED = 0.00015;
 export const BULLET_SPEED = 0.003;
 export const ENEMY_BULLET_SPEED = 0.0005;
 export const BULLET_TOLERANCE = 1500 * BULLET_SPEED * AVG_FRAME_TIME;
+export const NEAR_BULLET_TOLERANCE = BULLET_TOLERANCE * 5;
 export const GAME_OVER_ANIM_SPEED = 0.0015;
 
 export const MAX_ID = Number.MAX_SAFE_INTEGER;

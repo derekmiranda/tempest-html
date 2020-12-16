@@ -16,6 +16,7 @@ export class Enemy extends BaseGameObject implements GameObjectInterface {
   color: string;
   speed: number;
   score: number = 0;
+  onNearPlane: boolean = false;
 
   constructor(props: EnemyPropsInterface) {
     super(props);
@@ -29,6 +30,10 @@ export class Enemy extends BaseGameObject implements GameObjectInterface {
 
   updateSpotIdx(spotIdx: number) {
     this.spotIdx = spotIdx;
+  }
+
+  updateOnNearPlane(state: boolean) {
+    this.onNearPlane = state;
   }
 
   setLevel(level: Level) {
