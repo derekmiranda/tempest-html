@@ -5,7 +5,13 @@ import {
 } from "../types";
 import { BaseGameObject } from "./BaseGameObject";
 import { Player } from "./Player";
-import { calcAngle, calcMidpoints, sleep, throttle } from "../lib/utils";
+import {
+  calcAngle,
+  calcMidpoints,
+  shouldMoveForwardInLoop,
+  sleep,
+  throttle,
+} from "../lib/utils";
 import {
   LEVEL_CENTER,
   FAR_SCALE,
@@ -378,20 +384,14 @@ export class Level extends BaseGameObject {
       return;
 
     // look for fastest path if loops
-    const forwardTarget =
-      this.targetSpotIdx < this.playerSpotIdx
-        ? this.playerSpots.length + this.targetSpotIdx
-        : this.targetSpotIdx;
-    const forwardPath = forwardTarget - this.playerSpotIdx;
-
-    const backwardTarget =
-      this.targetSpotIdx > this.playerSpotIdx
-        ? this.targetSpotIdx - this.playerSpots.length
-        : this.targetSpotIdx;
-    const backwardPath = backwardTarget - this.playerSpotIdx;
-
     // increment by 1 space in best direction
-    if (Math.abs(forwardPath) < Math.abs(backwardPath)) {
+    if (
+      shouldMoveForwardInLoop(
+        this.playerSpotIdx,
+        this.targetSpotIdx,
+        this.playerSpots.length
+      )
+    ) {
       this.playerSpotIdx += 1;
       if (this.playerSpotIdx >= this.playerSpots.length) this.playerSpotIdx = 0;
     } else {

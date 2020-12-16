@@ -31,6 +31,22 @@ export function calcMidpoints(points: Point[], loops: boolean): Point[] {
   return midpoints;
 }
 
+// true - move forward to get to target
+// false - move backward to get to target
+export function shouldMoveForwardInLoop(
+  currIdx: number,
+  targetIdx: number,
+  iterLen: number
+): boolean {
+  const forwardTarget = targetIdx < currIdx ? iterLen + targetIdx : targetIdx;
+  const forwardPath = forwardTarget - currIdx;
+
+  const backwardTarget = targetIdx > currIdx ? targetIdx - iterLen : targetIdx;
+  const backwardPath = backwardTarget - currIdx;
+
+  return Math.abs(forwardPath) < Math.abs(backwardPath);
+}
+
 export function rotate(x, y, angle): Point {
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
