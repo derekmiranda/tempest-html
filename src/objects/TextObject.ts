@@ -4,8 +4,9 @@ import { explosion } from "../lib/shapes";
 import { renderPoints, sleep } from "../lib/utils";
 import { COLORS } from "../CONSTS";
 
-interface TextObjectPropsInterface extends GameObjectPropsInterface {
+export interface TextObjectPropsInterface extends GameObjectPropsInterface {
   text: string;
+  color?: string;
   blinking?: boolean;
   textAlign?: CanvasTextAlign;
   textBaseline?: CanvasTextBaseline;
@@ -22,6 +23,9 @@ export class TextObject extends BaseGameObject implements GameObjectInterface {
     super(props);
     if (props.blinking && this.visible) {
       this.startBlink();
+    }
+    if (props.color) {
+      this.color = props.color;
     }
     if (!props.textAlign) {
       this.textAlign = "center";

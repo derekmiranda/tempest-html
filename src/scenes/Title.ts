@@ -1,15 +1,23 @@
-import { COLORS } from "../CONSTS";
 import { Game } from "../Game";
 import { TextObject } from "../objects/TextObject";
+import { TitleAnimation } from "../objects/TitleAnimation";
 import { Scene } from "../types";
 
 export const Title: Scene = (game: Game) => {
   game.addObject(
-    new TextObject({
+    new TitleAnimation({
       ...game.getDefaultProps(),
       text: "WILLIWAW",
-      y: -0.1,
-      h: 0.12,
+      farTransformProps: {
+        x: 0,
+        y: 0,
+        h: 0.01,
+      },
+      nearTransformProps: {
+        x: 0,
+        y: -0.15,
+        h: 0.15,
+      },
     })
   );
   game.addObject(
