@@ -275,8 +275,11 @@ export class Level extends BaseGameObject {
   }
 
   checkWin(): boolean {
-    return Object.values(this.enemyLaneMap).every(
-      (lane) => !lane || Object.keys(lane).length === 0
+    return (
+      this.player.isAlive &&
+      Object.values(this.enemyLaneMap).every(
+        (lane) => !lane || Object.keys(lane).length === 0
+      )
     );
   }
 
