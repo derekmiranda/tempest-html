@@ -7,9 +7,6 @@ export function findPointBetweenPoints(
   end: Point,
   k: number
 ): Point {
-  const dx = end.x - start.x;
-  const dy = end.y - start.y;
-
   return {
     x: findValueBetweenValues(start.x, end.x, k),
     y: findValueBetweenValues(start.y, end.y, k),
