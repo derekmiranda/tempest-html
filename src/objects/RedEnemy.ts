@@ -11,7 +11,7 @@ import { farDot } from "../lib/shapes";
 import { EnemyBullet } from "./EnemyBullet";
 
 export class RedEnemy extends Enemy {
-  static maxFollows: number = 3;
+  static maxFollows: number = 5;
   color: string = COLORS.RED;
   speed: number;
   level: Level;
@@ -40,7 +40,7 @@ export class RedEnemy extends Enemy {
 
   async startPlayerFollowCoroutine() {
     this.moving = true;
-    await sleep(750);
+    await sleep(500);
     if (this.rendered && this.numFollows < RedEnemy.maxFollows) {
       if (this.spotIdx !== this.level.playerSpotIdx) {
         this.numFollows++;
