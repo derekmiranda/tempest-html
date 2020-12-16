@@ -85,7 +85,6 @@ export class Game {
 
   start() {
     // create constant game objects
-    this.player = new Player(this.getDefaultProps());
     this.scoreText = new TextObject({
       ...this.getDefaultProps(),
       text: "SCORE",
@@ -166,8 +165,7 @@ export class Game {
   startLevel() {
     const { idx } = this.state.levelState;
 
-    // reset player alive state
-    this.player.setAliveState(true);
+    this.player = new Player(this.getDefaultProps());
 
     this.currLevel = new this.levels[idx]({
       ...this.getDefaultProps(),
