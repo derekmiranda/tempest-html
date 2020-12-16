@@ -32,10 +32,14 @@ export const COLORS = {
   LINE: "blue",
   TEXT: "white",
   // for title animation
-  PINK: "pink",
-  BLUE: "blue",
-  GREEN: "green",
-  YELLOW: "yellow",
+  TITLE_ANIM: [
+    "magenta",
+    "coral",
+    "gold",
+    "mediumspringgreen",
+    "mediumslateblue",
+    "white",
+  ],
 };
 
 export const RED_ENEMY_SPEED = 0.00015;
