@@ -2,11 +2,16 @@ import { Point } from "../types";
 import { ENEMY_BULLET_SIZE, COLORS, LEVEL_CENTER } from "../CONSTS";
 import { Level } from "./Level";
 import { Enemy, EnemyPropsInterface } from "./Enemy";
-import { findPointBetweenPoints, sleep } from "../lib/utils";
+import {
+  findPointBetweenPoints,
+  shouldMoveForwardInLoop,
+  sleep,
+} from "../lib/utils";
 import { farDot } from "../lib/shapes";
 import { EnemyBullet } from "./EnemyBullet";
 
 export class RedEnemy extends Enemy {
+  static maxFollows: number = 3;
   color: string = COLORS.RED;
   speed: number;
   level: Level;
@@ -15,6 +20,8 @@ export class RedEnemy extends Enemy {
   from: Point;
   moving: boolean;
   score: number = 1000;
+  onNearPlane: boolean = false;
+  numFollows: number = 0;
 
   constructor(props: EnemyPropsInterface) {
     super(props);
@@ -28,6 +35,30 @@ export class RedEnemy extends Enemy {
       this.startMoveCoroutine();
     } else {
       this.moving = false;
+    }
+  }
+
+  async startPlayerFollowCoroutine() {
+    this.moving = true;
+    await sleep(750);
+    if (this.rendered && this.numFollows < RedEnemy.maxFollows) {
+      if (this.spotIdx !== this.level.playerSpotIdx) {
+        this.numFollows++;
+
+        const move = shouldMoveForwardInLoop(
+          this.spotIdx,
+          this.level.playerSpotIdx,
+          this.level.playerSpots.length
+        )
+          ? 1
+          : -1;
+        this.level.moveEnemy(this, move);
+      }
+      this.startPlayerFollowCoroutine();
+    } else {
+      this.level.removeEnemy(this);
+      this.moving = false;
+      this.rendered = false;
     }
   }
 
@@ -74,12 +105,14 @@ export class RedEnemy extends Enemy {
   }
 
   update(timeDelta: number) {
+    if (this.onNearPlane) return;
+
     const { z } = this.transform.getTransformProps();
     const newZ = z - timeDelta * this.speed;
 
     if (newZ < 0) {
-      this.level.removeEnemy(this);
-      this.rendered = false;
+      this.onNearPlane = true;
+      this.startPlayerFollowCoroutine();
       return;
     }
 
