@@ -14,12 +14,6 @@ export class TitleAnimation extends BaseGameObject {
   static colors = COLORS.TITLE_ANIM;
   static numTextObjs = COLORS.TITLE_ANIM.length * 3;
   static timeCutoff: number = 200;
-  // rising from far
-  static firstHalfCutoff: number =
-    TitleAnimation.timeCutoff * TitleAnimation.numTextObjs;
-  // receding from near
-  static secondHalfCutoff: number =
-    2 * TitleAnimation.timeCutoff * TitleAnimation.numTextObjs;
 
   textObjects: TextObject[] = [];
   text: string;
@@ -76,18 +70,45 @@ export class TitleAnimation extends BaseGameObject {
       return;
     }
 
-    // index in textObjects to make visible up to
-    let visibleIdx =
-      Math.floor((time - this.startTime) / TitleAnimation.timeCutoff) %
-      (4 * TitleAnimation.numTextObjs);
+    // determine animation phase
 
-    // first half of anim
-    if (visibleIdx >= TitleAnimation.numTextObjs) {
-      visibleIdx = 2 * TitleAnimation.numTextObjs - visibleIdx;
+    // repeat
+
+    const dt = time - this.startTime;
+    const phaseCutoff = TitleAnimation.timeCutoff * TitleAnimation.numTextObjs;
+    const phase = Math.floor(dt / phaseCutoff) % 4;
+
+    let startIdx, endIdx;
+    const baseIdx =
+      Math.floor(dt / TitleAnimation.timeCutoff) % TitleAnimation.numTextObjs;
+
+    // 0. no objects visible -> turn on from far
+    if (phase === 0) {
+      startIdx = 0;
+      endIdx = baseIdx;
+    }
+    // 1. all objects visible now -> turn off from far
+    else if (phase === 1) {
+      startIdx = baseIdx;
+      endIdx = TitleAnimation.numTextObjs - 1;
+    }
+    // 2. only nearest visible -> turn on from near
+    else if (phase === 2) {
+      startIdx = TitleAnimation.numTextObjs - baseIdx;
+      endIdx = TitleAnimation.numTextObjs - 1;
+    }
+    // 3. all visible -> turn off from near
+    else {
+      startIdx = 0;
+      endIdx = TitleAnimation.numTextObjs - baseIdx;
     }
 
     for (let i = 0; i < TitleAnimation.numTextObjs; i++) {
-      this.textObjects[i].visible = i <= visibleIdx;
+      let visible =
+        (i >= startIdx && i <= endIdx) ||
+        // is nearest in phase 2
+        (phase === 2 && i === TitleAnimation.numTextObjs - 1);
+      this.textObjects[i].visible = visible;
     }
   }
 
