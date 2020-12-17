@@ -1,6 +1,7 @@
 import { Game } from "./Game";
 import { Circle } from "./objects/Circle";
 import { Square } from "./objects/Square";
+import { Plus } from "./objects/Plus";
 import { Title } from "./scenes/Title";
 import { GameEnd } from "./scenes/GameEnd";
 
@@ -13,7 +14,7 @@ function main() {
   game = new Game({
     canvas,
     ctx,
-    levels: [Circle, Square],
+    levels: [Circle, Square, Plus],
     title: Title,
     gameOver: GameEnd(false),
     win: GameEnd(true),

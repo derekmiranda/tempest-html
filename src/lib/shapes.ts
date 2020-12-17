@@ -14,6 +14,28 @@ export function player(): Point[] {
   ];
 }
 
+export function plus(): Point[] {
+  return [
+    // start from right side
+    { x: 0.5, y: 0 },
+    { x: 0.5, y: 0.25 },
+    { x: 0.25, y: 0.25 },
+    { x: 0.25, y: 0.5 },
+    { x: 0, y: 0.5 },
+    { x: -0.25, y: 0.5 },
+    { x: -0.25, y: 0.25 },
+    { x: -0.5, y: 0.25 },
+    { x: -0.5, y: 0 },
+    { x: -0.5, y: -0.25 },
+    { x: -0.25, y: -0.25 },
+    { x: -0.25, y: -0.5 },
+    { x: 0, y: -0.5 },
+    { x: 0.25, y: -0.5 },
+    { x: 0.25, y: -0.25 },
+    { x: 0.5, y: -0.25 },
+  ];
+}
+
 const _circleMemo = {};
 export function circle(segments) {
   if (!_circleMemo[segments]) {
