@@ -17,6 +17,14 @@ export function findValueBetweenValues(start: number, end: number, k: number) {
   return start + k * (end - start);
 }
 
+export function getPercentBetweenValues(
+  start: number,
+  end: number,
+  target: number
+) {
+  return (target - start) / (end - start);
+}
+
 export function calcMidpoints(points: Point[], loops: boolean): Point[] {
   const midpoints = [];
   for (let i = 0; i < points.length - 1; i++) {

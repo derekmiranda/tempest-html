@@ -8,6 +8,8 @@ import { Player } from "./Player";
 import {
   calcAngle,
   calcMidpoints,
+  findValueBetweenValues,
+  getPercentBetweenValues,
   shouldMoveForwardInLoop,
   sleep,
   throttle,
@@ -21,6 +23,7 @@ import {
   COLLISION_TOLERANCE,
   GAME_OVER_ANIM_SPEED,
   RED_ENEMY_SPEED,
+  LEVEL_WON_ANIM_SPEED,
 } from "../CONSTS";
 import { Enemy } from "./Enemy";
 import { Bullet } from "./Bullet";
@@ -57,6 +60,9 @@ interface EnemyState {
 }
 
 export class Level extends BaseGameObject {
+  // w-value for zoom in anim after winning
+  static zoomInW: number = 15;
+
   playerSpots: LevelSpot[] = [];
   bulletSpots: LevelSpot[] = [];
   player: Player;
@@ -77,7 +83,9 @@ export class Level extends BaseGameObject {
   farPoints: Point[] = [];
   midpoints: Point[] = [];
   farMidpoints: Point[] = [];
+  levelWon: boolean = false;
   levelWonAnim: AsyncAction = new AsyncAction();
+  levelWonStartTransform: TransformPropsInterface;
   gameOverAnim: AsyncAction = new AsyncAction();
 
   constructor(props: LevelPropsInterface) {
@@ -264,12 +272,14 @@ export class Level extends BaseGameObject {
     this.cleanBullets();
 
     // check if all enemies gone e.g. win this level
-    if (this.checkWin()) {
+    if (this.checkWin() && !this.levelWon) {
       this.processWin();
     }
 
-    // render game over animation
-    if (this.gameOverAnim.active) {
+    // render animations
+    if (this.levelWonAnim.active) {
+      this.playLevelWonAnim(timeUpdate);
+    } else if (this.gameOverAnim.active) {
       this.playGameOverAnim(timeUpdate);
     }
   }
@@ -284,8 +294,8 @@ export class Level extends BaseGameObject {
   }
 
   async processWin() {
+    this.levelWon = true;
     if (!this.levelWonAnim.active) {
-      this.levelWonAnim.start();
       if (this.game.hasWonGame()) {
         await sleep(1500);
         this.game.updateState({
@@ -293,8 +303,9 @@ export class Level extends BaseGameObject {
         });
         this.game.startScene();
       } else {
-        // TODO: play level win anim
-        await sleep(1500);
+        await sleep(1000);
+        await this.onLevelWin();
+        await sleep(500);
         this.game.updateState({
           sceneType: SceneType.LEVEL,
           levelState: {
@@ -428,6 +439,31 @@ export class Level extends BaseGameObject {
       });
     } else {
       this.gameOverAnim.complete();
+    }
+  }
+
+  onLevelWin(): Promise<void> {
+    this.levelWonStartTransform = this.transform.getTransformProps();
+    return this.levelWonAnim.start();
+  }
+
+  playLevelWonAnim(timeUpdate: number) {
+    if (this.globalTransform.w < Level.zoomInW) {
+      const { w } = this.levelWonStartTransform;
+      const k = getPercentBetweenValues(w, Level.zoomInW, this.transform.w);
+
+      const newY = -findValueBetweenValues(
+        0,
+        LEVEL_CENTER.y * this.transform.w,
+        k
+      );
+      this.setTransformWithProps({
+        y: newY,
+        w: this.transform.w + LEVEL_WON_ANIM_SPEED * timeUpdate,
+        h: this.transform.h + LEVEL_WON_ANIM_SPEED * timeUpdate,
+      });
+    } else {
+      this.levelWonAnim.complete();
     }
   }
 
