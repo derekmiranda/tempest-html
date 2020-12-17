@@ -107,14 +107,6 @@ export class Game {
       textBaseline: "bottom",
       textAlign: "end",
     });
-    this.livesDisplay = new LivesDisplay({
-      ...this.getDefaultProps(),
-      lives: this.state.levelState.lives,
-      x: -0.4,
-      y: -0.4,
-      w: 0.1,
-      h: 0.1,
-    });
 
     // set text rendering props
     this.ctx.textAlign = "center";
@@ -178,6 +170,14 @@ export class Game {
     const { idx } = this.state.levelState;
 
     this.player = new Player(this.getDefaultProps());
+    this.livesDisplay = new LivesDisplay({
+      ...this.getDefaultProps(),
+      lives: this.state.levelState.lives,
+      x: -0.4,
+      y: -0.4,
+      w: 0.1,
+      h: 0.1,
+    });
 
     this.currLevel = new this.levels[idx]({
       ...this.getDefaultProps(),
