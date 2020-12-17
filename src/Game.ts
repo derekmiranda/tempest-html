@@ -255,10 +255,26 @@ export class Game {
     );
 
     const resizeHandler: VoidFunction = debounce(function () {
+      // resize canvas
+      this.resizeCanvas();
       // recache canvas rect
       this.canvasRect = this.canvas.getBoundingClientRect();
     }, 200);
     window.addEventListener("resize", resizeHandler);
+  }
+
+  // resizing canvas based on responsize canvas#game sizes in CSS
+  resizeCanvas() {
+    if (window.innerWidth <= 400) {
+      this.canvas.width = 300;
+      this.canvas.height = 300;
+    } else if (window.innerWidth <= 800) {
+      this.canvas.width = 400;
+      this.canvas.height = 400;
+    } else {
+      this.canvas.width = 750;
+      this.canvas.height = 750;
+    }
   }
 
   gameLoop(time) {

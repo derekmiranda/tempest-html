@@ -5,9 +5,16 @@
 }
 
 html,
+body,
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+html,
 body {
   width: 100%;
-  margin: 0;
   letter-spacing: 0.1rem;
   background-color: black;
   color: white;
@@ -25,25 +32,24 @@ html {
 }
 
 body {
-  padding: 50px;
+  padding: 40px;
 }
 
 .description {
   align-self: baseline;
   margin: 20px;
-  width: 400px;
+  width: 300px;
 }
 
 canvas#game {
   cursor: crosshair;
   border: 1px solid white;
-  width: 800px;
-  height: 800px;
+  width: 750px;
+  height: 750px;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1200px) {
   .description {
-    margin: 20px;
     width: 100%;
   }
 }
