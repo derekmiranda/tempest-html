@@ -195,7 +195,7 @@ export class Game {
     this.currLevel.initPlayerSpots();
     this.currLevel.setPlayer(this.player);
     // only play animation on subsequent levels and only on start
-    if (idx > 0 && !this.state.levelStarted) {
+    if (!this.state.levelStarted) {
       this.currLevel.startLevelStartAnim();
     } else {
       this.currLevel.startSpawning();
