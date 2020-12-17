@@ -2,11 +2,11 @@ import { Game } from "../Game";
 import { TextObject } from "../objects/TextObject";
 import { Scene } from "../types";
 
-export const Win: Scene = (game: Game) => {
+export const GameEnd: (boolean) => Scene = (isWin: boolean) => (game: Game) => {
   game.addObject(
     new TextObject({
       ...game.getDefaultProps(),
-      text: "YOU WIN!!",
+      text: isWin ? "YOU WIN!!" : "GAME OVER",
       y: -0.15,
       h: 0.12,
     })

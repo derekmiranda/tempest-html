@@ -6,6 +6,7 @@ import { Level } from "./Level";
 import { renderPoints, sleep, throttle } from "../lib/utils";
 import { player } from "../lib/shapes";
 import { Explosion } from "./Explosion";
+import { SceneType } from "../Game";
 
 interface PlayerPropsInterface extends GameObjectPropsInterface {
   color?: string;
@@ -102,7 +103,10 @@ export class Player extends BaseGameObject implements GameObjectInterface {
       await sleep(1000);
       await this.level.onGameOver();
       await sleep(500);
-      this.game.restart();
+      this.game.updateState({
+        sceneType: SceneType.GAME_OVER,
+      });
+      this.game.startScene();
     }
     // lost life
     else {

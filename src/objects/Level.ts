@@ -283,19 +283,25 @@ export class Level extends BaseGameObject {
     );
   }
 
-  processWin() {
+  async processWin() {
     if (!this.levelWonAnim.active) {
       this.levelWonAnim.start();
       if (this.game.hasWonGame()) {
-        sleep(1500).then(() => {
-          this.game.updateState({
-            sceneType: SceneType.WIN,
-          });
-          this.game.startScene();
+        await sleep(1500);
+        this.game.updateState({
+          sceneType: SceneType.WIN,
         });
+        this.game.startScene();
       } else {
         // TODO: play level win anim
-        console.log("Level won but you still have more to beat!");
+        await sleep(1500);
+        this.game.updateState({
+          sceneType: SceneType.LEVEL,
+          levelState: {
+            idx: this.game.state.levelState.idx + 1,
+          },
+        });
+        this.game.startScene();
       }
     }
   }

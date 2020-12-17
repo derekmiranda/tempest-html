@@ -13,7 +13,6 @@ interface State {
   sceneType?: SceneType;
   score?: number;
   levelState?: LevelState;
-  levelIdx?: number;
 }
 
 interface LevelState {
@@ -27,6 +26,7 @@ interface GamePropsInterface {
   levels: typeof Level[];
   title: Scene;
   win: Scene;
+  gameOver: Scene;
   state?: State;
 }
 
@@ -63,7 +63,7 @@ export class Game {
     score: 0,
     levelState: {
       idx: 0,
-      lives: 2,
+      lives: 0,
     },
   };
 
@@ -73,6 +73,7 @@ export class Game {
     levels,
     title,
     win,
+    gameOver,
     state = Game.defaultState,
   }: GamePropsInterface) {
     this.canvas = canvas;
@@ -81,6 +82,7 @@ export class Game {
     this.levels = levels;
     this.title = title;
     this.win = win;
+    this.gameOver = gameOver;
   }
 
   start() {
@@ -147,19 +149,25 @@ export class Game {
         this.ctx.canvas.addEventListener("click", clickListener, true);
         break;
       }
-      case SceneType.WIN: {
-        this.win(this);
-        const clickListener = () => {
-          this.restart();
-          this.ctx.canvas.removeEventListener("click", clickListener, true);
-        };
-        this.ctx.canvas.addEventListener("click", clickListener, true);
+      case SceneType.WIN:
+        this.showEndScreen(this.win);
         break;
-      }
+      case SceneType.GAME_OVER:
+        this.showEndScreen(this.gameOver);
+        break;
       case SceneType.LEVEL:
         this.startLevel();
         break;
     }
+  }
+
+  showEndScreen(scene: Scene) {
+    scene(this);
+    const clickListener = () => {
+      this.restart();
+      this.ctx.canvas.removeEventListener("click", clickListener, true);
+    };
+    this.ctx.canvas.addEventListener("click", clickListener, true);
   }
 
   startLevel() {
