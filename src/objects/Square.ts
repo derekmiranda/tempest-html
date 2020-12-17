@@ -21,7 +21,7 @@ interface SegmentsMemo {
 export class Square extends Level implements GameObjectInterface {
   props: SquarePropsInterface;
   segments: number = 16;
-  enemyClasses: typeof Enemy[] = new Array(20).fill(RedEnemy);
+  enemyClasses: typeof Enemy[] = new Array(15).fill(RedEnemy);
   enemySpeed: number = RED_ENEMY_SPEED * 1.3;
   static pointsMemo: SegmentsMemo = {};
 

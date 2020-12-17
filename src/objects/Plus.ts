@@ -12,7 +12,7 @@ interface SegmentsMemo {
 
 export class Plus extends Level implements GameObjectInterface {
   props: LevelPropsInterface;
-  enemyClasses: typeof Enemy[] = new Array(30).fill(RedEnemy);
+  enemyClasses: typeof Enemy[] = new Array(20).fill(RedEnemy);
   enemySpeed: number = RED_ENEMY_SPEED * 1.5;
   static pointsMemo: SegmentsMemo = {};
 
