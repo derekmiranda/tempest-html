@@ -52,9 +52,10 @@ export class Game {
   title: Scene;
   gameOver: Scene;
   win: Scene;
+  // caching canvas DOMRect
+  canvasRect: DOMRect;
 
   private layerCollection: LayerCollection;
-  private canvasRect: DOMRect;
   private running = true;
   private currLevel: Level;
   private objId = -1;
@@ -254,7 +255,7 @@ export class Game {
       this.handleMouseLeave.bind(this)
     );
 
-    const resizeHandler: VoidFunction = debounce(function () {
+    const resizeHandler: VoidFunction = debounce(() => {
       // resize canvas
       this.resizeCanvas();
       // recache canvas rect
