@@ -21,8 +21,9 @@ import {
   BULLET_TOLERANCE,
   NEAR_BULLET_TOLERANCE,
   COLLISION_TOLERANCE,
-  GAME_OVER_ANIM_SPEED,
   RED_ENEMY_SPEED,
+  GAME_OVER_ANIM_SPEED,
+  LEVEL_START_ANIM_SPEED,
   LEVEL_WON_ANIM_SPEED,
 } from "../CONSTS";
 import { Enemy } from "./Enemy";
@@ -85,14 +86,18 @@ export class Level extends BaseGameObject {
   farMidpoints: Point[] = [];
   levelWon: boolean = false;
   levelWonAnim: AsyncAction = new AsyncAction();
-  levelWonStartTransform: TransformPropsInterface;
+  levelStarted: boolean = false;
+  levelStartAnim: AsyncAction = new AsyncAction();
   gameOverAnim: AsyncAction = new AsyncAction();
+  // store initial size
+  startSize: number;
 
   constructor(props: LevelPropsInterface) {
     super(props);
     const { loops } = props;
     if (loops !== undefined) this.loops = loops;
     this.throttledUpdateSpot = throttle(this.updatePlayerSpot.bind(this), 50);
+    this.startSize = this.transform.w;
   }
 
   startSpawning() {
@@ -264,6 +269,11 @@ export class Level extends BaseGameObject {
   update(timeUpdate: number) {
     this.throttledUpdateSpot();
 
+    if (this.levelStartAnim.active) {
+      this.playLevelStartAnim(timeUpdate);
+      return;
+    }
+
     // check for collisions
     this.checkBulletEnemyCollisions();
     this.checkPlayerEnemyCollisions();
@@ -308,6 +318,7 @@ export class Level extends BaseGameObject {
         await sleep(500);
         this.game.updateState({
           sceneType: SceneType.LEVEL,
+          levelStarted: false,
           levelState: {
             idx: this.game.state.levelState.idx + 1,
           },
@@ -443,27 +454,47 @@ export class Level extends BaseGameObject {
   }
 
   onLevelWin(): Promise<void> {
-    this.levelWonStartTransform = this.transform.getTransformProps();
     return this.levelWonAnim.start();
   }
 
   playLevelWonAnim(timeUpdate: number) {
-    if (this.globalTransform.w < Level.zoomInW) {
-      const { w } = this.levelWonStartTransform;
+    if (this.transform.w < Level.zoomInW) {
+      const w = this.startSize;
       const k = getPercentBetweenValues(w, Level.zoomInW, this.transform.w);
 
-      const newY = -findValueBetweenValues(
-        0,
-        LEVEL_CENTER.y * this.transform.w,
-        k
-      );
+      const newSize = this.transform.w + LEVEL_WON_ANIM_SPEED * timeUpdate;
+      const newY = -findValueBetweenValues(0, LEVEL_CENTER.y * newSize, k);
       this.setTransformWithProps({
         y: newY,
-        w: this.transform.w + LEVEL_WON_ANIM_SPEED * timeUpdate,
-        h: this.transform.h + LEVEL_WON_ANIM_SPEED * timeUpdate,
+        w: newSize,
+        h: newSize,
       });
     } else {
       this.levelWonAnim.complete();
+    }
+  }
+
+  startLevelStartAnim() {
+    this.transform.setTransformWithProps({ w: 0, h: 0 });
+    return this.levelStartAnim.start().then(() => {
+      this.startSpawning();
+    });
+  }
+
+  playLevelStartAnim(timeUpdate: number) {
+    if (this.transform.w < this.startSize) {
+      this.setTransformWithProps({
+        w: Math.min(
+          this.startSize,
+          this.transform.w + LEVEL_START_ANIM_SPEED * timeUpdate
+        ),
+        h: Math.min(
+          this.startSize,
+          this.transform.h + LEVEL_START_ANIM_SPEED * timeUpdate
+        ),
+      });
+    } else {
+      this.levelStartAnim.complete();
     }
   }
 

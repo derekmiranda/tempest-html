@@ -13,6 +13,7 @@ interface State {
   sceneType?: SceneType;
   score?: number;
   levelState?: LevelState;
+  levelStarted?: boolean;
 }
 
 interface LevelState {
@@ -65,6 +66,7 @@ export class Game {
       idx: 0,
       lives: 2,
     },
+    levelStarted: false,
   };
 
   constructor({
@@ -192,7 +194,15 @@ export class Game {
 
     this.currLevel.initPlayerSpots();
     this.currLevel.setPlayer(this.player);
-    this.currLevel.startSpawning();
+    // only play animation on subsequent levels and only on start
+    if (idx > 0 && !this.state.levelStarted) {
+      this.currLevel.startLevelStartAnim();
+    } else {
+      this.currLevel.startSpawning();
+    }
+    this.updateState({
+      levelStarted: true,
+    });
   }
 
   addObject(obj: BaseGameObject, layer: number = 0) {
