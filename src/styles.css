@@ -8,15 +8,16 @@ html,
 body {
   width: 100%;
   margin: 0;
-  text-align: right;
   letter-spacing: 0.1rem;
   background-color: black;
   color: white;
   font-family: VectorBattle, Arial, Helvetica, sans-serif;
   display: flex;
+  flex-flow: wrap;
   justify-content: center;
-  align-items: center;
-  user-select: none;
+}
+::selection {
+  color: gold;
 }
 
 html {
@@ -30,10 +31,37 @@ body {
 .description {
   align-self: baseline;
   margin: 20px;
-  width: 20%;
+  width: 400px;
 }
 
 canvas#game {
   cursor: crosshair;
   border: 1px solid white;
+  width: 800px;
+  height: 800px;
+}
+
+@media screen and (max-width: 1024px) {
+  .description {
+    margin: 20px;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  canvas#game {
+    width: 400px;
+    height: 400px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  body {
+    padding: 20px;
+  }
+
+  canvas#game {
+    width: 300px;
+    height: 300px;
+  }
 }
