@@ -161,6 +161,9 @@ export class Level extends BaseGameObject {
 
   // clear enemy references
   removeEnemy(enemy: Enemy) {
+    if (!this.enemyStateMap[enemy.id]) {
+      return;
+    }
     const { spotIdx } = this.enemyStateMap[enemy.id];
     delete this.enemyLaneMap[spotIdx][enemy.id];
     delete this.enemyStateMap[enemy.id];
