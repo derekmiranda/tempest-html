@@ -2,7 +2,7 @@ import { Game } from "./Game";
 import { Circle } from "./objects/Circle";
 import { Square } from "./objects/Square";
 import { Title } from "./scenes/Title";
-import { GameEnd, Win } from "./scenes/Win";
+import { GameEnd } from "./scenes/GameEnd";
 
 let game: Game, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D;
 
