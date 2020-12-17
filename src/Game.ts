@@ -63,7 +63,7 @@ export class Game {
     score: 0,
     levelState: {
       idx: 0,
-      lives: 0,
+      lives: 2,
     },
   };
 
