@@ -91,16 +91,18 @@ export class Game {
       ...this.getDefaultProps(),
       text: "SCORE",
       x: 0.45,
-      y: -0.38,
-      h: 0.05,
+      y: -0.43,
+      h: 0.02,
+      textBaseline: "top",
       textAlign: "end",
     });
     this.scoreValueText = new TextObject({
       ...this.getDefaultProps(),
       text: ("" + this.state.score).padStart(6, "0"),
       x: 0.45,
-      y: -0.3,
-      h: 0.05,
+      y: -0.37,
+      h: 0.03,
+      textBaseline: "bottom",
       textAlign: "end",
     });
     this.livesDisplay = new LivesDisplay({
