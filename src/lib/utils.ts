@@ -69,6 +69,10 @@ export function rotate(x, y, angle): Point {
 }
 
 export function calcAngle(x, y): number {
+  if (x === 0) {
+    return y > 0 ? -Math.PI / 2 : Math.PI / 2;
+  }
+
   let angle = Math.atan(y / x);
   // adjust angles in Quadrant III and IV
   if (x < 0) {
