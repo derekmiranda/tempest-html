@@ -149,9 +149,12 @@ export class Level extends BaseGameObject {
   updateEnemyPath(enemy: Enemy, spotIdx: number) {
     const fromPoint = this.midpoints[spotIdx];
     const toPoint = this.farMidpoints[spotIdx];
+    const p_i = this.points[spotIdx];
+    const p_j = this.points[(spotIdx + 1) % this.points.length];
+    const angle = -calcAngle(p_j.x - p_i.x, p_j.y - p_i.y);
     enemy.setTransformWithProps({
       ...fromPoint,
-      angle: Math.PI / 2 - calcAngle(fromPoint.x, fromPoint.y),
+      angle,
     });
     enemy.updatePath(fromPoint, toPoint);
   }
