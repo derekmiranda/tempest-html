@@ -4,6 +4,7 @@ import { Square } from "./objects/Square";
 import { Plus } from "./objects/Plus";
 import { Title } from "./scenes/Title";
 import { GameEnd } from "./scenes/GameEnd";
+import FontFaceObserver from "fontfaceobserver";
 
 let game: Game, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D;
 
@@ -22,4 +23,10 @@ function main() {
 
   game.start();
 }
-main();
+
+function loadFont(): Promise<void> {
+  const font = new FontFaceObserver("VectorBattle");
+  return font.load();
+}
+
+loadFont().then(main);
