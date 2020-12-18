@@ -113,6 +113,7 @@ export class Game {
     this.ctx.textAlign = "center";
 
     // cache canvas rect
+    this.resizeCanvas();
     this.canvasRect = this.canvas.getBoundingClientRect();
     this.startScene();
 
