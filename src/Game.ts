@@ -258,10 +258,18 @@ export class Game {
     const resizeHandler: VoidFunction = debounce(() => {
       // resize canvas
       this.resizeCanvas();
-      // recache canvas rect
-      this.canvasRect = this.canvas.getBoundingClientRect();
+      this.recacheCanvasRect();
     }, 200);
     window.addEventListener("resize", resizeHandler);
+
+    const scrollHandler: VoidFunction = debounce(() => {
+      this.recacheCanvasRect();
+    }, 200);
+    window.addEventListener("scroll", scrollHandler);
+  }
+
+  recacheCanvasRect() {
+    this.canvasRect = this.canvas.getBoundingClientRect();
   }
 
   // resizing canvas based on responsize canvas#game sizes in CSS
