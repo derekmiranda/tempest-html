@@ -1,7 +1,6 @@
 @font-face {
   font-family: "VectorBattle";
-  /* TODO: convert to woff2 */
-  src: url(assets/fonts/vector-battle-font/VectorBattle-e9XO.ttf);
+  src: url(assets/fonts/vector-battle-font/VectorBattle-e9XO.woff2);
 }
 
 html,
