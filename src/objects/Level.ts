@@ -86,7 +86,6 @@ export class Level extends BaseGameObject {
   farMidpoints: Point[] = [];
   levelWon: boolean = false;
   levelWonAnim: AsyncAction = new AsyncAction();
-  levelStarted: boolean = false;
   levelStartAnim: AsyncAction = new AsyncAction();
   gameOverAnim: AsyncAction = new AsyncAction();
   // store initial size
