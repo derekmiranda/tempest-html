@@ -59,21 +59,21 @@ export class Player extends BaseGameObject implements GameObjectInterface {
   }
 
   keydown(e) {
+    e.preventDefault();
     if (e.code === "Space") {
       this.enableFiring();
     }
-    return false;
   }
 
   keyup(e) {
+    e.preventDefault();
     if (e.code === "Space") {
       this.disableFiring();
     }
-    return false;
   }
 
   enableFiring() {
-    this.isFiring = true;
+    this.isFiring = !this.level.levelStartAnim.active;
   }
 
   disableFiring() {
