@@ -75,7 +75,8 @@ export class Player extends BaseGameObject implements GameObjectInterface {
   }
 
   enableFiring() {
-    this.isFiring = !this.level.levelStartAnim.active;
+    this.isFiring =
+      !this.level.levelStartAnim.active && !this.level.levelWonAnim.active;
   }
 
   disableFiring() {
