@@ -62,12 +62,14 @@ export class Player extends BaseGameObject implements GameObjectInterface {
     if (e.code === "Space") {
       this.enableFiring();
     }
+    return false;
   }
 
   keyup(e) {
     if (e.code === "Space") {
       this.disableFiring();
     }
+    return false;
   }
 
   enableFiring() {
@@ -120,7 +122,7 @@ export class Player extends BaseGameObject implements GameObjectInterface {
   }
 
   setListeners() {
-    window.addEventListener("keydown", this.keydown, true);
+    window.addEventListener("keydown", this.keydown, false);
     window.addEventListener("keyup", this.keyup, true);
     this.ctx.canvas.addEventListener("mousedown", this.enableFiring, true);
     this.ctx.canvas.addEventListener("mouseup", this.disableFiring, true);
