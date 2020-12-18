@@ -2,7 +2,7 @@
 
 A sort-of remake of the 1981 Atari game, Tempest.
 
-[WIP](https://derekmiranda.github.io/tempest-html/) here
+[Current version here](https://derekmiranda.github.io/williwaw/)
 
 ## Dev Notes
 
