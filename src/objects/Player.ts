@@ -3,7 +3,7 @@ import { GameObjectInterface, GameObjectPropsInterface } from "../types";
 import { BULLET_SIZE, COLORS } from "../CONSTS";
 import { Bullet } from "./Bullet";
 import { Level } from "./Level";
-import { renderPoints, sleep, throttle } from "../lib/utils";
+import { renderPoints, sleep, throttle, debounce } from "../lib/utils";
 import { player } from "../lib/shapes";
 import { Explosion } from "./Explosion";
 import { SceneType } from "../Game";
@@ -27,6 +27,8 @@ export class Player extends BaseGameObject implements GameObjectInterface {
     this.keyup = this.keyup.bind(this);
     this.enableFiring = this.enableFiring.bind(this);
     this.disableFiring = this.disableFiring.bind(this);
+    this.touchstart = this.touchstart.bind(this);
+    this.touchend = this.touchend.bind(this);
     this.fireBullet = throttle(this._fireBullet.bind(this), 500);
   }
 
@@ -126,6 +128,8 @@ export class Player extends BaseGameObject implements GameObjectInterface {
     window.addEventListener("keyup", this.keyup, true);
     this.ctx.canvas.addEventListener("mousedown", this.enableFiring, true);
     this.ctx.canvas.addEventListener("mouseup", this.disableFiring, true);
+    this.ctx.canvas.addEventListener("touchstart", this.touchstart, true);
+    this.ctx.canvas.addEventListener("touchend", this.touchend, true);
   }
 
   removeListeners() {
@@ -133,6 +137,18 @@ export class Player extends BaseGameObject implements GameObjectInterface {
     window.removeEventListener("keyup", this.keyup, true);
     this.ctx.canvas.removeEventListener("mousedown", this.enableFiring, true);
     this.ctx.canvas.removeEventListener("mouseup", this.disableFiring, true);
+    this.ctx.canvas.removeEventListener("touchstart", this.touchstart, true);
+    this.ctx.canvas.removeEventListener("touchend", this.touchend, true);
+  }
+
+  touchstart(e) {
+    e.preventDefault();
+    this.enableFiring();
+  }
+
+  touchend(e) {
+    e.preventDefault();
+    this.disableFiring();
   }
 
   update() {
