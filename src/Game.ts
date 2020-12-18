@@ -243,17 +243,40 @@ export class Game {
     );
   }
 
+  handleTouchmove(e: TouchEvent) {
+    if (!this.currLevel) return;
+    this.currLevel.startUpdatingWithCursor(
+      e.targetTouches[0].clientX - this.canvasRect.x,
+      e.targetTouches[0].clientY - this.canvasRect.y
+    );
+  }
+
   handleMouseLeave() {
     if (!this.currLevel) return;
     this.currLevel.stopUpdatingWithCursor();
   }
 
   setListeners() {
-    this.canvas.addEventListener("mouseenter", this.handleMouse.bind(this));
-    this.canvas.addEventListener("mousemove", this.handleMouse.bind(this));
+    this.canvas.addEventListener(
+      "mouseenter",
+      this.handleMouse.bind(this),
+      true
+    );
+    this.canvas.addEventListener(
+      "mousemove",
+      this.handleMouse.bind(this),
+      true
+    );
     this.canvas.addEventListener(
       "mouseleave",
-      this.handleMouseLeave.bind(this)
+      this.handleMouseLeave.bind(this),
+      true
+    );
+
+    this.canvas.addEventListener(
+      "touchmove",
+      this.handleTouchmove.bind(this),
+      true
     );
 
     const resizeHandler: VoidFunction = debounce(() => {
