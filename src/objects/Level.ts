@@ -315,6 +315,7 @@ export class Level extends BaseGameObject {
         await sleep(1500);
         this.game.updateState({
           sceneType: SceneType.WIN,
+          score: this.game.state.score + 100000,
         });
         this.game.startScene();
       } else {
@@ -323,6 +324,7 @@ export class Level extends BaseGameObject {
         await sleep(500);
         this.game.updateState({
           sceneType: SceneType.LEVEL,
+          score: this.game.state.score + 50000,
           levelStarted: false,
           levelState: {
             idx: this.game.state.levelState.idx + 1,
