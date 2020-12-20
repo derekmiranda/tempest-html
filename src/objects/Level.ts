@@ -8,6 +8,7 @@ import { Player } from "./Player";
 import {
   calcAngle,
   calcMidpoints,
+  findPointBetweenPoints,
   findValueBetweenValues,
   getPercentBetweenValues,
   shouldMoveForwardInLoop,
@@ -31,6 +32,8 @@ import { Bullet } from "./Bullet";
 import { EnemySpawner } from "./EnemySpawner";
 import { AsyncAction } from "../lib/AsyncAction";
 import { SceneType } from "../Game";
+import { EnemyExplosion } from "./EnemyExplosion";
+import { EnemyBullet } from "./EnemyBullet";
 
 export interface LevelSpot extends TransformPropsInterface {}
 
@@ -148,11 +151,16 @@ export class Level extends BaseGameObject {
   updateEnemyPath(enemy: Enemy, spotIdx: number) {
     const fromPoint = this.midpoints[spotIdx];
     const toPoint = this.farMidpoints[spotIdx];
+    const currPoint = findPointBetweenPoints(
+      fromPoint,
+      toPoint,
+      enemy.transform.z
+    );
     const p_i = this.points[spotIdx];
     const p_j = this.points[(spotIdx + 1) % this.points.length];
     const angle = -calcAngle(p_j.x - p_i.x, p_j.y - p_i.y);
     enemy.setTransformWithProps({
-      ...fromPoint,
+      ...currPoint,
       angle,
     });
     enemy.updatePath(fromPoint, toPoint);
@@ -355,6 +363,22 @@ export class Level extends BaseGameObject {
           ) {
             delete bulletMap[bulletId];
             delete enemyMap[enemyId];
+
+            // render explosion
+            if (!(enemy instanceof EnemyBullet)) {
+              const enemyExplosion = new EnemyExplosion({
+                ...this.game.getDefaultProps(),
+                x: enemy.transform.x,
+                y: enemy.transform.y,
+                z: enemy.transform.z,
+                w: enemy.transform.w * 1.5,
+                h: enemy.transform.h * 1.5,
+              });
+              this.game.addObject(enemyExplosion, 1);
+              this.addChildren(enemyExplosion);
+              enemyExplosion.play();
+            }
+
             this.removeEnemy(enemy);
             this.game.updateState({
               score: this.game.state.score + enemy.score,
