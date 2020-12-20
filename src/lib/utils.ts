@@ -116,24 +116,27 @@ export function sleep(time: number): Promise<void> {
 export function renderPoints(
   obj: BaseGameObject,
   {
+    points,
     xOffset = 0,
     yOffset = 0,
     scale = 1,
     color,
   }: {
+    points?: Point[];
     xOffset?: number;
     yOffset?: number;
     scale?: number;
     color?: string;
   } = {}
 ) {
+  points = points || obj.points;
   if (obj.useStrokes) {
     obj.ctx.strokeStyle = color || obj.color;
   } else {
     obj.ctx.fillStyle = color || obj.color;
   }
   obj.ctx.beginPath();
-  obj.points.forEach((p, i) => {
+  points.forEach((p, i) => {
     i === 0
       ? obj.localMoveTo(scale * p.x + xOffset, scale * p.y + yOffset)
       : obj.localLineTo(scale * p.x + xOffset, scale * p.y + yOffset);
