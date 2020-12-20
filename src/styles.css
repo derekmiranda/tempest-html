@@ -31,7 +31,7 @@ html {
 }
 
 body {
-  padding: 40px;
+  margin: 40px;
 }
 
 .description {
@@ -48,6 +48,10 @@ canvas#game {
 }
 
 @media screen and (max-width: 1200px) {
+  body {
+    width: 800px;
+  }
+
   .description {
     width: 100%;
     margin-bottom: 100px;
@@ -55,6 +59,10 @@ canvas#game {
 }
 
 @media screen and (max-width: 800px) {
+  body {
+    width: 400px;
+  }
+
   canvas#game {
     width: 400px;
     height: 400px;
@@ -63,7 +71,7 @@ canvas#game {
 
 @media screen and (max-width: 400px) {
   body {
-    padding: 20px;
+    width: 300px;
   }
 
   canvas#game {
