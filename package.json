@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "fontfaceobserver": "^2.1.0",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+    "mobile-detect": "^1.4.4"
   }
 }
