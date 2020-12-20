@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html --public-url='.'",
+    "build": "rm -rf dist && parcel build src/index.html --public-url='.'",
     "test": "jest",
     "test:w": "jest --watch"
   },
